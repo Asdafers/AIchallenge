@@ -2,6 +2,8 @@
 
 This folder is a planning and build workspace for a Google for Startups AI Agent Challenge submission.
 
+> **Multi-agent harness:** if you are an AI agent (Claude / Gemini / Codex) here to claim work via the Mission Control MCP, read `AGENTS-PROTOCOL.md` first. It covers per-runtime config, the claim/complete loop, and the conventions you must follow (claimer_id format, blind reviews, strategy-linkage anti-drift, what not to touch).
+
 ## Product Direction
 
 Default project concept: a Track 1 net-new agent system for better business data capture.
