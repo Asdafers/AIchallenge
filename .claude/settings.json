@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mission-mcp": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "email-calendar-agent-mission-control-1",
+        "python",
+        "brain/mission_server.py",
+        "stdio"
+      ]
+    }
+  }
+}
