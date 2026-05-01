@@ -17,6 +17,7 @@ Positioning guardrail: do not frame this as an AI survey tool. Frame it as an au
 - [challenge.md](/Volumes/workz/GitHubProjects/AIchallenge/challenge.md): cleaned challenge overview.
 - [additionaldetails.md](/Volumes/workz/GitHubProjects/AIchallenge/additionaldetails.md): cleaned challenge examples and technology notes.
 - [docs/product-brief.md](/Volumes/workz/GitHubProjects/AIchallenge/docs/product-brief.md): product framing for the proposed Track 1 submission.
+- [docs/spec.md](/Volumes/workz/GitHubProjects/AIchallenge/docs/spec.md): critique-ready submission spec and implementation blueprint.
 - [docs/architecture.md](/Volumes/workz/GitHubProjects/AIchallenge/docs/architecture.md): proposed multi-agent architecture.
 - [docs/build-plan.md](/Volumes/workz/GitHubProjects/AIchallenge/docs/build-plan.md): practical build plan and demo scope.
 - [docs/winning-strategy.md](/Volumes/workz/GitHubProjects/AIchallenge/docs/winning-strategy.md): competition strategy synthesized from additional AI research.
