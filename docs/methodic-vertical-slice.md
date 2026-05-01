@@ -42,7 +42,7 @@ These non-goals come from `mission_strategy['aichallenge'].non_goals`:
 
 - **External Requesting Agent**: mocked Sales Insights agent that submits a structured `request_study` event and receives a structured completion.
 - **Organizer Agent**: uses Gemini through ADK to clarify the business decision and produce the research brief.
-- **Methodology Agent**: reviews sampling, measurement validity, bias, and overclaim risk. The prototype may use deterministic critique rules plus Gemini explanation.
+- **Methodology Agent**: uses a live Gemini reasoning call to review sampling, measurement validity, bias, and overclaim risk. Deterministic critique rules may exist only as a fallback or regression test, not as the primary proof of methodology pushback.
 - **Question Design Agent**: maps each question and follow-up category to required variables.
 - **Participant Agent**: conducts constrained, adaptive conversations from the approved study plan.
 - **Data Quality Agent**: normalizes responses, scores coverage, links evidence, and triggers one bounded re-plan.
@@ -79,20 +79,20 @@ ADK integration requirements:
 - Set explicit MCP timeouts and show a graceful fallback if context lookup fails.
 - Verify locally and after deploy: list apps, create session, run agent, call MCP tool, persist response, export result.
 
-### Data Quality Schema
+### Canonical Data Quality Schema
 
-Define this before building the agents, because the conversation policy and dashboard depend on it.
+Define this before building the agents, because the conversation policy and dashboard depend on it. The canonical field contract lives in `docs/spec.md` under `Data Schema -> Participant Response`. Do not invent parallel field names in implementation docs.
 
 Required variables for the win-loss study:
 
-- `loss_reason_category`: budget timing, unclear ROI, procurement friction, competitor pressure, missing controls, onboarding risk, other.
-- `loss_reason_confidence`: low, medium, high.
-- `persona_role`: champion, economic buyer, technical evaluator, procurement, executive sponsor.
-- `decision_stage`: lost deal, slipping deal, recent win.
-- `roi_evidence_gap`: absent, ambiguous, present.
-- `procurement_friction`: absent, ambiguous, present.
-- `security_or_controls_gap`: absent, ambiguous, present.
-- `recommended_action`: packaging change, ROI messaging, procurement support, security proof, onboarding proof, no action.
+- `primary_loss_reason`: unclear_roi, budget_timing, procurement_friction, security_concern, competitor_pressure, missing_feature, economic_buyer_gap, other, unknown.
+- `secondary_loss_reason`: optional supporting category or null.
+- `roi_clarity`: clear, partially_clear, unclear, unknown.
+- `budget_timing`: in_cycle, out_of_cycle, unknown.
+- `procurement_friction`: none, low, medium, high, unknown.
+- `security_concern`: none, low, medium, high, unknown.
+- `competitor_pressure`: none, named_competitor, unknown.
+- `aha_moment_reached`: yes, no, unknown.
 
 Per-variable coverage states:
 
@@ -105,17 +105,34 @@ Minimum output record:
 
 ```json
 {
-  "participant_id": "P-002",
-  "segment": "slipping_deal",
-  "persona_role": "economic_buyer",
-  "variables": {
-    "loss_reason_category": {
-      "value": "unclear_roi",
-      "coverage_state": "covered_high_confidence",
+  "participant_id": "P-001",
+  "segment": "lost_deal_economic_buyer",
+  "structured_fields": {
+    "primary_loss_reason": "unclear_roi",
+    "secondary_loss_reason": null,
+    "roi_clarity": "unclear",
+    "budget_timing": "unknown",
+    "procurement_friction": "unknown",
+    "security_concern": "none",
+    "competitor_pressure": "none",
+    "aha_moment_reached": "no"
+  },
+  "field_confidence": {
+    "primary_loss_reason": 0.86,
+    "roi_clarity": 0.82
+  },
+  "coverage_state": {
+    "primary_loss_reason": "covered_high_confidence",
+    "roi_clarity": "covered_high_confidence",
+    "procurement_friction": "ambiguous"
+  },
+  "evidence": [
+    {
+      "field": "primary_loss_reason",
       "evidence_quote": "Finance never saw proof that the report output would justify the cost.",
       "context_refs": ["lookup_deal_context.trial_usage.report_builder_reached"]
     }
-  },
+  ],
   "quality": {
     "completion_score": 0.92,
     "ambiguity_count": 1,
@@ -128,28 +145,28 @@ Minimum output record:
 
 ### Phase 1: Foundation, Schema, And Organizer Flow
 
-- **2026-05-02**: Scaffold the app and ADK agent directories; add Gemini config loading; create fixture data for Sales Insights request, CRM context, telemetry, participant personas, and static-survey baseline.
-- **2026-05-03**: Define the study schema, required variables, coverage states, guardrail event types, quality scoring rubric, static-survey baseline fields, and export format.
-- **2026-05-04**: Implement the mocked Sales Insights request and Methodic clarification response as an HTTP payload flow, or label the endpoint stub honestly if it is not fully networked yet.
+- **2026-05-02**: Scaffold the app and ADK agent directories; add Gemini config loading; run model-selection spike for participant latency and methodology/data-quality reasoning quality.
+- **2026-05-03**: Define the canonical study schema from `docs/spec.md`, coverage states, guardrail event types, quality scoring rubric, static-survey baseline fields, BigQuery table schema, and export format.
+- **2026-05-04**: Create fixture data for Sales Insights request, CRM context, telemetry, three primary participants, one procurement reserve participant, and static-form baseline; implement the mocked Sales Insights request and Methodic clarification response as an HTTP payload flow, or label the endpoint stub honestly if it is not fully networked yet.
 - **2026-05-05**: Build Organizer Agent flow for the win-loss decision: objective, segments, constraints, required variables, and approval state.
-- **2026-05-06**: Implement Methodology Agent pushback for biased sample plans, overbroad claims, and missing economic-buyer coverage.
+- **2026-05-06**: Implement Methodology Agent pushback as a live Gemini reasoning call for biased sample plans, overbroad claims, and missing economic-buyer coverage, with deterministic fallback only.
 - **2026-05-07**: Build Question Design Agent output: question pool, follow-up categories, and question-to-variable mapping.
 - **2026-05-08**: Build the visual review package showing brief, sample plan, variables, question coverage, risks, and approval controls.
 - **2026-05-09**: Run local E2E Organizer test: external request -> clarification -> brief -> methodology pushback -> review package.
-- **2026-05-10**: Phase 1 freeze gate: approved research plan can be generated from fixtures without manual editing.
+- **2026-05-10**: Phase 1 freeze/slack gate: approved research plan can be generated from fixtures without manual editing; unresolved model/schema issues are fixed before Phase 2.
 
 ### Phase 2: Participant Agent And MCP Context Lookup
 
 - **2026-05-11**: Scaffold Participant Agent with deployment-safe ADK structure and deterministic test personas.
 - **2026-05-12**: Implement conversation policy: preserve measurement intent, probe vague answers, stop probing variables at approved threshold, and recover once from misunderstanding, contradiction, or frustration.
-- **2026-05-13**: Build participant chat UI for three primary fixture participants plus one reserve participant for the re-plan path.
+- **2026-05-13**: Build participant chat UI for three primary fixture participants plus one procurement reserve participant for the re-plan path.
 - **2026-05-14**: Implement MCP server for `lookup_deal_context` with fixture-backed CRM and telemetry records.
 - **2026-05-15**: Integrate MCP toolset into Participant Agent with tool filtering, timeout, and fallback behavior.
 - **2026-05-16**: Add structured extraction from transcript to required variables with quote provenance.
-- **2026-05-17**: Build static-survey baseline path using the same participants and target variables.
+- **2026-05-17**: Build thin static-form baseline UI/path using the same fixture participants and target variables; if reduced to fixtures later, label it as a reference fixture rather than a measured comparison.
 - **2026-05-18**: Run local participant comparison: static survey records shallow answers; Methodic records clarified variables and evidence.
 - **2026-05-19**: Add automated smoke tests for MCP call, transcript capture, variable extraction, and fallback behavior.
-- **2026-05-20**: Phase 2 freeze gate: one participant session completes with MCP context lookup and structured output.
+- **2026-05-20**: Phase 2 freeze/slack gate: one participant session completes with MCP context lookup and structured output; use this day to absorb MCP/conversation latency fixes before Phase 3.
 
 ### Phase 3: Data Quality, Re-Plan, And End-To-End Orchestration
 
@@ -157,19 +174,19 @@ Minimum output record:
 - **2026-05-22**: Implement JSON/CSV export and BigQuery-ready table schema with transcript snippets, context references, and quality metadata.
 - **2026-05-23**: Build dashboard panels for static baseline vs Methodic: coverage states, ambiguity count, evidence-linked fields, and quality score.
 - **2026-05-24**: Link Organizer -> approved schema -> Participant sessions -> Data Quality -> export.
-- **2026-05-25**: Implement persistence for study config, sessions, transcripts, quality states, and exports. Use the simplest deployable option: Cloud SQL, Firestore, or file-backed storage for local demo with an explicit migration note.
-- **2026-05-26**: Implement autonomous re-plan trigger: if `procurement_friction` remains `ambiguous` after three sessions, add one targeted economic-buyer or procurement participant.
-- **2026-05-27**: Run full local E2E: request, clarification, plan, pushback, approval, three sessions, quality review, re-plan, fourth session, export.
-- **2026-05-28**: Phase 3 freeze gate: full workflow runs from a clean local state and produces a repeatable demo dataset.
+- **2026-05-25**: Implement file-backed prototype persistence for study config, sessions, transcripts, quality states, and exports; defer Firestore/Cloud SQL unless a later task proves it is needed.
+- **2026-05-26**: Set up BigQuery dataset/table/IAM and write one structured test row from local code before Cloud Run deployment.
+- **2026-05-27**: Implement autonomous re-plan trigger: after P-001, P-002, and P-003, if `procurement_friction` remains `ambiguous`, add P-005, the reserve procurement stakeholder.
+- **2026-05-28**: Phase 3 freeze/slack gate: full local E2E runs from a clean state and produces a repeatable demo dataset; use remaining time to stabilize BigQuery/export/re-plan before deployment.
 
 ### Phase 4: Cloud Run, Verification, And Submission Package
 
 - **2026-05-29**: Dockerize the app; configure env vars and secrets; run production-mode local container smoke test.
-- **2026-05-30**: Deploy to Cloud Run; verify service URL, ADK endpoints, session creation, Gemini calls, MCP context lookup, persistence, export, and BigQuery write path.
-- **2026-05-31**: Write final 3-4 minute demo script using the deployed app; rehearse once against live Cloud Run.
-- **2026-06-01**: Polish the working product UI: organizer review, participant chat, event trace, and quality dashboard.
-- **2026-06-02**: Record demo video scenes: external request, organizer planning/pushback, participant conversation/MCP, quality dashboard/re-plan.
-- **2026-06-03**: Stabilize cloud deployment; prepare GitHub README, architecture diagram, challenge explanation, and known limitations.
+- **2026-05-30**: Deploy to Cloud Run; verify service URL, ADK endpoints, session creation, Gemini calls, MCP context lookup, file-backed persistence, export, and BigQuery write path using the pre-created dataset/table.
+- **2026-05-31**: Cloud stabilization/slack day; fix deployment/IAM/latency issues before demo scripting.
+- **2026-06-01**: Write final 3-4 minute demo script using the deployed app; rehearse once against live Cloud Run.
+- **2026-06-02**: Polish the working product UI: organizer review, participant chat, event trace, and quality dashboard.
+- **2026-06-03**: Record demo video scenes and prepare GitHub README, architecture diagram, challenge explanation, and known limitations.
 - **2026-06-04**: Submit challenge materials: Devpost, video, repo, architecture notes, and demo URL.
 - **2026-06-05**: Buffer day and final deadline at 5:00 PM PT.
 
@@ -179,8 +196,8 @@ Before implementation expands beyond each phase, these gates must pass:
 
 - **Organizer gate**: external request and clarification are visible; methodology pushback is tied to the research brief and sample plan.
 - **MCP gate**: Participant Agent calls `lookup_deal_context` through MCP and logs the tool result in a developer trace.
-- **Quality gate**: every required variable has a coverage state; static baseline and Methodic outputs can be compared with the same rubric.
-- **Re-plan gate**: unresolved coverage triggers exactly one targeted extra participant session and explains why.
+- **Quality gate**: every required variable has a coverage state; static-form baseline and Methodic outputs can be compared with the same rubric.
+- **Re-plan gate**: P-001, P-002, and P-003 leave `procurement_friction` ambiguous; unresolved coverage triggers exactly one targeted P-005 procurement session and explains why.
 - **Guardrail gate**: one misunderstanding, contradiction, or frustration event is logged and handled without changing measurement intent or forcing a category.
 - **Cloud Run gate**: deployed service can create a session, run the ADK agent, call MCP, persist data, export results, and write the structured table to BigQuery.
 

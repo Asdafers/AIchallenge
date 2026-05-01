@@ -51,7 +51,7 @@ Claude should answer:
 
 1. Does the plan still prove Methodic is more than an AI survey tool?
 2. Is the scope feasible by the 2026-06-05 deadline?
-3. Are WP1-WP10 sequenced correctly, especially schema -> fixtures -> organizer -> participant -> MCP -> quality -> re-plan -> Cloud Run?
+3. Are WP1-WP10 plus WP9a sequenced correctly, especially schema -> fixtures -> organizer -> participant -> MCP -> quality -> re-plan -> BigQuery setup -> Cloud Run?
 4. Are the demo proof beats too dense for a 3-4 minute video?
 5. Are any claims still overreaching, especially around statistical rigor, A2A compliance, or autonomous behavior?
 6. Are the Google stack requirements visible enough without distracting from the B2B value story?
@@ -69,4 +69,6 @@ The Mission outcome must include:
 
 ## Current Recommendation Before Claude Review
 
-Hold implementation tasks until Claude completes the combined review or the operator explicitly waives it. The planning packet is coherent enough for adversarial review, but not yet approved for build.
+Claude completed the combined review with `ship-with-changes` and `HOLD`. The reconciliation pass after that review resolved the schema contradiction, re-plan persona contradiction, BigQuery/Cloud Run compression, deterministic-pushback risk, static-baseline ambiguity, schedule slack, and Gemini model-evaluation slot in the planning docs.
+
+Current recommendation: do not open implementation tasks until the operator grants build-go or requests a focused re-review confirming the Blockers are resolved.

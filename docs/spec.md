@@ -121,7 +121,7 @@ Implementation note:
 
 - The pushback must be visibly derived from the research brief, target decision, and sample plan.
 - Avoid a canned one-line warning. Show the triggering condition, rationale, and concrete revision.
-- The demo can use deterministic critique rules, but the UI should make clear why the rule fired.
+- The demo should use a live Gemini reasoning call for the visible methodology pushback, with deterministic critique rules only as fallback and regression tests. The UI should make clear what triggered the pushback, the rationale, and the concrete revision.
 
 ### Beat 3: MCP Triangulation During Participant Conversation
 
@@ -151,7 +151,7 @@ Minimum proof:
 
 - Required variables are visible.
 - Each variable has a state: `missing`, `ambiguous`, `covered_low_confidence`, or `covered_high_confidence`.
-- The Survey Agent stops probing a variable when it reaches the approved coverage threshold.
+- The Participant Agent stops probing a variable when it reaches the approved coverage threshold.
 - The Data Quality step shows a coverage or saturation curve for the study.
 
 This can be implemented deterministically for the prototype. The important thing is visual proof that Methodic is pursuing measurement coverage, not simply running a chat transcript to completion.
@@ -429,7 +429,7 @@ Output:
 }
 ```
 
-### Survey Agent
+### Participant Agent
 
 Input:
 
@@ -486,7 +486,7 @@ Responsibilities:
 Implementation note:
 
 - Do not make Data Quality a heavyweight separate LLM step unless needed.
-- Prefer structured outputs from the Survey Agent plus deterministic validation scripts for coverage, ambiguity, evidence links, and export readiness.
+- Prefer structured outputs from the Participant Agent plus deterministic validation scripts for coverage, ambiguity, evidence links, and export readiness.
 - Use an LLM only for the parts that genuinely need language judgment, such as contradiction review or theme naming.
 
 Output:
@@ -598,9 +598,9 @@ Use three primary personas in the live demo. Keep additional personas as test da
 - Segment: lost_deal_champion.
 - Role: RevOps Manager.
 - Initial answer: "Security slowed us down."
-- Underlying reason: security review was manageable, but procurement required vendor consolidation.
+- Underlying reason: security review was manageable, and the champion suspects procurement or vendor consolidation mattered, but they cannot confirm what happened after handoff.
 - Context lookup result: CRM notes mention competitor bundle.
-- Desired Methodic outcome: classify as `procurement_friction` with secondary `competitor_pressure`.
+- Desired Methodic outcome: leave `procurement_friction` as `ambiguous` or `covered_low_confidence`, with secondary `competitor_pressure`. This is intentionally unresolved after the primary three sessions so the re-plan trigger can fire.
 
 ### P-003: Slipping Deal Champion
 
@@ -620,9 +620,18 @@ Use three primary personas in the live demo. Keep additional personas as test da
 - Context lookup result: trial account reached report-builder and invited finance user.
 - Desired Methodic outcome: contrast case for `aha_moment_reached = yes`.
 
-### P-005: Lost Deal Technical Evaluator - reserve persona
+### P-005: Slipping Deal Procurement Stakeholder - reserve re-plan persona
 
-- Segment: lost_deal_champion.
+- Segment: slipping_deal_procurement.
+- Role: Procurement Lead.
+- Initial answer: "The evaluation got stuck after the business case review."
+- Underlying reason: procurement required vendor consolidation and could not justify adding another vendor without stronger ROI evidence.
+- Context lookup result: CRM notes show vendor-consolidation objection and no procurement-approved exception.
+- Desired Methodic outcome: resolve `procurement_friction` to `high` with secondary `unclear_roi`. This persona is held in reserve and is only fielded when `procurement_friction` remains ambiguous after P-001, P-002, and P-003.
+
+### P-006: Lost Deal Technical Evaluator - test-only persona
+
+- Segment: lost_deal_technical_evaluator.
 - Role: IT Architect.
 - Initial answer: "It was not enterprise-ready."
 - Underlying reason: SSO and audit logging concerns.
@@ -647,6 +656,12 @@ Expected baseline flaws:
 - Cannot ask follow-up questions.
 - Does not link structured categories to evidence.
 - Cannot use approved context to ask sharper questions.
+
+Prototype commitment:
+
+- Build a thin static-form UI/path using the same fixture participants as Methodic.
+- Store static answers through the same schema and quality rubric, with missing or ambiguous fields marked explicitly.
+- Do not compare Methodic against a hand-authored "bad JSON" fixture only. If the static path is reduced to a fixture for time reasons, label it as a reference fixture and stop calling the delta a measured comparison.
 
 ## Metrics
 

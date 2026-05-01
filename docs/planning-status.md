@@ -1,6 +1,6 @@
 # Methodic Planning Status
 
-Status as of 2026-05-01 15:20 UTC. This is a planning-only snapshot for the operator, Gemini, Claude, and Codex. It does not authorize implementation work.
+Status as of 2026-05-01 22:55 BST. This is a planning-only snapshot for the operator, Gemini, Claude, and Codex. It does not authorize implementation work.
 
 ## Current State
 
@@ -10,7 +10,7 @@ Status as of 2026-05-01 15:20 UTC. This is a planning-only snapshot for the oper
 - `docs/delivery-plan.md` now expands the vertical slice into proof beats, delivery gates, and future work packages.
 - Gemini completed a planning review with `ship-with-changes`; its findings have been reconciled into the docs.
 - Gemini completed a judge-story pass; its 5-scene sequence and narrative risks have been reconciled into the vertical slice.
-- Claude is blocked by credits and should review the combined vertical slice plus delivery plan when available.
+- Claude completed the combined adversarial review with `ship-with-changes` and `HOLD`; its Blockers and key Majors have been reconciled into the planning docs, but build-go still requires operator approval or a re-review.
 
 ## Locked Decisions
 
@@ -34,19 +34,19 @@ Status as of 2026-05-01 15:20 UTC. This is a planning-only snapshot for the oper
 
 ## Mission Task Status
 
-- Done: Gemini vertical-slice draft, Codex technical review, Gemini delivery-plan review, Gemini judge-story pass.
+- Done: Gemini vertical-slice draft, Codex technical review, Gemini delivery-plan review, Gemini judge-story pass, Claude combined adversarial review.
 - Done in this planning pass: Codex planning hygiene and draft implementation skeletons.
 - Done in this planning pass: Codex reconciliation of Gemini judge-story pass.
-- Open for Claude: `388eed0b-91af-406b-8557-d73bc581a2b1` - combined adversarial review of vertical slice and delivery plan.
+- Done for Claude: `388eed0b-91af-406b-8557-d73bc581a2b1` - combined adversarial review of vertical slice and delivery plan returned `ship-with-changes` / `HOLD`.
 - Duplicate older Claude task: `2584fe9c-5749-49f0-a9da-efae4f045a8d` reviews only the vertical slice. The combined task supersedes it; operator can close or ignore the older task.
 
 ## Open Risks
 
-- **Planning review risk**: Claude may find a blocker in sequencing, feasibility, or story clarity.
+- **Planning review risk**: Claude found blockers once; after reconciliation, operator should either request a focused re-review or explicitly waive it before build-go.
 - **Demo density risk**: B1-B9 may be too much for 3-4 minutes; the current mitigation is the 5-scene sequence in `docs/judge-storyboard.md`, with question generation and guardrails compressed.
 - **Readability risk**: the static-vs-Methodic split-screen can become text-heavy; highlight/zoom the Methodic follow-up and MCP trace.
-- **Re-plan clarity risk**: re-plan looks random unless `procurement_friction: ambiguous` is visibly marked before the trigger.
-- **ADK/MCP deployment risk**: Cloud Run deployment must use deployment-safe ADK structure, MCP tool filtering, explicit timeouts, and traceable fallback.
+- **Re-plan clarity risk**: re-plan looks random unless `procurement_friction: ambiguous` is visibly marked after P-001/P-002/P-003 and P-005 is clearly introduced as the targeted procurement reserve.
+- **ADK/MCP deployment risk**: Cloud Run deployment must use deployment-safe ADK structure, MCP tool filtering, explicit timeouts, traceable fallback, and a pre-proved BigQuery write path.
 - **Quality scoring risk**: Coverage states must be deterministic enough for the demo without pretending to prove statistical representativeness.
 - **BigQuery export risk**: The spec guarantees a real BigQuery structured export; this must remain a first-class deployment acceptance item.
 
@@ -57,8 +57,8 @@ Do not open build tasks until all of these are true:
 1. `docs/spec.md`, `docs/methodic-vertical-slice.md`, and `docs/delivery-plan.md` stay aligned on the win-loss wedge.
 2. Gemini's planning findings remain reconciled: schema precedes fixtures, guardrail recovery is included, reserve re-plan participant is required, and external request is an HTTP payload or honestly labeled endpoint stub.
 3. Gemini's judge-story pass is complete and reconciled, or explicitly waived by the operator.
-4. Claude's combined adversarial review is complete or explicitly waived by the operator due to credits/timing.
-5. Any Blocker findings are resolved in docs.
+4. Claude's combined adversarial review Blockers remain reconciled in docs: canonical schema uses `docs/spec.md`, and the re-plan path uses P-001/P-002/P-003 ambiguity plus P-005 reserve procurement resolution.
+5. Operator explicitly grants build-go or requests/receives a focused re-review confirming Blockers are resolved.
 6. `docs/build-go-checklist.md` is satisfied.
 7. Future implementation tasks are opened from `docs/implementation-task-skeletons.md`, not improvised from memory.
 

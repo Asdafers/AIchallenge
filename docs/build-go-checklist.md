@@ -5,12 +5,15 @@ This checklist is for the operator after Claude's combined adversarial review. I
 ## Before Opening Build Tasks
 
 - [ ] Claude completed `388eed0b-91af-406b-8557-d73bc581a2b1`, or the operator explicitly waived Claude review.
+- [ ] Claude's Blockers are reconciled in docs: canonical schema uses `docs/spec.md`; P-001/P-002/P-003 leave `procurement_friction` ambiguous; P-005 resolves the targeted procurement re-plan.
 - [ ] The older duplicate Claude task `2584fe9c-5749-49f0-a9da-efae4f045a8d` is closed, ignored, or clearly superseded.
 - [ ] Any Claude `Blocker` findings are resolved in docs.
 - [ ] Any accepted `Major` findings are either resolved or assigned to a concrete future task.
 - [ ] `docs/spec.md`, `docs/methodic-vertical-slice.md`, `docs/delivery-plan.md`, and `docs/judge-storyboard.md` agree on the B2B SaaS win-loss wedge.
 - [ ] The final demo still includes all proof beats B1-B9 or intentionally documents what is narrated instead of shown.
 - [ ] BigQuery remains a real structured export requirement.
+- [ ] BigQuery setup is scheduled before Cloud Run deployment and has its own WP9a task.
+- [ ] Gemini model choice and latency/quality budget are scheduled before agent-flow implementation.
 - [ ] A2A is described honestly as either real endpoint support or an A2A-pattern HTTP request, not production A2A compliance unless actually implemented.
 - [ ] Statistical claims are limited to operational and qualitative data-quality improvement unless stronger evidence is added.
 - [ ] The repo has a clean committed planning baseline.
@@ -29,8 +32,9 @@ Recommended opening order:
 6. WP6: MCP Context Lookup.
 7. WP7: Data Quality Layer.
 8. WP8: Autonomous Re-Plan.
-9. WP9: Cloud Run Deployment And Demo Trace.
-10. WP10: Submission Package.
+9. WP9a: BigQuery Export Setup.
+10. WP9: Cloud Run Deployment And Demo Trace.
+11. WP10: Submission Package.
 
 Do not open all WP tasks at once unless the operator explicitly wants a broad parallel build. Prefer opening WP1-WP2 first, then using their outputs to refine downstream tasks.
 

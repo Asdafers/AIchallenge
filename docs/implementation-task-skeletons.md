@@ -18,9 +18,9 @@ Task body:
 
 > DO NOT CLAIM UNTIL BUILD-GO.
 >
-> Implement the planning-approved study schema and quality rubric as repo artifacts. Define required variables, coverage states, guardrail event types, quality scoring rubric, static-survey baseline fields, BigQuery-ready table schema, and export examples for the B2B SaaS win-loss study.
+> Implement the planning-approved study schema and quality rubric as repo artifacts. Use `docs/spec.md` `Data Schema -> Participant Response` as canonical. Define coverage states, guardrail event types, quality scoring rubric, static-form baseline fields, BigQuery-ready table schema, and export examples for the B2B SaaS win-loss study.
 >
-> Acceptance: every question, fixture, guardrail event, dashboard metric, and export field maps to a documented field. Include example records for static baseline, Methodic output, guardrail event, and BigQuery export row.
+> Acceptance: every question, fixture, guardrail event, dashboard metric, and export field maps to a canonical field. Include example records for static baseline, Methodic output, guardrail event, and BigQuery export row. No parallel field names may remain in implementation docs.
 >
 > Verification: provide a schema validation command or documented manual check that validates all examples.
 
@@ -36,7 +36,7 @@ Task body:
 
 > DO NOT CLAIM UNTIL BUILD-GO.
 >
-> Create the minimal app scaffold and deterministic fixture data from the locked schema. Include HTTP `request_study` payload fixture, three primary participant fixtures, one reserve re-plan participant fixture, CRM/telemetry fixture, and static survey baseline fixture.
+> Create the minimal app scaffold and deterministic fixture data from the locked schema. Include HTTP `request_study` payload fixture, P-001/P-002/P-003 primary participant fixtures that leave `procurement_friction` ambiguous after three sessions, P-005 procurement reserve fixture, CRM/telemetry fixture, and static-form baseline fixture.
 >
 > Acceptance: fixture data can drive the whole demo without live customer data and without inventing fields outside the schema.
 >
@@ -72,9 +72,9 @@ Task body:
 
 > DO NOT CLAIM UNTIL BUILD-GO.
 >
-> Build methodology pushback and question-design review package for the win-loss study. The champion-only sample must trigger a concrete correction tied to the pricing/ROI decision. Produce sample revision, question pool, question-to-variable map, risk notes, and approval view.
+> Build methodology pushback and question-design review package for the win-loss study. The champion-only sample must trigger a live Gemini-generated correction tied to the pricing/ROI decision, with deterministic fallback only. Produce sample revision, question pool, question-to-variable map, risk notes, and approval view.
 >
-> Acceptance: biased sample plan triggers the expected correction; every question maps to a variable or hypothesis.
+> Acceptance: biased sample plan triggers the expected Gemini-generated correction; every question maps to a variable or hypothesis.
 >
 > Verification: deterministic fixture test or documented manual demo path proves the rule fires.
 
@@ -90,7 +90,7 @@ Task body:
 
 > DO NOT CLAIM UNTIL BUILD-GO.
 >
-> Build the participant conversation loop before MCP integration. Preserve measurement intent, probe vague answers, stop probing variables at approved thresholds, capture transcript, and log one guardrail recovery for misunderstanding, contradiction, or frustration.
+> Build the participant conversation loop before MCP integration. Select and document Gemini model/latency budget for participant turns. Preserve measurement intent, probe vague answers, stop probing variables at approved thresholds, capture transcript, and log one guardrail recovery for misunderstanding, contradiction, or frustration.
 >
 > Acceptance: three fixture participants produce different paths; one guardrail event is logged without forcing a category.
 >
@@ -126,9 +126,9 @@ Task body:
 
 > DO NOT CLAIM UNTIL BUILD-GO.
 >
-> Build the Data Quality Layer: coverage scoring, ambiguity detection, evidence linking, quality metadata, JSON/CSV export, and BigQuery-ready table schema output.
+> Build the Data Quality Layer: coverage scoring, ambiguity detection, evidence linking, quality metadata, thin static-form baseline comparison, JSON/CSV export, and BigQuery-ready table schema output.
 >
-> Acceptance: static baseline and Methodic sessions are scored by the same rubric and show a measurable quality delta without over-claiming statistical rigor.
+> Acceptance: static-form baseline and Methodic sessions are scored by the same rubric and show a measurable quality delta without over-claiming statistical rigor. If the static path is reduced to fixtures, label it as a reference fixture and stop calling the delta measured.
 >
 > Verification: comparison fixture shows lower ambiguity and higher evidence-link coverage for Methodic.
 
@@ -144,9 +144,9 @@ Task body:
 
 > DO NOT CLAIM UNTIL BUILD-GO.
 >
-> Implement the autonomous re-plan trigger. If `procurement_friction` remains `ambiguous` after three sessions, add exactly one targeted reserve participant and explain the rationale.
+> Implement the autonomous re-plan trigger. If `procurement_friction` remains `ambiguous` after P-001/P-002/P-003, add exactly one targeted P-005 procurement reserve participant and explain the rationale.
 >
-> Acceptance: unresolved coverage triggers one extra targeted participant and records the final variable state.
+> Acceptance: unresolved coverage triggers one P-005 procurement session and records the final variable state.
 >
 > Verification: local E2E run records re-plan decision, added participant, and resulting coverage state.
 
@@ -154,7 +154,7 @@ Task body:
 
 **Requested assignee**: Codex  
 **Priority**: high  
-**Depends on**: WP3, WP6, WP7, WP8  
+**Depends on**: WP3, WP6, WP7, WP8, WP9a  
 **Proof beats**: B8  
 **Gate served**: G8 Cloud proof
 
@@ -167,6 +167,26 @@ Task body:
 > Acceptance: deployed service can create session, run ADK agent, call MCP, persist data, export results, and write at least one structured row to BigQuery.
 >
 > Verification: Cloud Run smoke checklist passes against the live URL and confirms the BigQuery row.
+
+## WP9a: BigQuery Export Setup
+
+**Requested assignee**: Codex  
+**Priority**: high  
+**Depends on**: WP1, WP7  
+**Proof beats**: B7, B8  
+**Gate served**: G8 Cloud proof
+
+Task body:
+
+> DO NOT CLAIM UNTIL BUILD-GO.
+>
+> Set up BigQuery export before Cloud Run deployment. Create dataset/table, document IAM/service-account needs, implement local write path, and write one fixture row using the canonical schema.
+>
+> Acceptance: local code writes at least one structured row to the canonical BigQuery table before Cloud Run deploy starts.
+>
+> Verification: command or documented check confirms the row exists in BigQuery.
+
+Open WP9a before WP9; WP9 depends on WP9a even though the numbering keeps Cloud Run as the main deployment package.
 
 ## WP10: Submission Package
 
