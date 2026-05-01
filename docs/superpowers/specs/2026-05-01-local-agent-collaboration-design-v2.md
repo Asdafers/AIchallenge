@@ -276,3 +276,7 @@ Concrete fallback trigger: by 2026-05-08, evaluate against the acceptance criter
 - **Strategy seed content.** The initial `aichallenge` strategy JSON is decided in plan Task 6. Proposed shape mirrors `docs/winning-strategy.md` so linkage paragraphs cite stable section keys.
 - **Task event retention.** `mission_task_events` will accumulate indefinitely. For sprint scope, no retention policy. Revisit if the table grows unwieldy.
 - **Multi-instance same-model identity.** `claimer_id` carries a 4-char suffix to disambiguate concurrent same-model sessions. If concurrency increases beyond a few sessions, consider a registration tool that mints unique ids server-side.
+
+## Historical artifacts
+
+The v1 plan (`docs/superpowers/plans/2026-05-01-mission-initialization.md`) was deleted on 2026-05-01: it contained a plaintext dev DSN in a script that was never executed, and its approach (direct asyncpg writes bypassing the MCP) is contradicted by the v2 design above. The v1 design (`docs/superpowers/specs/2026-05-01-local-agent-collaboration-design.md`) remains in git as the historical record of what we superseded; the four problems it surfaced are summarised at the top of this document under "What changed from v1."
