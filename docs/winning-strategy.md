@@ -104,11 +104,9 @@ Runs participant conversations from the approved plan. Each survey agent can per
 
 ### Data Quality Agent
 
-Normalizes responses, scores quality, detects contradictions, links evidence, and exports structured data.
+Normalizes responses, scores quality, detects contradictions, links evidence, exports structured data, and triggers one autonomous re-plan when coverage remains insufficient.
 
-### Sampling Plan Agent
-
-Creates quota, segment, and sample-size guidance. This can be a separate agent in the demo if it makes the methodology pushback clearer, or a capability inside the Methodology Agent if implementation time is tight.
+Sampling and quota guidance belongs inside the Methodology Agent for the prototype. A separate Sampling Plan Agent makes the architecture look like a chain of named prompts instead of a coherent agent system.
 
 ## MCP and Google Stack
 
@@ -117,19 +115,17 @@ Use MCP to make the agentic behavior visible and credible:
 - Context lookup MCP: approved product, CRM, or event context for sharper participant conversations.
 - Research grounding MCP: methodology references or internal research standards.
 - Storage/export MCP: write clean datasets and evidence metadata to the chosen store.
-- Analytics handoff MCP: export to BigQuery or a BI-ready format.
 
 Use Google Cloud alignment as a proof point:
 
 - Gemini for organizer, methodology, participant, and quality reasoning.
 - ADK for orchestration and agent handoffs, especially `SequentialAgent`, `ParallelAgent`, and `LoopAgent` patterns where they match the workflow.
 - Cloud Run for the first deployable prototype.
-- BigQuery for the clean output dataset.
-- Vertex AI Search or another approved grounding path for research-methodology context.
-- Vertex AI Agent Engine Sessions for session history if we deploy through Agent Engine.
-- Vertex AI Agent Engine Memory Bank for organizer preferences only if the current preview status and setup fit the timeline.
+- BigQuery for the clean output dataset. Do not mock this if avoidable.
+- A real MCP server boundary for at least one context lookup tool, even if it returns canned demo data.
+- Vertex AI Search or another approved grounding path for research-methodology context if time allows.
 
-Before implementation, verify current Google product names, recommended Gemini model, A2A status, and ADK/Agent Engine details against the latest official docs. Current quick verification confirms ADK workflow agents include `SequentialAgent`, `ParallelAgent`, and `LoopAgent`; Agent Engine Sessions and Memory Bank exist, but Memory Bank is documented as preview in the checked Google Cloud docs.
+Before implementation, verify current Google product names, recommended Gemini model, A2A status, and ADK details against the latest official docs. Current quick verification confirms ADK workflow agents include `SequentialAgent`, `ParallelAgent`, and `LoopAgent`.
 
 ## Demo Narrative
 
@@ -138,16 +134,18 @@ Recommended scenario: a B2B SaaS company wants to understand why mid-market ente
 Three-to-five minute demo:
 
 1. A mocked Sales Insights agent requests a win-loss study from Methodic because mid-market deals are slipping.
-2. Organizer Agent confirms the business decision, audience, constraints, and required outputs.
-3. Methodology Agent pushes back on a weak plan, such as only interviewing product champions when the pricing decision requires economic buyers.
-4. Question Design Agent builds the question pool and maps every question to a decision-critical variable.
-5. Review and Visualization Agent shows a polished study map for approval.
-6. Split-screen participant demo:
+2. Methodic asks one clarifying question back before accepting the task.
+3. Organizer Agent confirms the business decision, audience, constraints, and required outputs.
+4. Methodology Agent pushes back on a weak plan, such as only interviewing product champions when the pricing decision requires economic buyers, and cites the methodology basis.
+5. Question Design Agent builds the question pool and maps every question to a decision-critical variable.
+6. Review and Visualization Agent shows a polished study map for approval.
+7. Participant demo:
    - Static survey captures "price" and stops.
    - Methodic asks whether price means budget timing, perceived ROI, procurement friction, competitor comparison, or missing enterprise controls.
    - The Survey Agent uses MCP to check approved telemetry or CRM context and asks a sharper, grounded follow-up.
-7. Data Quality Agent exports structured records showing that vague "price" answers were clarified into actionable categories.
-8. Methodic returns the result to the requesting agent and writes clean evidence-linked data to BigQuery or a BI-ready export.
+8. Coverage remains insufficient for one variable, so Methodic adds one targeted participant session.
+9. Data Quality Agent exports structured records showing that vague "price" answers were clarified into actionable categories.
+10. Methodic returns the result to the requesting agent and writes clean evidence-linked data to BigQuery.
 
 The final screen should show:
 
@@ -180,14 +178,14 @@ Make the demo visual, concrete, and comparative. Judges should see the differenc
 
 1. Variable saturation logic for required fields.
 2. Methodology-agent pushback patterns for sampling, leading questions, cognitive overload, and double-barreled questions.
-3. MCP triangulation during a participant conversation.
-4. Static survey versus agentic conversation comparison.
-5. Visual study review package.
-6. Evidence-linked structured output.
-7. Data quality scoring with ambiguity, confidence, coverage, and provenance.
-8. Simulated participant pool.
+3. Autonomous re-plan when coverage remains insufficient.
+4. Real MCP server boundary for one triangulation during a participant conversation.
+5. Static survey versus agentic conversation comparison.
+6. Visual study review package.
+7. Evidence-linked structured output.
+8. Data quality scoring with ambiguity, confidence, coverage, and provenance.
 9. Developer trace view for agent handoffs, MCP calls, and agent request flow.
-10. Cloud Run deployment plus BigQuery or BI-ready export.
+10. Cloud Run deployment plus real BigQuery export.
 
 ## Scope Cuts
 

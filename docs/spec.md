@@ -49,7 +49,7 @@ Why this wedge:
 
 Primary buyer:
 
-- Head of Research Operations, customer insights, revenue operations, or product research at a B2B SaaS company.
+- Head of Research Operations at a 200-2000 employee B2B SaaS company.
 
 Secondary users:
 
@@ -67,7 +67,7 @@ The demo must prove four things:
 3. Methodic is technically aligned with the Google agent stack.
 4. Methodic has a clear B2B business case.
 
-## The Three Agentic Proof Beats
+## The Five Agentic Proof Beats
 
 ### Beat 1: External Agent Request
 
@@ -156,6 +156,19 @@ Minimum proof:
 
 This can be implemented deterministically for the prototype. The important thing is visual proof that Methodic is pursuing measurement coverage, not simply running a chat transcript to completion.
 
+### Beat 5: Autonomous Re-Plan
+
+The demo should include one visible decision where Methodic changes its plan based on collected evidence.
+
+Preferred re-plan:
+
+1. After three participant sessions, Methodic sees `procurement_friction` remains `ambiguous` and the saturation curve has not flattened for that variable.
+2. Methodic explains the gap: the current sample has champions but not enough economic buyers or technical evaluators to resolve procurement friction.
+3. Methodic adds one more participant session from the relevant segment.
+4. The additional session resolves the variable or marks it unresolved with a caveat.
+
+This is the highest-value anti-"AI survey" beat. Static survey tools can collect answers; Methodic can inspect coverage, decide the plan is insufficient, and field one more targeted session.
+
 ## Demo Script
 
 Target length: 3-4 minutes.
@@ -178,6 +191,8 @@ Spoken framing:
 Show a developer panel or compact event card:
 
 - Sales Insights agent sends `request_study`.
+- Methodic asks one clarifying question back.
+- Sales Insights agent answers.
 - Methodic accepts the task.
 - The organizer can review and refine the request.
 
@@ -239,6 +254,7 @@ Show results:
 - Confidence by variable.
 - Evidence-linked structured fields.
 - Coverage or saturation curve.
+- Autonomous re-plan: one unresolved variable triggers one additional targeted participant session.
 
 Example result:
 
@@ -372,33 +388,6 @@ Output:
       "causal"
     ]
   }
-}
-```
-
-### Sampling Plan Agent
-
-Input:
-
-- Methodology review.
-- Target audience.
-
-Responsibilities:
-
-- Propose practical demo quotas.
-- Ensure economic buyer and champion contrast.
-- Explain caveats.
-
-Output:
-
-```json
-{
-  "segments": [
-    {"name": "lost_deal_economic_buyer", "demo_n": 2},
-    {"name": "lost_deal_champion", "demo_n": 2},
-    {"name": "slipping_deal_champion", "demo_n": 1},
-    {"name": "recent_win_economic_buyer", "demo_n": 1}
-  ],
-  "claim_caveat": "Demo sample supports workflow proof and directional evidence, not statistical representativeness."
 }
 ```
 
@@ -593,6 +582,8 @@ Output:
 
 ## Participant Personas
 
+Use three primary personas in the live demo. Keep additional personas as test data only.
+
 ### P-001: Lost Deal Economic Buyer
 
 - Segment: lost_deal_economic_buyer.
@@ -629,7 +620,7 @@ Output:
 - Context lookup result: trial account reached report-builder and invited finance user.
 - Desired Methodic outcome: contrast case for `aha_moment_reached = yes`.
 
-### P-005: Lost Deal Technical Evaluator
+### P-005: Lost Deal Technical Evaluator - reserve persona
 
 - Segment: lost_deal_champion.
 - Role: IT Architect.
@@ -711,7 +702,7 @@ Minimal service responsibilities:
 
 Preferred ADK shape:
 
-- `SequentialAgent`: Organizer -> Methodology -> Sampling -> Question Design -> Review.
+- `SequentialAgent`: Organizer -> Methodology -> Question Design -> Review.
 - `ParallelAgent`: participant survey sessions.
 - `LoopAgent` or bounded equivalent: variable coverage and saturation checks.
 
@@ -732,21 +723,31 @@ Prototype tools:
 - `trial_telemetry_lookup`: returns approved product-usage summary.
 - `dataset_export`: writes structured data to JSON and optionally BigQuery.
 
-The demo only needs one memorable MCP triangulation moment.
+The demo only needs one memorable MCP triangulation moment, but it should use a real MCP server boundary even if the server returns canned data. The developer overlay should show the tool call, input summary, and output summary.
+
+### A2A-Style Request
+
+The ideal prototype has a small real A2A endpoint or the closest practical implementation of the current protocol. If full compliance is not implemented, label it honestly as an A2A-pattern request over prototype HTTP rather than implying production A2A support.
+
+The demo must still show:
+
+- Requesting agent identity.
+- Methodic clarification request.
+- Task acceptance.
+- Task completion response.
 
 ### Google Cloud
 
 Guaranteed for the prototype:
 
 - Cloud Run deployment.
-- BigQuery structured export, or a BigQuery-compatible export with documented table schema if live BigQuery setup becomes a blocker.
+- Real BigQuery structured export.
 
 Strongly preferred if feasible:
 
 - Vertex AI Search or equivalent methodology grounding.
-- Agent Engine Sessions if the deployed path supports it within timeline.
 
-Use Memory Bank only if it is easy and stable enough; current docs indicate preview status.
+Drop Agent Engine Sessions and Memory Bank from the prototype commitment unless they become necessary during implementation. They are not required to win the first vertical slice and add avoidable preview/dependency risk.
 
 The architecture diagram and developer overlay must make the governed data flow visible:
 
@@ -755,7 +756,7 @@ The architecture diagram and developer overlay must make the governed data flow 
 3. Structured extraction.
 4. Evidence links.
 5. Quality scores.
-6. BigQuery or BI-ready export.
+6. BigQuery export.
 7. Completion response to requesting agent.
 
 ### Guardrails And Failure Handling
@@ -812,6 +813,7 @@ Cut from first prototype:
 - [ ] Validate required variables.
 - [ ] Validate static survey baseline.
 - [ ] Validate participant personas.
+- [ ] Validate Head of Research Operations as the primary buyer.
 
 ### Prototype
 
@@ -825,11 +827,14 @@ Cut from first prototype:
 - [ ] Methodic participant conversation.
 - [ ] MCP triangulation event.
 - [ ] Per-variable stop-state view.
+- [ ] Autonomous re-plan event.
 - [ ] Structured response output.
 - [ ] Data quality summary.
 - [ ] Guardrail example for misunderstanding, contradiction, or frustration.
 - [ ] Developer overlay.
-- [ ] Export to BigQuery or BigQuery-compatible schema.
+- [ ] Real BigQuery export.
+- [ ] Real MCP server boundary for at least one tool.
+- [ ] Real or honestly labeled A2A-style endpoint.
 
 ### Submission
 
@@ -839,6 +844,7 @@ Cut from first prototype:
 - [ ] 3-4 minute video.
 - [ ] Devpost submission copy.
 - [ ] Source citations for methodology and business claims.
+- [ ] Competitor comparison: Methodic versus Outset, Strella, and Yabble on methodology grounding, MCP, agent interoperability, autonomous replanning, and governed export.
 
 ## Critique Prompt
 

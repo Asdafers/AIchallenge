@@ -25,18 +25,8 @@ Responsibilities:
 - Identify sampling and segmentation requirements.
 - Flag bias, leading-question risks, and measurement validity issues.
 - Suggest confidence, sample-size, and coverage considerations.
+- Recommend practical segment quotas for the demo scenario.
 - Explain tradeoffs in plain language.
-
-### Sampling Plan Agent
-
-Creates practical sampling and quota guidance for the study.
-
-Responsibilities:
-
-- Identify which participant segments are required to support the business decision.
-- Flag sample plans that over-represent convenient or biased respondents.
-- Recommend quota targets for the demo scenario.
-- Explain when the prototype should avoid representativeness claims.
 
 ### Question Design Agent
 
@@ -84,6 +74,7 @@ Responsibilities:
 - Normalize outputs to the target schema.
 - Attach quality scores and provenance.
 - Recommend re-contact or exclusion where appropriate.
+- Trigger one autonomous re-plan when variable coverage remains insufficient.
 
 ### External Requesting Agent
 
@@ -104,6 +95,7 @@ Responsibilities:
 - Firestore or Cloud SQL for study configuration and response storage.
 - BigQuery for structured output and analytics demo.
 - Vertex AI Search or Google Search grounding for methodology and market/context research.
+- A real MCP server boundary for at least one context lookup tool.
 
 ## Data Flow
 
@@ -111,15 +103,16 @@ Responsibilities:
 2. Optionally, an external agent submits the request as a structured task.
 3. Organizer Agent builds a research brief through dialogue.
 4. Methodology Agent validates measurement approach and flags risks.
-5. Sampling Plan Agent proposes segments and quotas.
+5. Methodology Agent proposes segments and quotas.
 6. Question Design Agent creates the question pool and schema.
 7. Review and Visualization Agent prepares the approval package.
 8. Organizer approves or edits.
 9. Survey Agent Pool interviews participants.
 10. Survey Agent uses MCP to triangulate one approved business-context claim.
 11. Data Quality Agent validates and normalizes responses.
-12. System exports clean data, metadata, and traceable evidence.
-13. System returns a structured completion to the requesting agent or organizer.
+12. If coverage remains insufficient, Methodic adds one targeted participant session.
+13. System exports clean data, metadata, and traceable evidence.
+14. System returns a structured completion to the requesting agent or organizer.
 
 ## Demo Boundary
 
@@ -131,6 +124,7 @@ For a challenge prototype, the strongest demo is a complete vertical slice:
 - Conversational survey sessions.
 - One external-agent request.
 - One MCP triangulation moment.
+- One autonomous re-plan moment.
 - Clean structured dataset output.
 - Visual review page.
 - Final quality report comparing static-form data against agent-captured data.

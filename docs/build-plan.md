@@ -31,6 +31,7 @@ Deliverables:
 - Success metrics.
 - Mocked external-agent request.
 - Mocked CRM or telemetry context for one triangulation moment.
+- Autonomous re-plan condition.
 
 ## Phase 2: Build the Organizer Flow
 
@@ -44,6 +45,7 @@ Capabilities:
 - Schema generation.
 - Risk and bias review.
 - Methodology pushback when the requested design would not support the decision.
+- Sampling and quota guidance inside Methodology Agent.
 - Visual approval summary.
 
 Demo requirement:
@@ -79,6 +81,7 @@ Capabilities:
 - Contradiction detection.
 - Evidence linking from structured field to participant quote.
 - Saturation or coverage curve.
+- Autonomous re-plan when coverage remains insufficient.
 - Optional coding-agreement metric if implemented honestly.
 
 Demo requirement:
@@ -108,9 +111,9 @@ Likely first implementation:
 - Web app for organizer and participant sessions.
 - Backend service for study state and agent orchestration.
 - Gemini-backed agents.
-- MCP tool boundary for research, storage, and export tools.
+- Real MCP server boundary for at least one context lookup tool.
 - Cloud Run deployment.
-- BigQuery or BI-ready export.
+- Real BigQuery export.
 
 Preferred ADK workflow shape:
 
@@ -126,4 +129,5 @@ Preferred ADK workflow shape:
 4. Draft the participant conversation policy.
 5. Define the methodology pushback rules.
 6. Define the MCP triangulation tool contract.
-7. Build a clickable prototype or thin vertical slice.
+7. Define the autonomous re-plan trigger.
+8. Build a clickable prototype or thin vertical slice.
