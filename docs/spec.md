@@ -285,7 +285,7 @@ Rubric served:
 
 Show:
 
-- BigQuery or BI-ready output table.
+- BigQuery structured output table.
 - Methodic returns structured completion to the requesting Sales Insights agent.
 - Developer overlay shows agent handoffs and tool calls.
 
@@ -736,7 +736,7 @@ Prototype tools:
 
 - `crm_context_lookup`: returns participant segment, deal stage, notes summary.
 - `trial_telemetry_lookup`: returns approved product-usage summary.
-- `dataset_export`: writes structured data to JSON and optionally BigQuery.
+- `dataset_export`: writes structured data to JSON/CSV locally and to BigQuery for the deployed demo.
 
 The demo only needs one memorable MCP triangulation moment, but it should use a real MCP server boundary even if the server returns canned data. The developer overlay should show the tool call, input summary, and output summary.
 
