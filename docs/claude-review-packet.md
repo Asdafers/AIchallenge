@@ -36,6 +36,7 @@ Optional context:
 - The plan requires a reserve participant fixture for autonomous re-plan.
 - The external Sales Insights request is now an HTTP `request_study` payload or honestly labeled endpoint stub.
 - BigQuery is now explicit as a real structured export requirement, not only JSON/CSV.
+- A2A compliance and statistical representativeness claims have been scoped down to honest HTTP stubs and operational quality metrics.
 - Gemini's judge-story pass compressed the video into five scenes:
   1. Hook and problem.
   2. Agentic planning and methodology pushback.
