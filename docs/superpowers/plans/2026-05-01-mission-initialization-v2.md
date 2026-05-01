@@ -1,9 +1,38 @@
 # Mission Initialization — Implementation Plan v2 (Path M)
 
 > Supersedes `2026-05-01-mission-initialization.md`.
-> Date: 2026-05-01. Status: Proposed.
+> Date: 2026-05-01. Status: **Executed 2026-05-01 — harness live.**
 > Pairs with: `docs/superpowers/specs/2026-05-01-local-agent-collaboration-design-v2.md`.
 > Mode: **Path M (MCP-native)** — extends the upstream MCP server to support multi-agent claims rather than working around its current schema.
+
+## Execution status (2026-05-01)
+
+Tasks 1–11 executed end-to-end against the live brain DB and the running `email-calendar-agent-mission-control-1` container. The checkboxes below are left as the original plan; the status reflects actual outcomes.
+
+| Task                                              | Status | Artifact / SHA |
+| ------------------------------------------------- | :----: | -------------- |
+| 1. Back up the brain DB                           |   ✅   | `brain-backup-20260501T111257Z.dump` (164 MB) at `$TMPDIR` |
+| 2. Branch the upstream `email-calendar-agent` repo |   ✅   | branch `feat/mission-multi-agent-tasks`; rollback tag `pre-multi-agent` on `51c5fac` |
+| 3. Implement schema migration upstream            |   ✅   | `b4537f2` adds `brain/migrations/2026-05-01-mission-multi-agent.sql` |
+| 4. Implement new tool surface upstream            |   ✅   | `b4537f2` (initial) + `137454c` (project-filter fix-up on `update_mission_task`) |
+| 5. Test on the scratch DB end-to-end              |   ⚠️   | Skipped scratch DB; relied on backup + rehearsal-by-design + post-deploy smoke. |
+| 6. Deploy upstream changes to the live container  |   ✅   | Migration applied via host `psql`; container rebuilt from worktree with `docker compose -p email-calendar-agent up -d --no-deps --build mission-control`. 114 rows preserved (107 done / 7 open). |
+| 7. Mirror MCP config into Claude                  |   ✅   | `.claude/settings.json` mirrors `.gemini/settings.json` |
+| 8. Seed the `aichallenge` strategy via MCP        |   ✅   | `mission_strategy['aichallenge']` populated with 10 keys (track / codename / deadline / thesis / positioning / vertical_slice / stack_alignment / demo_must_show / non_goals / risks). `vertical_slice` deliberately TBD pending task #003. |
+| 9. File the first round of tasks via MCP          |   ✅   | 3 open tasks filed via `add_mission_task(project='aichallenge', ...)`: 001 Adversarial review (claude, blind=true), 002 Verify Codex transport (codex), 003 Draft Methodic vertical slice (gemini). |
+| 10. End-to-end verification                       |   ✅   | Smoke test `8e2bd22` — 12/12 PASS including the load-bearing CAS double-claim (`claimed=False, reason='already_claimed_by:smoke-test-1'`), wrong-claimer rejection, and fresh-claim break rejection. Operator dashboard reads still return correct `is_done` for all 114 preserved rows. |
+| 11. Commit AIchallenge-side artifacts             |   ✅   | AIchallenge `feat/multi-agent-harness-v2` commit `6e0b4c1` |
+
+**Branches not pushed.** `feat/mission-multi-agent-tasks` (3 commits: `b4537f2 → 137454c → 8e2bd22`) and `feat/multi-agent-harness-v2` (1 commit: `6e0b4c1`) exist locally only. Push when ready for durability.
+
+**Known follow-ups before the 2026-05-08 acceptance gate:**
+
+- The "blind review with structured output" criterion is not mechanically checkable; outcome string requires human inspection. Either define a JSON schema for review outcomes or accept human review.
+- The "60% of work that should have gone through the harness" criterion is a counterfactual; replace with a tracked numerator/denominator or drop.
+- `mission_strategy` table has no project ACL — the operator dashboard could surface the `aichallenge` strategy row visually. Verify by visual inspection of the dashboard.
+
+---
+
 
 > **For agentic workers:** REQUIRED SUB-SKILL — use `superpowers:executing-plans`. Steps use checkbox (`- [ ]`) syntax.
 
