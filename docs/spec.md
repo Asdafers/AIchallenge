@@ -93,6 +93,19 @@ Implementation note:
 - This can be a mocked A2A-style request in the prototype.
 - Do not overclaim full A2A production compliance until verified and implemented.
 - The goal is to show Methodic can be called by other agents, not only by humans.
+- To avoid this looking like a plain API call, Methodic should ask one clarifying question back before accepting or finalizing the task.
+
+Clarifying response example:
+
+```json
+{
+  "type": "clarification_request",
+  "from": "methodic",
+  "to": "sales_insights_agent",
+  "question": "Should the study optimize for packaging decisions, ROI-message decisions, or both? The participant mix differs.",
+  "options": ["packaging", "roi_messaging", "both"]
+}
+```
 
 ### Beat 2: Methodology Pushback
 
@@ -103,6 +116,12 @@ The Methodology Agent pushes back:
 > This sample is convenient but it cannot answer the pricing decision. Champions can explain product enthusiasm, but economic buyers decide budget and procurement. Recommend including economic buyers from lost and slipping deals, plus a smaller control group of recent wins. Do not claim representativeness from this sample; use it for decision-grade qualitative evidence and directional quantification.
 
 This proves the system pursues the research goal, not merely the user's initial instruction.
+
+Implementation note:
+
+- The pushback must be visibly derived from the research brief, target decision, and sample plan.
+- Avoid a canned one-line warning. Show the triggering condition, rationale, and concrete revision.
+- The demo can use deterministic critique rules, but the UI should make clear why the rule fired.
 
 ### Beat 3: MCP Triangulation During Participant Conversation
 
@@ -123,6 +142,19 @@ Methodic conversation:
 > "We never got to the report output. The champion liked the idea, but finance never saw proof."
 
 This proves tool use is bound to measurement intent. The agent is not chatting randomly; it is clarifying a decision-critical variable.
+
+### Beat 4: Stop Condition And Coverage Loop
+
+The demo must show how Methodic knows when to stop probing a participant or stop fielding more sessions.
+
+Minimum proof:
+
+- Required variables are visible.
+- Each variable has a state: `missing`, `ambiguous`, `covered_low_confidence`, or `covered_high_confidence`.
+- The Survey Agent stops probing a variable when it reaches the approved coverage threshold.
+- The Data Quality step shows a coverage or saturation curve for the study.
+
+This can be implemented deterministically for the prototype. The important thing is visual proof that Methodic is pursuing measurement coverage, not simply running a chat transcript to completion.
 
 ## Demo Script
 
@@ -462,6 +494,12 @@ Responsibilities:
 - Detect contradictions.
 - Prepare export.
 
+Implementation note:
+
+- Do not make Data Quality a heavyweight separate LLM step unless needed.
+- Prefer structured outputs from the Survey Agent plus deterministic validation scripts for coverage, ambiguity, evidence links, and export readiness.
+- Use an LLM only for the parts that genuinely need language judgment, such as contradiction review or theme naming.
+
 Output:
 
 ```json
@@ -629,6 +667,7 @@ Expected baseline flaws:
 - Mean field confidence.
 - Static survey vague-answer rate.
 - Static survey missing-variable rate.
+- Per-variable stop state: `missing`, `ambiguous`, `covered_low_confidence`, or `covered_high_confidence`.
 
 ### Optional Metrics
 
@@ -697,14 +736,58 @@ The demo only needs one memorable MCP triangulation moment.
 
 ### Google Cloud
 
-Target:
+Guaranteed for the prototype:
 
 - Cloud Run deployment.
-- BigQuery or BI-ready structured export.
-- Vertex AI Search or equivalent methodology grounding if feasible.
+- BigQuery structured export, or a BigQuery-compatible export with documented table schema if live BigQuery setup becomes a blocker.
+
+Strongly preferred if feasible:
+
+- Vertex AI Search or equivalent methodology grounding.
 - Agent Engine Sessions if the deployed path supports it within timeline.
 
 Use Memory Bank only if it is easy and stable enough; current docs indicate preview status.
+
+The architecture diagram and developer overlay must make the governed data flow visible:
+
+1. Approved study structure.
+2. Participant transcript.
+3. Structured extraction.
+4. Evidence links.
+5. Quality scores.
+6. BigQuery or BI-ready export.
+7. Completion response to requesting agent.
+
+### Guardrails And Failure Handling
+
+The demo should include at least one compact failure-handling example.
+
+Required cases to design for:
+
+- Participant misunderstands a question.
+- Participant gives contradictory information.
+- Participant becomes frustrated or disengaged.
+- Participant provides vague one-word answers.
+
+Expected behavior:
+
+- Rephrase once without changing measurement intent.
+- Ask one clarifying follow-up.
+- Mark unresolved ambiguity instead of forcing a category.
+- Respect participant frustration and end gracefully.
+- Log the guardrail event in the developer overlay.
+
+### Participant Engagement Assumption
+
+The business case depends on participants engaging with an AI interviewer. The submission should not assume that busy economic buyers will always complete long chats.
+
+Mitigation in product and pitch:
+
+- Keep participant sessions short and purpose-specific.
+- Make the value exchange clear in the invite.
+- Support asynchronous completion.
+- Use Methodic first where the company already has a relationship with the participant.
+- Treat engagement improvement as a hypothesis unless measured.
 
 ## Scope Cuts
 
@@ -741,10 +824,12 @@ Cut from first prototype:
 - [ ] Static survey baseline.
 - [ ] Methodic participant conversation.
 - [ ] MCP triangulation event.
+- [ ] Per-variable stop-state view.
 - [ ] Structured response output.
 - [ ] Data quality summary.
+- [ ] Guardrail example for misunderstanding, contradiction, or frustration.
 - [ ] Developer overlay.
-- [ ] Export to JSON or BigQuery.
+- [ ] Export to BigQuery or BigQuery-compatible schema.
 
 ### Submission
 
