@@ -1,0 +1,13 @@
+{
+  "deal_stage": "lost_deal",
+  "persona": "champion",
+  "trial_usage": {
+    "logins": 8,
+    "report_builder_reached": true
+  },
+  "crm_notes": [
+    "Security review completed with low residual concern.",
+    "Account exec note: competitor bundle proposed during procurement stage; champion lost visibility post-handoff.",
+    "Vendor consolidation flagged but no procurement-side detail confirmed."
+  ]
+}

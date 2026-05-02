@@ -1,0 +1,223 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://methodic.ai/schemas/participant-response.schema.json",
+  "title": "Participant Response",
+  "description": "Canonical Participant Response record (post-WP1). Source of truth: docs/spec.md > Data Schema > Participant Response, extended per docs/wp1-schema-reconciliation.md > Canonical Participant Response (post-WP1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "participant_id",
+    "study_id",
+    "segment",
+    "persona_summary",
+    "conversation_status",
+    "structured_fields",
+    "field_confidence",
+    "coverage_state",
+    "quality",
+    "evidence",
+    "unresolved_ambiguities"
+  ],
+  "properties": {
+    "participant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "study_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "segment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "persona_summary": {
+      "type": "string"
+    },
+    "conversation_status": {
+      "type": "string",
+      "enum": ["complete", "partial", "excluded", "static_form"]
+    },
+    "structured_fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_loss_reason",
+        "secondary_loss_reason",
+        "roi_clarity",
+        "budget_timing",
+        "procurement_friction",
+        "security_concern",
+        "competitor_pressure",
+        "aha_moment_reached"
+      ],
+      "properties": {
+        "primary_loss_reason": {
+          "type": "string",
+          "enum": [
+            "unclear_roi",
+            "budget_timing",
+            "procurement_friction",
+            "security_concern",
+            "competitor_pressure",
+            "missing_feature",
+            "economic_buyer_gap",
+            "other",
+            "unknown"
+          ]
+        },
+        "secondary_loss_reason": {
+          "type": ["string", "null"]
+        },
+        "roi_clarity": {
+          "type": "string",
+          "enum": ["clear", "partially_clear", "unclear", "unknown"]
+        },
+        "budget_timing": {
+          "type": "string",
+          "enum": ["in_cycle", "out_of_cycle", "unknown"]
+        },
+        "procurement_friction": {
+          "type": "string",
+          "enum": ["none", "low", "medium", "high", "unknown"]
+        },
+        "security_concern": {
+          "type": "string",
+          "enum": ["none", "low", "medium", "high", "unknown"]
+        },
+        "competitor_pressure": {
+          "type": "string",
+          "enum": ["none", "named_competitor", "unknown"]
+        },
+        "aha_moment_reached": {
+          "type": "string",
+          "enum": ["yes", "no", "unknown"]
+        }
+      }
+    },
+    "field_confidence": {
+      "type": "object",
+      "description": "Map of canonical variable_name -> confidence in [0.0, 1.0]. Keys are restricted to the Participant Response field set but may be sparse per record.",
+      "propertyNames": {
+        "enum": [
+          "primary_loss_reason",
+          "secondary_loss_reason",
+          "roi_clarity",
+          "budget_timing",
+          "procurement_friction",
+          "security_concern",
+          "competitor_pressure",
+          "aha_moment_reached"
+        ]
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0
+      }
+    },
+    "coverage_state": {
+      "type": "object",
+      "description": "Map of variable_name -> coverage state. Drives Beat 4 stop and Beat 5 re-plan triggers.",
+      "propertyNames": {
+        "enum": [
+          "primary_loss_reason",
+          "secondary_loss_reason",
+          "roi_clarity",
+          "budget_timing",
+          "procurement_friction",
+          "security_concern",
+          "competitor_pressure",
+          "aha_moment_reached"
+        ]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "enum": [
+          "missing",
+          "ambiguous",
+          "covered_low_confidence",
+          "covered_high_confidence"
+        ]
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variable_coverage",
+        "ambiguity_resolved",
+        "evidence_linked",
+        "requires_recontact"
+      ],
+      "properties": {
+        "variable_coverage": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "ambiguity_resolved": {
+          "type": "boolean"
+        },
+        "evidence_linked": {
+          "type": "boolean"
+        },
+        "requires_recontact": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "quote", "transcript_turn_id", "context_used"],
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "primary_loss_reason",
+              "secondary_loss_reason",
+              "roi_clarity",
+              "budget_timing",
+              "procurement_friction",
+              "security_concern",
+              "competitor_pressure",
+              "aha_moment_reached"
+            ]
+          },
+          "quote": {
+            "type": "string"
+          },
+          "transcript_turn_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "context_used": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "unresolved_ambiguities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "primary_loss_reason",
+          "secondary_loss_reason",
+          "roi_clarity",
+          "budget_timing",
+          "procurement_friction",
+          "security_concern",
+          "competitor_pressure",
+          "aha_moment_reached"
+        ]
+      }
+    }
+  }
+}

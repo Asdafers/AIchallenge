@@ -1,0 +1,45 @@
+{
+  "participant_id": "P-001",
+  "study_id": "WL-2026-Q2-MM",
+  "segment": "lost_deal_economic_buyer",
+  "persona_summary": "VP Finance at lost mid-market deal",
+  "conversation_status": "static_form",
+  "structured_fields": {
+    "primary_loss_reason": "unknown",
+    "secondary_loss_reason": null,
+    "roi_clarity": "unknown",
+    "budget_timing": "unknown",
+    "procurement_friction": "unknown",
+    "security_concern": "unknown",
+    "competitor_pressure": "unknown",
+    "aha_moment_reached": "unknown"
+  },
+  "field_confidence": {
+    "primary_loss_reason": 0.2
+  },
+  "coverage_state": {
+    "primary_loss_reason": "ambiguous",
+    "secondary_loss_reason": "missing",
+    "roi_clarity": "missing",
+    "budget_timing": "covered_low_confidence",
+    "procurement_friction": "missing",
+    "security_concern": "missing",
+    "competitor_pressure": "missing",
+    "aha_moment_reached": "missing"
+  },
+  "quality": {
+    "variable_coverage": 0.125,
+    "ambiguity_resolved": false,
+    "evidence_linked": false,
+    "requires_recontact": true
+  },
+  "evidence": [
+    {
+      "field": "primary_loss_reason",
+      "quote": "Price was too high.",
+      "transcript_turn_id": "STATIC-P-001-Q1",
+      "context_used": []
+    }
+  ],
+  "unresolved_ambiguities": ["primary_loss_reason"]
+}

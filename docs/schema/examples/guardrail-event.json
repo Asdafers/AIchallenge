@@ -1,0 +1,14 @@
+{
+  "event_id": "GE-2026-Q2-MM-001",
+  "study_id": "WL-2026-Q2-MM",
+  "participant_id": "P-002",
+  "event_type": "participant_vague_answer",
+  "trigger": {
+    "transcript_turn_id": "T-002-07",
+    "trigger_text": "Maybe. I'd be guessing — I wasn't in those conversations."
+  },
+  "action_taken": "mark_ambiguous",
+  "measurement_intent_preserved": true,
+  "variable_affected": "procurement_friction",
+  "timestamp": "2026-05-18T14:22:09Z"
+}

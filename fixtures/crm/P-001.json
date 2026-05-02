@@ -1,0 +1,13 @@
+{
+  "deal_stage": "lost_deal",
+  "persona": "economic_buyer",
+  "trial_usage": {
+    "logins": 3,
+    "report_builder_reached": false
+  },
+  "crm_notes": [
+    "Finance stakeholder requested ROI proof but never reviewed report-builder output.",
+    "Quarter close passed before commit decision.",
+    "No procurement engagement on file; deal closed before procurement-stage handoff."
+  ]
+}

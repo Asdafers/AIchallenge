@@ -1,0 +1,13 @@
+{
+  "deal_stage": "slipping_deal",
+  "persona": "procurement_lead",
+  "trial_usage": {
+    "logins": 0,
+    "report_builder_reached": false
+  },
+  "crm_notes": [
+    "Vendor-consolidation policy in effect; new vendors require strong ROI override.",
+    "Business case review surfaced consolidation objection; no procurement-approved exception filed.",
+    "Procurement willing to escalate only with quantified ROI evidence team has not provided."
+  ]
+}

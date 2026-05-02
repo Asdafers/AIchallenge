@@ -1,0 +1,13 @@
+{
+  "type": "request_study",
+  "study_id": "WL-2026-Q2-MM",
+  "requesting_agent": "sales_insights_agent",
+  "decision": "Should we adjust mid-market enterprise packaging or ROI messaging?",
+  "deadline": "48h",
+  "target_segments": ["lost_deals", "slipping_deals", "recent_wins"],
+  "business_context": {
+    "quarter": "Q2",
+    "pipeline_at_risk_usd": 2100000,
+    "suspected_reasons": ["price", "security", "unclear_roi"]
+  }
+}

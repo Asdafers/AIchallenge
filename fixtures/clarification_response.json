@@ -1,0 +1,21 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "turns": [
+    {
+      "turn": 1,
+      "type": "clarification_request",
+      "from": "methodic",
+      "to": "sales_insights_agent",
+      "question": "Should the study optimize for packaging decisions, ROI-message decisions, or both? The participant mix differs.",
+      "options": ["packaging", "roi_messaging", "both"]
+    },
+    {
+      "turn": 2,
+      "type": "clarification_response",
+      "from": "sales_insights_agent",
+      "to": "methodic",
+      "selected_option": "both",
+      "rationale": "Pipeline at risk is split across packaging objections (procurement, vendor consolidation) and ROI messaging (unclear value proof). The study must inform both decisions."
+    }
+  ]
+}

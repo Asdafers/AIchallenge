@@ -1,0 +1,8 @@
+{
+  "participant_id": "P-003",
+  "logins": 11,
+  "report_builder_reached": true,
+  "executive_logins": 0,
+  "last_active": "2026-04-29T09:18:00Z",
+  "feature_touchpoints": ["dashboard_overview", "report_builder", "data_quality_view"]
+}

@@ -1,0 +1,159 @@
+{
+  "persona_id": "P-002",
+  "metadata": {
+    "segment": "lost_deal_champion",
+    "role": "RevOps Manager",
+    "study_id": "WL-2026-Q2-MM",
+    "persona_summary": "RevOps Manager who championed the deal but lost visibility post-handoff",
+    "context_sources": ["crm"]
+  },
+  "transcript": [
+    {
+      "turn_id": "T-002-01",
+      "speaker": "methodic",
+      "text": "What changed between initial interest and not moving forward?"
+    },
+    {
+      "turn_id": "T-002-02",
+      "speaker": "participant",
+      "text": "Security slowed us down."
+    },
+    {
+      "turn_id": "T-002-03",
+      "speaker": "methodic",
+      "text": "What part of security — controls you didn't have, audit log, SSO, or something else?"
+    },
+    {
+      "turn_id": "T-002-04",
+      "speaker": "participant",
+      "text": "Honestly the security review was manageable in the end. I think procurement or vendor consolidation mattered more, but I lost visibility after handoff."
+    },
+    {
+      "turn_id": "T-002-05",
+      "speaker": "system",
+      "text": "Methodic calls lookup_deal_context for P-002.",
+      "tool_call": {
+        "tool_name": "lookup_deal_context",
+        "input_summary": "participant_id=P-002; allowed_fields=[deal_stage, persona, trial_usage, crm_notes]",
+        "output_summary": "CRM notes mention competitor bundle proposed at procurement stage and vendor consolidation flagged with no procurement-side detail."
+      }
+    },
+    {
+      "turn_id": "T-002-06",
+      "speaker": "methodic",
+      "text": "The CRM mentions a competitor bundle — was the procurement decision tied to consolidating with another vendor?"
+    },
+    {
+      "turn_id": "T-002-07",
+      "speaker": "participant",
+      "text": "Maybe. I'd be guessing — I wasn't in those conversations."
+    },
+    {
+      "turn_id": "T-002-08",
+      "speaker": "system",
+      "text": "Methodic logs participant_vague_answer guardrail event for procurement_friction; action mark_ambiguous; measurement intent preserved."
+    },
+    {
+      "turn_id": "T-002-09",
+      "speaker": "methodic",
+      "text": "Got it — I'll mark procurement as ambiguous rather than guess. Was there a competitor offer you can confirm?"
+    },
+    {
+      "turn_id": "T-002-10",
+      "speaker": "participant",
+      "text": "Yes, they mentioned a bundled deal from a competitor we already use elsewhere."
+    }
+  ],
+  "expected_response": {
+    "participant_id": "P-002",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "lost_deal_champion",
+    "persona_summary": "RevOps Manager who championed the deal but lost visibility post-handoff",
+    "conversation_status": "complete",
+    "structured_fields": {
+      "primary_loss_reason": "competitor_pressure",
+      "secondary_loss_reason": "procurement_friction",
+      "roi_clarity": "partially_clear",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "low",
+      "competitor_pressure": "named_competitor",
+      "aha_moment_reached": "no"
+    },
+    "field_confidence": {
+      "primary_loss_reason": 0.55,
+      "secondary_loss_reason": 0.5,
+      "roi_clarity": 0.45,
+      "budget_timing": 0.3,
+      "procurement_friction": 0.25,
+      "security_concern": 0.8,
+      "competitor_pressure": 0.6,
+      "aha_moment_reached": 0.5
+    },
+    "coverage_state": {
+      "primary_loss_reason": "covered_low_confidence",
+      "secondary_loss_reason": "covered_low_confidence",
+      "roi_clarity": "covered_low_confidence",
+      "budget_timing": "covered_low_confidence",
+      "procurement_friction": "ambiguous",
+      "security_concern": "covered_high_confidence",
+      "competitor_pressure": "covered_low_confidence",
+      "aha_moment_reached": "covered_low_confidence"
+    },
+    "quality": {
+      "variable_coverage": 0.875,
+      "ambiguity_resolved": false,
+      "evidence_linked": true,
+      "requires_recontact": false
+    },
+    "evidence": [
+      {
+        "field": "security_concern",
+        "quote": "Honestly the security review was manageable in the end.",
+        "transcript_turn_id": "T-002-04",
+        "context_used": ["lookup_deal_context.crm_notes"]
+      },
+      {
+        "field": "primary_loss_reason",
+        "quote": "they mentioned a bundled deal from a competitor we already use elsewhere.",
+        "transcript_turn_id": "T-002-10",
+        "context_used": ["lookup_deal_context.crm_notes"]
+      },
+      {
+        "field": "secondary_loss_reason",
+        "quote": "I think procurement or vendor consolidation mattered more, but I lost visibility after handoff.",
+        "transcript_turn_id": "T-002-04",
+        "context_used": []
+      },
+      {
+        "field": "competitor_pressure",
+        "quote": "they mentioned a bundled deal from a competitor we already use elsewhere.",
+        "transcript_turn_id": "T-002-10",
+        "context_used": ["lookup_deal_context.crm_notes"]
+      },
+      {
+        "field": "procurement_friction",
+        "quote": "Maybe. I'd be guessing — I wasn't in those conversations.",
+        "transcript_turn_id": "T-002-07",
+        "context_used": ["lookup_deal_context.crm_notes"]
+      }
+    ],
+    "unresolved_ambiguities": ["procurement_friction"]
+  },
+  "expected_guardrail_events": [
+    {
+      "event_id": "GE-WL-2026-Q2-MM-001",
+      "study_id": "WL-2026-Q2-MM",
+      "participant_id": "P-002",
+      "event_type": "participant_vague_answer",
+      "trigger": {
+        "transcript_turn_id": "T-002-07",
+        "trigger_text": "Maybe. I'd be guessing — I wasn't in those conversations."
+      },
+      "action_taken": "mark_ambiguous",
+      "measurement_intent_preserved": true,
+      "variable_affected": "procurement_friction",
+      "timestamp": "2026-05-18T14:22:09Z"
+    }
+  ]
+}

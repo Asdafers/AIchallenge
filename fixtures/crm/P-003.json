@@ -1,0 +1,13 @@
+{
+  "deal_stage": "slipping_deal",
+  "persona": "champion",
+  "trial_usage": {
+    "logins": 11,
+    "report_builder_reached": true
+  },
+  "crm_notes": [
+    "Operator users active in trial; no executive logins on file.",
+    "ROI proof requested by champion but VP has not engaged.",
+    "Procurement not yet involved; deal stalled at champion-only stage."
+  ]
+}

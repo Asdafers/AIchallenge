@@ -1,0 +1,45 @@
+{
+  "persona_id": "P-003",
+  "raw_answers": {
+    "q1_main_reason": "Still interested but stalled.",
+    "q2_product_value_rating": "4 / 5",
+    "q3_pricing_concern": "no",
+    "q4_could_we_improve": "Get my VP onboard."
+  },
+  "expected_response": {
+    "participant_id": "P-003",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "slipping_deal_champion",
+    "persona_summary": "Sales Operations Lead championing a slipping deal without executive sponsor",
+    "conversation_status": "static_form",
+    "structured_fields": {
+      "primary_loss_reason": "unknown",
+      "secondary_loss_reason": null,
+      "roi_clarity": "unknown",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "unknown",
+      "competitor_pressure": "unknown",
+      "aha_moment_reached": "unknown"
+    },
+    "field_confidence": {},
+    "coverage_state": {
+      "primary_loss_reason": "missing",
+      "secondary_loss_reason": "missing",
+      "roi_clarity": "missing",
+      "budget_timing": "missing",
+      "procurement_friction": "missing",
+      "security_concern": "missing",
+      "competitor_pressure": "missing",
+      "aha_moment_reached": "missing"
+    },
+    "quality": {
+      "variable_coverage": 0.0,
+      "ambiguity_resolved": true,
+      "evidence_linked": false,
+      "requires_recontact": true
+    },
+    "evidence": [],
+    "unresolved_ambiguities": []
+  }
+}

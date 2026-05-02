@@ -1,0 +1,113 @@
+{
+  "persona_id": "P-005",
+  "metadata": {
+    "segment": "slipping_deal_procurement",
+    "role": "Procurement Lead",
+    "study_id": "WL-2026-Q2-MM",
+    "persona_summary": "Procurement Lead at slipping deal blocked on vendor consolidation",
+    "context_sources": ["crm"],
+    "replan_persona": true,
+    "replan_scope_variables": ["procurement_friction"]
+  },
+  "transcript": [
+    {
+      "turn_id": "T-005-01",
+      "speaker": "methodic",
+      "text": "What's the status of the evaluation from your side?"
+    },
+    {
+      "turn_id": "T-005-02",
+      "speaker": "participant",
+      "text": "Stuck after the business case review."
+    },
+    {
+      "turn_id": "T-005-03",
+      "speaker": "methodic",
+      "text": "What blocked it at that stage?"
+    },
+    {
+      "turn_id": "T-005-04",
+      "speaker": "participant",
+      "text": "We're consolidating vendors. To add another vendor we need stronger ROI evidence than the team brought."
+    },
+    {
+      "turn_id": "T-005-05",
+      "speaker": "system",
+      "text": "Methodic calls lookup_deal_context for P-005.",
+      "tool_call": {
+        "tool_name": "lookup_deal_context",
+        "input_summary": "participant_id=P-005; allowed_fields=[deal_stage, persona, trial_usage, crm_notes]",
+        "output_summary": "CRM notes show vendor-consolidation objection and no procurement-approved exception."
+      }
+    },
+    {
+      "turn_id": "T-005-06",
+      "speaker": "methodic",
+      "text": "The CRM confirms a consolidation policy. Is the policy absolute, or could a strong ROI case override it?"
+    },
+    {
+      "turn_id": "T-005-07",
+      "speaker": "participant",
+      "text": "An exception exists but the bar is high. The team didn't meet it."
+    }
+  ],
+  "expected_response": {
+    "participant_id": "P-005",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "slipping_deal_procurement",
+    "persona_summary": "Procurement Lead at slipping deal blocked on vendor consolidation",
+    "conversation_status": "partial",
+    "structured_fields": {
+      "primary_loss_reason": "unknown",
+      "secondary_loss_reason": "unclear_roi",
+      "roi_clarity": "unknown",
+      "budget_timing": "unknown",
+      "procurement_friction": "high",
+      "security_concern": "unknown",
+      "competitor_pressure": "unknown",
+      "aha_moment_reached": "unknown"
+    },
+    "field_confidence": {
+      "secondary_loss_reason": 0.55,
+      "procurement_friction": 0.88
+    },
+    "coverage_state": {
+      "primary_loss_reason": "missing",
+      "secondary_loss_reason": "covered_low_confidence",
+      "roi_clarity": "missing",
+      "budget_timing": "missing",
+      "procurement_friction": "covered_high_confidence",
+      "security_concern": "missing",
+      "competitor_pressure": "missing",
+      "aha_moment_reached": "missing"
+    },
+    "quality": {
+      "variable_coverage": 0.25,
+      "ambiguity_resolved": true,
+      "evidence_linked": true,
+      "requires_recontact": true
+    },
+    "evidence": [
+      {
+        "field": "procurement_friction",
+        "quote": "We're consolidating vendors. To add another vendor we need stronger ROI evidence than the team brought.",
+        "transcript_turn_id": "T-005-04",
+        "context_used": ["lookup_deal_context.crm_notes"]
+      },
+      {
+        "field": "procurement_friction",
+        "quote": "An exception exists but the bar is high. The team didn't meet it.",
+        "transcript_turn_id": "T-005-07",
+        "context_used": ["lookup_deal_context.crm_notes"]
+      },
+      {
+        "field": "secondary_loss_reason",
+        "quote": "we need stronger ROI evidence than the team brought.",
+        "transcript_turn_id": "T-005-04",
+        "context_used": []
+      }
+    ],
+    "unresolved_ambiguities": []
+  },
+  "expected_guardrail_events": []
+}

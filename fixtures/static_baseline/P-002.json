@@ -1,0 +1,61 @@
+{
+  "persona_id": "P-002",
+  "raw_answers": {
+    "q1_main_reason": "Security slowed us down.",
+    "q2_product_value_rating": "4 / 5",
+    "q3_pricing_concern": "no",
+    "q4_could_we_improve": "Faster procurement turnaround."
+  },
+  "expected_response": {
+    "participant_id": "P-002",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "lost_deal_champion",
+    "persona_summary": "RevOps Manager who championed the deal but lost visibility post-handoff",
+    "conversation_status": "static_form",
+    "structured_fields": {
+      "primary_loss_reason": "unknown",
+      "secondary_loss_reason": null,
+      "roi_clarity": "unknown",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "low",
+      "competitor_pressure": "unknown",
+      "aha_moment_reached": "unknown"
+    },
+    "field_confidence": {
+      "primary_loss_reason": 0.2,
+      "security_concern": 0.4
+    },
+    "coverage_state": {
+      "primary_loss_reason": "ambiguous",
+      "secondary_loss_reason": "missing",
+      "roi_clarity": "missing",
+      "budget_timing": "missing",
+      "procurement_friction": "missing",
+      "security_concern": "covered_low_confidence",
+      "competitor_pressure": "missing",
+      "aha_moment_reached": "missing"
+    },
+    "quality": {
+      "variable_coverage": 0.125,
+      "ambiguity_resolved": false,
+      "evidence_linked": false,
+      "requires_recontact": true
+    },
+    "evidence": [
+      {
+        "field": "primary_loss_reason",
+        "quote": "Security slowed us down.",
+        "transcript_turn_id": "STATIC-P-002-Q1",
+        "context_used": []
+      },
+      {
+        "field": "security_concern",
+        "quote": "Security slowed us down.",
+        "transcript_turn_id": "STATIC-P-002-Q1",
+        "context_used": []
+      }
+    ],
+    "unresolved_ambiguities": ["primary_loss_reason"]
+  }
+}

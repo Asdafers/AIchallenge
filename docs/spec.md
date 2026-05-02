@@ -533,7 +533,7 @@ Output:
   "study_id": "string",
   "segment": "string",
   "persona_summary": "string",
-  "conversation_status": "complete|partial|excluded",
+  "conversation_status": "complete|partial|excluded|static_form",
   "structured_fields": {
     "primary_loss_reason": "unclear_roi|budget_timing|procurement_friction|security_concern|competitor_pressure|missing_feature|economic_buyer_gap|other|unknown",
     "secondary_loss_reason": "string|null",
@@ -547,6 +547,9 @@ Output:
   "field_confidence": {
     "primary_loss_reason": 0.0,
     "roi_clarity": 0.0
+  },
+  "coverage_state": {
+    "<variable_name>": "missing|ambiguous|covered_low_confidence|covered_high_confidence"
   },
   "quality": {
     "variable_coverage": 0.0,

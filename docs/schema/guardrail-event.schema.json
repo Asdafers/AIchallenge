@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://methodic.ai/schemas/guardrail-event.schema.json",
+  "title": "Guardrail Event",
+  "description": "Canonical Guardrail Event shape per docs/wp1-schema-reconciliation.md > Guardrail event types and shape. Distinct from Tool Event (which logs MCP tool calls).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "study_id",
+    "participant_id",
+    "event_type",
+    "trigger",
+    "action_taken",
+    "measurement_intent_preserved",
+    "variable_affected",
+    "timestamp"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "study_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "participant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "participant_misunderstanding",
+        "participant_contradiction",
+        "participant_frustration",
+        "participant_vague_answer"
+      ]
+    },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcript_turn_id", "trigger_text"],
+      "properties": {
+        "transcript_turn_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trigger_text": {
+          "type": "string"
+        }
+      }
+    },
+    "action_taken": {
+      "type": "string",
+      "enum": [
+        "rephrase_once",
+        "clarifying_followup",
+        "mark_ambiguous",
+        "graceful_end"
+      ]
+    },
+    "measurement_intent_preserved": {
+      "type": "boolean"
+    },
+    "variable_affected": {
+      "type": ["string", "null"],
+      "enum": [
+        "primary_loss_reason",
+        "secondary_loss_reason",
+        "roi_clarity",
+        "budget_timing",
+        "procurement_friction",
+        "security_concern",
+        "competitor_pressure",
+        "aha_moment_reached",
+        null
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

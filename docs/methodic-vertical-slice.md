@@ -106,12 +106,15 @@ Minimum output record:
 ```json
 {
   "participant_id": "P-001",
+  "study_id": "WL-2026-Q2-MM",
   "segment": "lost_deal_economic_buyer",
+  "persona_summary": "VP Finance at lost mid-market deal",
+  "conversation_status": "complete",
   "structured_fields": {
     "primary_loss_reason": "unclear_roi",
-    "secondary_loss_reason": null,
+    "secondary_loss_reason": "budget_timing",
     "roi_clarity": "unclear",
-    "budget_timing": "unknown",
+    "budget_timing": "out_of_cycle",
     "procurement_friction": "unknown",
     "security_concern": "none",
     "competitor_pressure": "none",
@@ -119,27 +122,79 @@ Minimum output record:
   },
   "field_confidence": {
     "primary_loss_reason": 0.86,
-    "roi_clarity": 0.82
+    "secondary_loss_reason": 0.55,
+    "roi_clarity": 0.82,
+    "budget_timing": 0.78,
+    "procurement_friction": 0.55,
+    "security_concern": 0.8,
+    "competitor_pressure": 0.8,
+    "aha_moment_reached": 0.9
   },
   "coverage_state": {
     "primary_loss_reason": "covered_high_confidence",
+    "secondary_loss_reason": "covered_low_confidence",
     "roi_clarity": "covered_high_confidence",
-    "procurement_friction": "ambiguous"
+    "budget_timing": "covered_high_confidence",
+    "procurement_friction": "covered_low_confidence",
+    "security_concern": "covered_high_confidence",
+    "competitor_pressure": "covered_high_confidence",
+    "aha_moment_reached": "covered_high_confidence"
+  },
+  "quality": {
+    "variable_coverage": 1.0,
+    "ambiguity_resolved": true,
+    "evidence_linked": true,
+    "requires_recontact": false
   },
   "evidence": [
     {
       "field": "primary_loss_reason",
-      "evidence_quote": "Finance never saw proof that the report output would justify the cost.",
-      "context_refs": ["lookup_deal_context.trial_usage.report_builder_reached"]
+      "quote": "Finance never saw proof. We never got to the report output.",
+      "transcript_turn_id": "T-001-07",
+      "context_used": ["lookup_deal_context.trial_usage.report_builder_reached"]
+    },
+    {
+      "field": "roi_clarity",
+      "quote": "Finance never saw proof. We never got to the report output.",
+      "transcript_turn_id": "T-001-07",
+      "context_used": ["lookup_deal_context.trial_usage.report_builder_reached"]
+    },
+    {
+      "field": "budget_timing",
+      "quote": "The quarter had closed by the time we were ready to commit.",
+      "transcript_turn_id": "T-001-09",
+      "context_used": []
+    },
+    {
+      "field": "aha_moment_reached",
+      "quote": "We never got to the report output.",
+      "transcript_turn_id": "T-001-07",
+      "context_used": ["lookup_deal_context.trial_usage.report_builder_reached"]
+    },
+    {
+      "field": "security_concern",
+      "quote": "No security or competitor issues.",
+      "transcript_turn_id": "T-001-11",
+      "context_used": []
+    },
+    {
+      "field": "competitor_pressure",
+      "quote": "No security or competitor issues.",
+      "transcript_turn_id": "T-001-11",
+      "context_used": []
+    },
+    {
+      "field": "procurement_friction",
+      "quote": "No procurement involvement — the deal closed before we got there.",
+      "transcript_turn_id": "T-001-11",
+      "context_used": []
     }
   ],
-  "quality": {
-    "completion_score": 0.92,
-    "ambiguity_count": 1,
-    "evidence_link_count": 5
-  }
+  "unresolved_ambiguities": []
 }
 ```
+
+See `docs/spec.md > Data Schema > Participant Response` for the canonical schema; this example is the per-WP1 Methodic-path Example B.
 
 ## Daily-Resolution Build Milestones
 
