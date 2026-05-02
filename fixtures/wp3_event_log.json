@@ -1,0 +1,96 @@
+[
+  {
+    "index": 0,
+    "timestamp": "2026-05-02T23:00:17.244343+00:00",
+    "event_type": "external_request_received",
+    "state": "awaiting_clarification",
+    "payload": {
+      "study_id": "WL-2026-Q2-MM",
+      "requesting_agent": "sales_insights_agent",
+      "decision": "Should we adjust mid-market enterprise packaging or ROI messaging?",
+      "deadline": "48h"
+    }
+  },
+  {
+    "index": 1,
+    "timestamp": "2026-05-02T23:00:17.244504+00:00",
+    "event_type": "clarification_request_sent",
+    "state": "awaiting_clarification",
+    "payload": {
+      "from": "methodic",
+      "to": "sales_insights_agent",
+      "question": "Should the study optimize for packaging decisions, ROI-message decisions, or both? The participant mix differs.",
+      "options": [
+        "packaging",
+        "roi_messaging",
+        "both"
+      ]
+    }
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-05-02T23:00:17.244506+00:00",
+    "event_type": "clarification_response_received",
+    "state": "clarified",
+    "payload": {
+      "from": "sales_insights_agent",
+      "to": "methodic",
+      "selected_option": "both",
+      "rationale": "Pipeline at risk is split across packaging objections (procurement, vendor consolidation) and ROI messaging (unclear value proof). The study must inform both decisions."
+    }
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-05-02T23:00:17.244509+00:00",
+    "event_type": "organizer_brief_drafted",
+    "state": "brief_drafted",
+    "payload": {
+      "brief": {
+        "study_id": "WL-2026-Q2-MM",
+        "decision": "Adjust packaging and ROI messaging for mid-market enterprise deals",
+        "audience": [
+          "lost_deals",
+          "slipping_deals",
+          "recent_wins"
+        ],
+        "required_variables": [
+          "primary_loss_reason",
+          "roi_clarity",
+          "budget_timing",
+          "procurement_friction",
+          "security_concern",
+          "competitor_pressure",
+          "aha_moment_reached"
+        ],
+        "constraints": {
+          "deadline": "48h",
+          "no_sensitive_customer_data_in_demo": true
+        },
+        "business_context": {
+          "quarter": "Q2",
+          "pipeline_at_risk_usd": 2100000,
+          "suspected_reasons": [
+            "price",
+            "security",
+            "unclear_roi"
+          ]
+        },
+        "clarification_outcome": {
+          "selected_option": "both",
+          "rationale": "Pipeline at risk is split across packaging objections (procurement, vendor consolidation) and ROI messaging (unclear value proof). The study must inform both decisions."
+        }
+      }
+    }
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-05-02T23:00:17.244510+00:00",
+    "event_type": "brief_approved",
+    "state": "approved",
+    "payload": {
+      "study_id": "WL-2026-Q2-MM",
+      "approval": "auto_approved_prototype",
+      "note": "A2A-pattern prototype \u2014 auto-approved for demo flow"
+    }
+  }
+]
