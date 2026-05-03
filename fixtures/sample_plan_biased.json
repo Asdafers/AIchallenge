@@ -1,0 +1,16 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "sample_plan": {
+    "description": "Interview product champions from recent deals",
+    "segments": [
+      {
+        "segment": "recent_wins_champion",
+        "role": "Product Champion",
+        "count": 3,
+        "rationale": "Champions can explain product strengths and buying experience"
+      }
+    ],
+    "total_participants": 3,
+    "bias_note": null
+  }
+}

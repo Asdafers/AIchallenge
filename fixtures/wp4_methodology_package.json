@@ -1,0 +1,178 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "generated_at": "2026-05-03T07:10:30.275786+00:00",
+  "methodology_review_source": "deterministic_fallback",
+  "question_pool_source": "deterministic",
+  "mode_requested": "fallback",
+  "live_call_metadata": {
+    "attempted": false
+  },
+  "inputs": {
+    "request_fixture": "fixtures/request_study.json",
+    "biased_plan_fixture": "fixtures/sample_plan_biased.json",
+    "organizer_brief_source": "fixtures/wp3_event_log.json"
+  },
+  "biased_sample_plan": {
+    "description": "Interview product champions from recent deals",
+    "segments": [
+      {
+        "segment": "recent_wins_champion",
+        "role": "Product Champion",
+        "count": 3,
+        "rationale": "Champions can explain product strengths and buying experience"
+      }
+    ],
+    "total_participants": 3,
+    "bias_note": null
+  },
+  "methodology_review": {
+    "status": "requires_revision",
+    "pushbacks": [
+      {
+        "type": "sample_mismatch",
+        "severity": "high",
+        "message": "Champions alone cannot support a pricing or packaging decision. Economic buyers decide budget and procurement. Include economic buyers from lost and slipping deals, plus a smaller control group of recent wins."
+      },
+      {
+        "type": "sample_mismatch",
+        "severity": "medium",
+        "message": "Total participants (3) is below the minimum for decision-grade qualitative evidence. Recommend at least 5\u20138 across segments."
+      },
+      {
+        "type": "sample_mismatch",
+        "severity": "high",
+        "message": "No lost-deal participants in sample. Win-loss studies require loss-side perspectives to surface root causes."
+      },
+      {
+        "type": "overclaim_risk",
+        "severity": "high",
+        "message": "Decision 'Adjust packaging and ROI messaging for mid-market enterprise deals' involves pricing/packaging, but no economic buyer segment is included. Do not claim representativeness from champion-only data."
+      }
+    ],
+    "allowed_claims": [
+      "directional qualitative evidence",
+      "decision-critical variable coverage",
+      "ambiguity reduction"
+    ],
+    "disallowed_claims": [
+      "statistically representative",
+      "causal"
+    ]
+  },
+  "sample_revision": {
+    "study_id": "WL-2026-Q2-MM",
+    "description": "Revised sample: economic-buyer, champion, procurement, and recent-win contrast coverage for the win-loss decision",
+    "segments": [
+      {
+        "segment": "lost_deal_economic_buyer",
+        "role": "VP Finance / Budget Owner",
+        "count": 2,
+        "rationale": "Economic buyers decide budget and procurement \u2014 essential for packaging/ROI decisions"
+      },
+      {
+        "segment": "lost_deal_champion",
+        "role": "RevOps / Product Champion",
+        "count": 2,
+        "rationale": "Champions provide context on internal advocacy failure and product-market fit signals"
+      },
+      {
+        "segment": "slipping_deal_champion",
+        "role": "Sales Operations Lead",
+        "count": 1,
+        "rationale": "Slipping-deal champions expose executive-sponsor and ROI-proof gaps before the deal is fully lost"
+      },
+      {
+        "segment": "slipping_deal_procurement",
+        "role": "Procurement Lead",
+        "count": 1,
+        "rationale": "Procurement stakeholders test packaging and vendor-consolidation friction directly, supporting the reserve re-plan path"
+      },
+      {
+        "segment": "recent_win_economic_buyer",
+        "role": "COO / Economic Buyer (contrast)",
+        "count": 1,
+        "rationale": "Control group from recent wins to contrast loss-side findings and identify what made ROI proof credible"
+      }
+    ],
+    "total_participants": 7,
+    "bias_note": "Original champion-only plan revised per methodology pushback. Mixed segments provide decision-grade qualitative evidence without claiming statistical representativeness."
+  },
+  "question_pool": [
+    {
+      "question_id": "Q-loss-reason-open",
+      "prompt": "What changed between initial interest and the decision not to move forward?",
+      "maps_to": [
+        "primary_loss_reason"
+      ],
+      "follow_up_policy": "clarify_vague_reason",
+      "risk_flags": []
+    },
+    {
+      "question_id": "Q-secondary-loss",
+      "prompt": "Beyond the primary factor, was there a secondary issue that contributed to the outcome?",
+      "maps_to": [
+        "secondary_loss_reason"
+      ],
+      "follow_up_policy": "probe_if_vague",
+      "risk_flags": []
+    },
+    {
+      "question_id": "Q-roi-clarity",
+      "prompt": "What evidence would your team have needed to feel confident in the ROI?",
+      "maps_to": [
+        "roi_clarity"
+      ],
+      "follow_up_policy": "probe_missing_evidence",
+      "risk_flags": []
+    },
+    {
+      "question_id": "Q-budget-timing",
+      "prompt": "Was budget timing or fiscal-cycle alignment a factor in the decision?",
+      "maps_to": [
+        "budget_timing"
+      ],
+      "follow_up_policy": "confirm_or_deny",
+      "risk_flags": [
+        "leading_if_unprompted"
+      ]
+    },
+    {
+      "question_id": "Q-procurement-friction",
+      "prompt": "Walk me through the procurement process \u2014 where, if anywhere, did it slow down or create friction?",
+      "maps_to": [
+        "procurement_friction"
+      ],
+      "follow_up_policy": "probe_specific_stage",
+      "risk_flags": []
+    },
+    {
+      "question_id": "Q-security-concern",
+      "prompt": "Did security review or compliance requirements affect the timeline or outcome?",
+      "maps_to": [
+        "security_concern"
+      ],
+      "follow_up_policy": "confirm_or_deny",
+      "risk_flags": []
+    },
+    {
+      "question_id": "Q-competitor-pressure",
+      "prompt": "Were you evaluating alternatives or did a competitor offer influence the decision?",
+      "maps_to": [
+        "competitor_pressure"
+      ],
+      "follow_up_policy": "identify_named_competitor",
+      "risk_flags": []
+    },
+    {
+      "question_id": "Q-aha-moment",
+      "prompt": "Was there a moment during the evaluation where the core value clicked \u2014 or did that never happen?",
+      "maps_to": [
+        "aha_moment_reached"
+      ],
+      "follow_up_policy": "probe_trial_experience",
+      "risk_flags": [
+        "double_barreled_risk"
+      ]
+    }
+  ]
+}
