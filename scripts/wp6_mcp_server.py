@@ -121,9 +121,12 @@ async def main() -> None:
     args = parser.parse_args()
     _DELAY_SECONDS = args.delay_ms / 1000.0
 
-    async with stdio_server() as (read_stream, write_stream):
-        init_options = server.create_initialization_options()
-        await server.run(read_stream, write_stream, init_options)
+    try:
+        async with stdio_server() as (read_stream, write_stream):
+            init_options = server.create_initialization_options()
+            await server.run(read_stream, write_stream, init_options)
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

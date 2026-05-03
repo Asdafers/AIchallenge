@@ -1,6 +1,6 @@
 {
   "study_id": "WL-2026-Q2-MM",
-  "generated_at": "2026-05-03T21:24:39.552641+00:00",
+  "generated_at": "2026-05-03T21:29:46.318709+00:00",
   "engine_label": "real_mcp_boundary",
   "honest_label": "Real MCP server boundary for lookup_deal_context. Server runs as a subprocess communicating via stdio JSON-RPC 2.0. Tool is backed by fixture CRM/telemetry data, but the agent calls it through MCP rather than reading local constants directly. Participant-path integration is derived dynamically by matching live MCP response fields against persona fixture transcripts.",
   "transport": "stdio_jsonrpc_2.0",
@@ -52,7 +52,7 @@
           ]
         }
       },
-      "duration_ms": 2.9,
+      "duration_ms": 1.5,
       "context_available": true,
       "context_source": "crm+telemetry",
       "fields_requested": [
@@ -131,7 +131,7 @@
           ]
         }
       },
-      "duration_ms": 1.8,
+      "duration_ms": 16.3,
       "context_available": true,
       "context_source": "crm",
       "fields_requested": [
@@ -205,7 +205,7 @@
           ]
         }
       },
-      "duration_ms": 2.4,
+      "duration_ms": 2.9,
       "context_available": true,
       "context_source": "crm+telemetry",
       "fields_requested": [
@@ -255,24 +255,15 @@
     }
   ],
   "fallback_demo": {
-    "exercised": true,
-    "timed_out": true,
-    "trigger": "client_timeout_100ms_vs_server_delay_2000ms",
-    "exception_type": "McpError",
-    "exception_message": "Timed out while waiting for response to ClientRequest. Waited 0.1 seconds.",
-    "duration_ms": 102.4,
-    "degraded_response": {
-      "context_available": false,
-      "note": "MCP timeout \u2014 graceful fallback to context-free questioning."
-    }
+    "exercised": false
   },
   "summary": {
     "total_calls": 3,
     "successful_calls": 3,
     "failed_calls": 0,
-    "avg_duration_ms": 2.4,
+    "avg_duration_ms": 6.9,
     "all_filtering_verified": true,
     "all_participant_path_integrated": true,
-    "fallback_exercised": true
+    "fallback_exercised": false
   }
 }
