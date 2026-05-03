@@ -6,7 +6,7 @@ formats.
 Quality is measured across four dimensions:
   1. Coverage: fraction of 8 canonical fields not missing
   2. Confidence: mean field_confidence across all fields (0 for missing)
-  3. Ambiguity: fraction of fields not ambiguous (higher = better)
+  3. Resolution: fraction of fields resolved (not missing, not ambiguous, not unknown)
   4. Evidence-link: fraction of fields with evidence entries using MCP context
 
 Composite = 0.30*coverage + 0.25*confidence + 0.25*ambiguity + 0.20*evidence
@@ -93,12 +93,13 @@ def _score_participant(response: dict) -> dict:
             len(ev.get("context_used", [])) > 0 for ev in field_evidence
         )
 
+        field_value = response.get("structured_fields", {}).get(field)
         is_covered = state != "missing"
-        is_not_ambiguous = state != "ambiguous"
+        is_resolved = state not in ("ambiguous", "missing") and field_value != "unknown"
 
         if is_covered:
             covered += 1
-        if is_not_ambiguous:
+        if is_resolved:
             not_ambiguous += 1
         if has_context:
             evidence_linked += 1
@@ -106,11 +107,11 @@ def _score_participant(response: dict) -> dict:
 
         per_field.append({
             "field": field,
-            "value": response.get("structured_fields", {}).get(field),
+            "value": field_value,
             "coverage_state": state,
             "confidence": conf,
             "is_covered": is_covered,
-            "is_ambiguous": not is_not_ambiguous,
+            "is_ambiguous": not is_resolved,
             "has_evidence": len(field_evidence) > 0,
             "has_context_link": has_context,
             "evidence_count": len(field_evidence),
@@ -168,7 +169,7 @@ def _build_comparison(methodic_scored: list[dict], static_scored: list[dict]) ->
         "methodic_participants": len(methodic_scored),
         "static_participants": len(static_scored),
         "verdict": (
-            "Methodic shows higher coverage, lower ambiguity, and "
+            "Methodic shows higher coverage, higher field resolution, and "
             "evidence-linked fields across all participants vs. static form. "
             "Static baseline is a reference fixture, not measured production "
             "evidence."
@@ -202,7 +203,7 @@ def _build_quality_report(
             "dimensions": {
                 "coverage": "Fraction of 8 canonical fields with coverage_state != missing",
                 "confidence": "Mean field_confidence across all 8 fields (0 for missing)",
-                "ambiguity": "Fraction of 8 fields with coverage_state != ambiguous",
+                "ambiguity": "Fraction of 8 fields resolved (not missing, not ambiguous, value != unknown)",
                 "evidence_link": "Fraction of 8 fields with evidence entry using MCP context_used",
             },
             "weights": RUBRIC_WEIGHTS,
@@ -368,7 +369,7 @@ def main() -> int:
     print(f"    static composite:   {s['composite']}")
     print(f"    delta composite:    +{d['composite']}")
     print(f"    methodic coverage:  {m['coverage']}  vs static: {s['coverage']}  (delta +{d['coverage']})")
-    print(f"    methodic ambiguity: {m['ambiguity']}  vs static: {s['ambiguity']}  (delta +{d['ambiguity']})")
+    print(f"    methodic resolution: {m['ambiguity']}  vs static: {s['ambiguity']}  (delta +{d['ambiguity']})")
     print(f"    methodic evidence:  {m['evidence_link']}  vs static: {s['evidence_link']}  (delta +{d['evidence_link']})")
     print(f"    report: {report_path}")
     print(f"    csv:    {csv_path}")

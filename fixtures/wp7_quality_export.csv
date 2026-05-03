@@ -1,7 +1,7 @@
 participant_id,study_id,segment,source_type,coverage_score,confidence_score,ambiguity_score,evidence_link_score,composite_score
-P-001,WL-2026-Q2-MM,unclear_roi,methodic,1.0,0.757,1.0,0.375,0.814
-P-001,WL-2026-Q2-MM,unknown,static_form,0.25,0.025,0.875,0.0,0.3
-P-002,WL-2026-Q2-MM,competitor_pressure,methodic,1.0,0.494,0.875,0.5,0.742
-P-002,WL-2026-Q2-MM,unknown,static_form,0.25,0.075,0.875,0.0,0.312
-P-003,WL-2026-Q2-MM,unclear_roi,methodic,1.0,0.705,0.875,0.625,0.82
-P-003,WL-2026-Q2-MM,unknown,static_form,0.0,0.0,1.0,0.0,0.25
+P-001,WL-2026-Q2-MM,unclear_roi,methodic,1.0,0.757,0.875,0.375,0.783
+P-001,WL-2026-Q2-MM,unknown,static_form,0.25,0.025,0.0,0.0,0.081
+P-002,WL-2026-Q2-MM,competitor_pressure,methodic,1.0,0.494,0.75,0.5,0.711
+P-002,WL-2026-Q2-MM,unknown,static_form,0.25,0.075,0.125,0.0,0.125
+P-003,WL-2026-Q2-MM,unclear_roi,methodic,1.0,0.705,0.75,0.625,0.789
+P-003,WL-2026-Q2-MM,unknown,static_form,0.0,0.0,0.0,0.0,0.0
