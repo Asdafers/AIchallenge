@@ -1,0 +1,210 @@
+{
+  "table_id": "methodic_quality_scores",
+  "description": "BigQuery-ready table schema for Methodic data quality scores. One row per participant per source_type (methodic or static_form). Field names map directly to canonical WP1 participant-response schema.",
+  "schema": {
+    "fields": [
+      {
+        "name": "participant_id",
+        "type": "STRING",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "study_id",
+        "type": "STRING",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "source_type",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "methodic or static_form"
+      },
+      {
+        "name": "primary_loss_reason",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "secondary_loss_reason",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "roi_clarity",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "budget_timing",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "procurement_friction",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "security_concern",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "competitor_pressure",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "aha_moment_reached",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "coverage_score",
+        "type": "FLOAT64",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "confidence_score",
+        "type": "FLOAT64",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "ambiguity_score",
+        "type": "FLOAT64",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "evidence_link_score",
+        "type": "FLOAT64",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "composite_score",
+        "type": "FLOAT64",
+        "mode": "REQUIRED"
+      },
+      {
+        "name": "generated_at",
+        "type": "TIMESTAMP",
+        "mode": "REQUIRED"
+      }
+    ]
+  },
+  "sample_rows": [
+    {
+      "participant_id": "P-001",
+      "study_id": "WL-2026-Q2-MM",
+      "source_type": "methodic",
+      "coverage_score": 1.0,
+      "confidence_score": 0.757,
+      "ambiguity_score": 1.0,
+      "evidence_link_score": 0.375,
+      "composite_score": 0.814,
+      "generated_at": "2026-05-03T22:30:56.810458+00:00",
+      "primary_loss_reason": "unclear_roi",
+      "secondary_loss_reason": "budget_timing",
+      "roi_clarity": "unclear",
+      "budget_timing": "out_of_cycle",
+      "procurement_friction": "unknown",
+      "security_concern": "none",
+      "competitor_pressure": "none",
+      "aha_moment_reached": "no"
+    },
+    {
+      "participant_id": "P-001",
+      "study_id": "WL-2026-Q2-MM",
+      "source_type": "static_form",
+      "coverage_score": 0.25,
+      "confidence_score": 0.025,
+      "ambiguity_score": 0.875,
+      "evidence_link_score": 0.0,
+      "composite_score": 0.3,
+      "generated_at": "2026-05-03T22:30:56.810458+00:00",
+      "primary_loss_reason": "unknown",
+      "secondary_loss_reason": null,
+      "roi_clarity": "unknown",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "unknown",
+      "competitor_pressure": "unknown",
+      "aha_moment_reached": "unknown"
+    },
+    {
+      "participant_id": "P-002",
+      "study_id": "WL-2026-Q2-MM",
+      "source_type": "methodic",
+      "coverage_score": 1.0,
+      "confidence_score": 0.494,
+      "ambiguity_score": 0.875,
+      "evidence_link_score": 0.5,
+      "composite_score": 0.742,
+      "generated_at": "2026-05-03T22:30:56.810458+00:00",
+      "primary_loss_reason": "competitor_pressure",
+      "secondary_loss_reason": "procurement_friction",
+      "roi_clarity": "partially_clear",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "low",
+      "competitor_pressure": "named_competitor",
+      "aha_moment_reached": "no"
+    },
+    {
+      "participant_id": "P-002",
+      "study_id": "WL-2026-Q2-MM",
+      "source_type": "static_form",
+      "coverage_score": 0.25,
+      "confidence_score": 0.075,
+      "ambiguity_score": 0.875,
+      "evidence_link_score": 0.0,
+      "composite_score": 0.312,
+      "generated_at": "2026-05-03T22:30:56.810458+00:00",
+      "primary_loss_reason": "unknown",
+      "secondary_loss_reason": null,
+      "roi_clarity": "unknown",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "low",
+      "competitor_pressure": "unknown",
+      "aha_moment_reached": "unknown"
+    },
+    {
+      "participant_id": "P-003",
+      "study_id": "WL-2026-Q2-MM",
+      "source_type": "methodic",
+      "coverage_score": 1.0,
+      "confidence_score": 0.705,
+      "ambiguity_score": 0.875,
+      "evidence_link_score": 0.625,
+      "composite_score": 0.82,
+      "generated_at": "2026-05-03T22:30:56.810458+00:00",
+      "primary_loss_reason": "unclear_roi",
+      "secondary_loss_reason": "economic_buyer_gap",
+      "roi_clarity": "unclear",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "none",
+      "competitor_pressure": "none",
+      "aha_moment_reached": "no"
+    },
+    {
+      "participant_id": "P-003",
+      "study_id": "WL-2026-Q2-MM",
+      "source_type": "static_form",
+      "coverage_score": 0.0,
+      "confidence_score": 0.0,
+      "ambiguity_score": 1.0,
+      "evidence_link_score": 0.0,
+      "composite_score": 0.25,
+      "generated_at": "2026-05-03T22:30:56.810458+00:00",
+      "primary_loss_reason": "unknown",
+      "secondary_loss_reason": null,
+      "roi_clarity": "unknown",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "unknown",
+      "competitor_pressure": "unknown",
+      "aha_moment_reached": "unknown"
+    }
+  ]
+}

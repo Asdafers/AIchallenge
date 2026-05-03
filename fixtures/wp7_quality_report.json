@@ -1,0 +1,661 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "generated_at": "2026-05-03T22:30:56.810458+00:00",
+  "engine_label": "data_quality_layer",
+  "honest_label": "Quality scores computed from fixture ground-truth extraction, not live NLP. Static baseline is a reference fixture, not measured production evidence. Scoring rubric is applied identically to both Methodic and static-form responses.",
+  "rubric": {
+    "dimensions": {
+      "coverage": "Fraction of 8 canonical fields with coverage_state != missing",
+      "confidence": "Mean field_confidence across all 8 fields (0 for missing)",
+      "ambiguity": "Fraction of 8 fields with coverage_state != ambiguous",
+      "evidence_link": "Fraction of 8 fields with evidence entry using MCP context_used"
+    },
+    "weights": {
+      "coverage": 0.3,
+      "confidence": 0.25,
+      "ambiguity": 0.25,
+      "evidence_link": 0.2
+    },
+    "composite_formula": "0.30*coverage + 0.25*confidence + 0.25*ambiguity + 0.20*evidence_link"
+  },
+  "per_participant": {
+    "P-001": {
+      "methodic": {
+        "participant_id": "P-001",
+        "source_type": "methodic",
+        "scores": {
+          "coverage": 1.0,
+          "confidence": 0.757,
+          "ambiguity": 1.0,
+          "evidence_link": 0.375,
+          "composite": 0.814
+        },
+        "per_field": [
+          {
+            "field": "primary_loss_reason",
+            "value": "unclear_roi",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.86,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "secondary_loss_reason",
+            "value": "budget_timing",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.55,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "roi_clarity",
+            "value": "unclear",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.82,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "budget_timing",
+            "value": "out_of_cycle",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.78,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "procurement_friction",
+            "value": "unknown",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.55,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "security_concern",
+            "value": "none",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.8,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "competitor_pressure",
+            "value": "none",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.8,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "aha_moment_reached",
+            "value": "no",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.9,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          }
+        ]
+      },
+      "static": {
+        "participant_id": "P-001",
+        "source_type": "static_form",
+        "scores": {
+          "coverage": 0.25,
+          "confidence": 0.025,
+          "ambiguity": 0.875,
+          "evidence_link": 0.0,
+          "composite": 0.3
+        },
+        "per_field": [
+          {
+            "field": "primary_loss_reason",
+            "value": "unknown",
+            "coverage_state": "ambiguous",
+            "confidence": 0.2,
+            "is_covered": true,
+            "is_ambiguous": true,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "secondary_loss_reason",
+            "value": null,
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "roi_clarity",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "budget_timing",
+            "value": "unknown",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.0,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "procurement_friction",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "security_concern",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "competitor_pressure",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "aha_moment_reached",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          }
+        ]
+      }
+    },
+    "P-002": {
+      "methodic": {
+        "participant_id": "P-002",
+        "source_type": "methodic",
+        "scores": {
+          "coverage": 1.0,
+          "confidence": 0.494,
+          "ambiguity": 0.875,
+          "evidence_link": 0.5,
+          "composite": 0.742
+        },
+        "per_field": [
+          {
+            "field": "primary_loss_reason",
+            "value": "competitor_pressure",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.55,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "secondary_loss_reason",
+            "value": "procurement_friction",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.5,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "roi_clarity",
+            "value": "partially_clear",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.45,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "budget_timing",
+            "value": "unknown",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.3,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "procurement_friction",
+            "value": "unknown",
+            "coverage_state": "ambiguous",
+            "confidence": 0.25,
+            "is_covered": true,
+            "is_ambiguous": true,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "security_concern",
+            "value": "low",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.8,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "competitor_pressure",
+            "value": "named_competitor",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.6,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "aha_moment_reached",
+            "value": "no",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.5,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          }
+        ]
+      },
+      "static": {
+        "participant_id": "P-002",
+        "source_type": "static_form",
+        "scores": {
+          "coverage": 0.25,
+          "confidence": 0.075,
+          "ambiguity": 0.875,
+          "evidence_link": 0.0,
+          "composite": 0.312
+        },
+        "per_field": [
+          {
+            "field": "primary_loss_reason",
+            "value": "unknown",
+            "coverage_state": "ambiguous",
+            "confidence": 0.2,
+            "is_covered": true,
+            "is_ambiguous": true,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "secondary_loss_reason",
+            "value": null,
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "roi_clarity",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "budget_timing",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "procurement_friction",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "security_concern",
+            "value": "low",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.4,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "competitor_pressure",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "aha_moment_reached",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          }
+        ]
+      }
+    },
+    "P-003": {
+      "methodic": {
+        "participant_id": "P-003",
+        "source_type": "methodic",
+        "scores": {
+          "coverage": 1.0,
+          "confidence": 0.705,
+          "ambiguity": 0.875,
+          "evidence_link": 0.625,
+          "composite": 0.82
+        },
+        "per_field": [
+          {
+            "field": "primary_loss_reason",
+            "value": "unclear_roi",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.84,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "secondary_loss_reason",
+            "value": "economic_buyer_gap",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.82,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "roi_clarity",
+            "value": "unclear",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.83,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "budget_timing",
+            "value": "unknown",
+            "coverage_state": "covered_low_confidence",
+            "confidence": 0.4,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "procurement_friction",
+            "value": "unknown",
+            "coverage_state": "ambiguous",
+            "confidence": 0.3,
+            "is_covered": true,
+            "is_ambiguous": true,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          },
+          {
+            "field": "security_concern",
+            "value": "none",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.8,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "competitor_pressure",
+            "value": "none",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.8,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": false,
+            "evidence_count": 1
+          },
+          {
+            "field": "aha_moment_reached",
+            "value": "no",
+            "coverage_state": "covered_high_confidence",
+            "confidence": 0.85,
+            "is_covered": true,
+            "is_ambiguous": false,
+            "has_evidence": true,
+            "has_context_link": true,
+            "evidence_count": 1
+          }
+        ]
+      },
+      "static": {
+        "participant_id": "P-003",
+        "source_type": "static_form",
+        "scores": {
+          "coverage": 0.0,
+          "confidence": 0.0,
+          "ambiguity": 1.0,
+          "evidence_link": 0.0,
+          "composite": 0.25
+        },
+        "per_field": [
+          {
+            "field": "primary_loss_reason",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "secondary_loss_reason",
+            "value": null,
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "roi_clarity",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "budget_timing",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "procurement_friction",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "security_concern",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "competitor_pressure",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          },
+          {
+            "field": "aha_moment_reached",
+            "value": "unknown",
+            "coverage_state": "missing",
+            "confidence": 0.0,
+            "is_covered": false,
+            "is_ambiguous": false,
+            "has_evidence": false,
+            "has_context_link": false,
+            "evidence_count": 0
+          }
+        ]
+      }
+    }
+  },
+  "comparison": {
+    "methodic_avg": {
+      "coverage": 1.0,
+      "confidence": 0.652,
+      "ambiguity": 0.917,
+      "evidence_link": 0.5,
+      "composite": 0.792
+    },
+    "static_avg": {
+      "coverage": 0.167,
+      "confidence": 0.033,
+      "ambiguity": 0.917,
+      "evidence_link": 0.0,
+      "composite": 0.287
+    },
+    "delta": {
+      "coverage": 0.833,
+      "confidence": 0.619,
+      "ambiguity": 0.0,
+      "evidence_link": 0.5,
+      "composite": 0.505
+    },
+    "methodic_participants": 3,
+    "static_participants": 3,
+    "verdict": "Methodic shows higher coverage, lower ambiguity, and evidence-linked fields across all participants vs. static form. Static baseline is a reference fixture, not measured production evidence."
+  }
+}
