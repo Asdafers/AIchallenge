@@ -13,6 +13,16 @@ Key skills to always consider:
 
 **Do not rationalize skipping skills.** "This is just a quick fix" or "I already know what to do" are not valid reasons to skip the skill check.
 
+## Design-Before-Code (MANDATORY)
+
+For any non-trivial implementation (new scripts, multi-file changes, features with contracts or acceptance criteria):
+
+1. **Plan first** — enter plan mode or produce a written design before writing any code. The plan must cover: inputs/outputs, data flow, key functions, contract boundaries, and what is explicitly out of scope.
+2. **Get alignment** — present the plan to the user. Do not begin implementation until the user approves or redirects.
+3. **Track progress** — use tasks to break the plan into steps and mark completion as you go.
+
+"I already know what to build" is not a valid reason to skip planning. The plan catches design errors before they become code errors.
+
 ## Project Context
 
 - B2B SaaS win-loss vertical slice (Methodic) for Google AI Agent Challenge
