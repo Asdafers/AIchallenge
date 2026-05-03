@@ -1,0 +1,1284 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "generated_at": "2026-05-03T15:43:06.045239+00:00",
+  "engine_label": "deterministic_fixture_replay",
+  "extraction_source": "fixture_ground_truth",
+  "honest_label": "This is NOT a production conversation engine. It is an honestly labeled prototype that demonstrates the conversation pipeline using deterministic fixture data. Structured field extraction uses fixture ground truth, not NLP.",
+  "inputs": {
+    "persona_fixtures": [
+      "fixtures/personas/P-001.json",
+      "fixtures/personas/P-002.json",
+      "fixtures/personas/P-003.json"
+    ],
+    "question_pool": "fixtures/wp4_methodology_package.json",
+    "crm_fixtures": [
+      "fixtures/crm/P-001.json",
+      "fixtures/crm/P-002.json",
+      "fixtures/crm/P-003.json"
+    ],
+    "telemetry_fixtures": [
+      "fixtures/telemetry/P-001.json",
+      "fixtures/telemetry/P-003.json"
+    ],
+    "static_baselines": [
+      "fixtures/static_baseline/P-001.json",
+      "fixtures/static_baseline/P-002.json",
+      "fixtures/static_baseline/P-003.json"
+    ]
+  },
+  "participants_processed": [
+    "P-001",
+    "P-002",
+    "P-003"
+  ],
+  "participants_excluded": [
+    "P-005"
+  ],
+  "exclusion_reason": "P-005 is the re-plan reserve persona, processed in WP6 after the coverage gap triggers autonomous re-plan.",
+  "per_variable_aggregate": {
+    "primary_loss_reason": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "unclear_roi"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "competitor_pressure"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "unclear_roi"
+        }
+      }
+    },
+    "secondary_loss_reason": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_low_confidence",
+          "value": "budget_timing"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "procurement_friction"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "economic_buyer_gap"
+        }
+      }
+    },
+    "roi_clarity": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "unclear"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "partially_clear"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "unclear"
+        }
+      }
+    },
+    "budget_timing": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "out_of_cycle"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "unknown"
+        },
+        "P-003": {
+          "state": "covered_low_confidence",
+          "value": "unknown"
+        }
+      }
+    },
+    "procurement_friction": {
+      "state": "ambiguous",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_low_confidence",
+          "value": "unknown"
+        },
+        "P-002": {
+          "state": "ambiguous",
+          "value": "unknown"
+        },
+        "P-003": {
+          "state": "ambiguous",
+          "value": "unknown"
+        }
+      },
+      "replan_trigger": true,
+      "replan_reason": "Ambiguity trump: aggregate state is 'ambiguous' because no persona provides covered_high_confidence with a non-'unknown' value for procurement_friction."
+    },
+    "security_concern": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        },
+        "P-002": {
+          "state": "covered_high_confidence",
+          "value": "low"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        }
+      }
+    },
+    "competitor_pressure": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "named_competitor"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        }
+      }
+    },
+    "aha_moment_reached": {
+      "state": "covered_high_confidence",
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "no"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "no"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "no"
+        }
+      }
+    }
+  },
+  "replan_signal": {
+    "triggered": true,
+    "unresolved_variables": [
+      "procurement_friction"
+    ],
+    "recommended_action": "Add P-005 (slipping_deal_procurement, Procurement Lead) to resolve procurement_friction with a targeted session.",
+    "note": "This signal is consumed by WP6 autonomous re-plan."
+  },
+  "quality_summary": {
+    "methodic": {
+      "participants": 3,
+      "variables_covered_high": 7,
+      "variables_ambiguous": 1,
+      "aggregate_coverage_high_fraction": 0.875,
+      "guardrail_events": 1,
+      "avg_variable_coverage": 0.917
+    },
+    "static_baseline": {
+      "participants": 3,
+      "variables_covered_high": 0,
+      "variables_missing": 5,
+      "aggregate_coverage_high_fraction": 0.0,
+      "guardrail_events": 0,
+      "avg_variable_coverage": 0.083
+    }
+  },
+  "baseline_comparison": {
+    "per_participant": {
+      "P-001": {
+        "methodic_variable_coverage": 1.0,
+        "static_variable_coverage": 0.125,
+        "delta": 0.875,
+        "methodic_ambiguity_resolved": true,
+        "static_ambiguity_resolved": false,
+        "methodic_evidence_linked": true,
+        "static_evidence_linked": false
+      },
+      "P-002": {
+        "methodic_variable_coverage": 0.875,
+        "static_variable_coverage": 0.125,
+        "delta": 0.75,
+        "methodic_ambiguity_resolved": false,
+        "static_ambiguity_resolved": false,
+        "methodic_evidence_linked": true,
+        "static_evidence_linked": false
+      },
+      "P-003": {
+        "methodic_variable_coverage": 0.875,
+        "static_variable_coverage": 0.0,
+        "delta": 0.875,
+        "methodic_ambiguity_resolved": false,
+        "static_ambiguity_resolved": true,
+        "methodic_evidence_linked": true,
+        "static_evidence_linked": false
+      }
+    },
+    "study_level": {
+      "methodic_high_confidence_variables": 7,
+      "static_high_confidence_variables": 0,
+      "static_missing_variables": 5,
+      "static_aggregate": {
+        "primary_loss_reason": "ambiguous",
+        "secondary_loss_reason": "missing",
+        "roi_clarity": "missing",
+        "budget_timing": "covered_low_confidence",
+        "procurement_friction": "missing",
+        "security_concern": "covered_low_confidence",
+        "competitor_pressure": "missing",
+        "aha_moment_reached": "missing"
+      }
+    }
+  },
+  "processing_events": {
+    "P-001": [
+      {
+        "index": 0,
+        "timestamp": "2026-05-03T15:43:06.042053+00:00",
+        "event_type": "conversation_started",
+        "persona_id": "P-001",
+        "payload": {
+          "segment": "lost_deal_economic_buyer",
+          "role": "VP Finance",
+          "context_sources": [
+            "crm",
+            "telemetry"
+          ],
+          "transcript_turns": 11
+        }
+      },
+      {
+        "index": 1,
+        "timestamp": "2026-05-03T15:43:06.042203+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-01",
+          "text": "What changed between initial interest and not moving forward?",
+          "matched_question_id": "Q-loss-reason-open",
+          "maps_to": [
+            "primary_loss_reason"
+          ],
+          "follow_up_policy": "clarify_vague_reason"
+        }
+      },
+      {
+        "index": 2,
+        "timestamp": "2026-05-03T15:43:06.042205+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-02",
+          "text": "Price was too high."
+        }
+      },
+      {
+        "index": 3,
+        "timestamp": "2026-05-03T15:43:06.042221+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-03",
+          "text": "When you say price, do you mean budget timing, ROI proof, procurement, or competitor offer?",
+          "matched_question_id": "Q-budget-timing",
+          "maps_to": [
+            "budget_timing"
+          ],
+          "follow_up_policy": "confirm_or_deny"
+        }
+      },
+      {
+        "index": 4,
+        "timestamp": "2026-05-03T15:43:06.042222+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-04",
+          "text": "ROI. Finance never saw proof."
+        }
+      },
+      {
+        "index": 5,
+        "timestamp": "2026-05-03T15:43:06.042224+00:00",
+        "event_type": "tool_call_executed",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-05",
+          "tool_name": "lookup_deal_context",
+          "input_summary": "participant_id=P-001; allowed_fields=[deal_stage, persona, trial_usage, crm_notes]",
+          "output_summary": "trial_usage.report_builder_reached=false; logins=3; CRM notes confirm finance asked for ROI proof and quarter closed before commit.",
+          "context_source": "crm+telemetry",
+          "context_available": true,
+          "note": "Deterministic replay \u2014 MCP tool call simulated from fixture data. Live MCP wiring arrives in WP6."
+        }
+      },
+      {
+        "index": 6,
+        "timestamp": "2026-05-03T15:43:06.042243+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-06",
+          "text": "The trial shows your team logged in three times but never reached the report-builder workflow. Was the ROI concern because the value was unclear, or because the report output didn't map to your business case?",
+          "matched_question_id": "Q-aha-moment",
+          "maps_to": [
+            "aha_moment_reached"
+          ],
+          "follow_up_policy": "probe_trial_experience"
+        }
+      },
+      {
+        "index": 7,
+        "timestamp": "2026-05-03T15:43:06.042245+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-07",
+          "text": "Finance never saw proof. We never got to the report output."
+        }
+      },
+      {
+        "index": 8,
+        "timestamp": "2026-05-03T15:43:06.042259+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-08",
+          "text": "Was budget timing a factor independent of the ROI proof?",
+          "matched_question_id": "Q-budget-timing",
+          "maps_to": [
+            "budget_timing"
+          ],
+          "follow_up_policy": "confirm_or_deny"
+        }
+      },
+      {
+        "index": 9,
+        "timestamp": "2026-05-03T15:43:06.042261+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-09",
+          "text": "The quarter had closed by the time we were ready to commit."
+        }
+      },
+      {
+        "index": 10,
+        "timestamp": "2026-05-03T15:43:06.042274+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-10",
+          "text": "Anything related to procurement, security review, or a competitor we should know about?",
+          "matched_question_id": "Q-procurement-friction",
+          "maps_to": [
+            "procurement_friction"
+          ],
+          "follow_up_policy": "probe_specific_stage"
+        }
+      },
+      {
+        "index": 11,
+        "timestamp": "2026-05-03T15:43:06.042275+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-001",
+        "payload": {
+          "turn_id": "T-001-11",
+          "text": "No procurement involvement \u2014 the deal closed before we got there. No security or competitor issues."
+        }
+      },
+      {
+        "index": 12,
+        "timestamp": "2026-05-03T15:43:06.042276+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "primary_loss_reason",
+          "value": "unclear_roi",
+          "confidence": 0.86,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-001-07",
+          "quote": "Finance never saw proof. We never got to the report output.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.report_builder_reached"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 13,
+        "timestamp": "2026-05-03T15:43:06.042278+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "roi_clarity",
+          "value": "unclear",
+          "confidence": 0.82,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-001-07",
+          "quote": "Finance never saw proof. We never got to the report output.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.report_builder_reached"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 14,
+        "timestamp": "2026-05-03T15:43:06.042279+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "budget_timing",
+          "value": "out_of_cycle",
+          "confidence": 0.78,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-001-09",
+          "quote": "The quarter had closed by the time we were ready to commit.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 15,
+        "timestamp": "2026-05-03T15:43:06.042280+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "aha_moment_reached",
+          "value": "no",
+          "confidence": 0.9,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-001-07",
+          "quote": "We never got to the report output.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.report_builder_reached"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 16,
+        "timestamp": "2026-05-03T15:43:06.042281+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "security_concern",
+          "value": "none",
+          "confidence": 0.8,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-001-11",
+          "quote": "No security or competitor issues.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 17,
+        "timestamp": "2026-05-03T15:43:06.042282+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "competitor_pressure",
+          "value": "none",
+          "confidence": 0.8,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-001-11",
+          "quote": "No security or competitor issues.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 18,
+        "timestamp": "2026-05-03T15:43:06.042283+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-001",
+        "payload": {
+          "field": "procurement_friction",
+          "value": "unknown",
+          "confidence": 0.55,
+          "coverage_state": "covered_low_confidence",
+          "source_turn_id": "T-001-11",
+          "quote": "No procurement involvement \u2014 the deal closed before we got there.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 19,
+        "timestamp": "2026-05-03T15:43:06.042285+00:00",
+        "event_type": "coverage_check",
+        "persona_id": "P-001",
+        "payload": {
+          "variables_covered_high": [
+            "primary_loss_reason",
+            "roi_clarity",
+            "budget_timing",
+            "security_concern",
+            "competitor_pressure",
+            "aha_moment_reached"
+          ],
+          "variables_covered_low": [
+            "secondary_loss_reason",
+            "procurement_friction"
+          ],
+          "variables_ambiguous": [],
+          "variables_missing": [],
+          "coverage_fraction": 1.0
+        }
+      },
+      {
+        "index": 20,
+        "timestamp": "2026-05-03T15:43:06.042288+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-001",
+        "payload": {
+          "variable": "primary_loss_reason",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 21,
+        "timestamp": "2026-05-03T15:43:06.042289+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-001",
+        "payload": {
+          "variable": "roi_clarity",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 22,
+        "timestamp": "2026-05-03T15:43:06.042289+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-001",
+        "payload": {
+          "variable": "budget_timing",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 23,
+        "timestamp": "2026-05-03T15:43:06.042290+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-001",
+        "payload": {
+          "variable": "security_concern",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 24,
+        "timestamp": "2026-05-03T15:43:06.042291+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-001",
+        "payload": {
+          "variable": "competitor_pressure",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 25,
+        "timestamp": "2026-05-03T15:43:06.042291+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-001",
+        "payload": {
+          "variable": "aha_moment_reached",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 26,
+        "timestamp": "2026-05-03T15:43:06.042293+00:00",
+        "event_type": "conversation_complete",
+        "persona_id": "P-001",
+        "payload": {
+          "conversation_status": "complete",
+          "variables_at_stop": 6,
+          "variables_total": 8,
+          "guardrail_events_emitted": 0,
+          "variable_coverage": 1.0,
+          "ambiguity_resolved": true
+        }
+      }
+    ],
+    "P-002": [
+      {
+        "index": 0,
+        "timestamp": "2026-05-03T15:43:06.043076+00:00",
+        "event_type": "conversation_started",
+        "persona_id": "P-002",
+        "payload": {
+          "segment": "lost_deal_champion",
+          "role": "RevOps Manager",
+          "context_sources": [
+            "crm"
+          ],
+          "transcript_turns": 10
+        }
+      },
+      {
+        "index": 1,
+        "timestamp": "2026-05-03T15:43:06.043104+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-01",
+          "text": "What changed between initial interest and not moving forward?",
+          "matched_question_id": "Q-loss-reason-open",
+          "maps_to": [
+            "primary_loss_reason"
+          ],
+          "follow_up_policy": "clarify_vague_reason"
+        }
+      },
+      {
+        "index": 2,
+        "timestamp": "2026-05-03T15:43:06.043105+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-02",
+          "text": "Security slowed us down."
+        }
+      },
+      {
+        "index": 3,
+        "timestamp": "2026-05-03T15:43:06.043121+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-03",
+          "text": "What part of security \u2014 controls you didn't have, audit log, SSO, or something else?",
+          "matched_question_id": "Q-procurement-friction",
+          "maps_to": [
+            "procurement_friction"
+          ],
+          "follow_up_policy": "probe_specific_stage"
+        }
+      },
+      {
+        "index": 4,
+        "timestamp": "2026-05-03T15:43:06.043122+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-04",
+          "text": "Honestly the security review was manageable in the end. I think procurement or vendor consolidation mattered more, but I lost visibility after handoff."
+        }
+      },
+      {
+        "index": 5,
+        "timestamp": "2026-05-03T15:43:06.043124+00:00",
+        "event_type": "tool_call_executed",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-05",
+          "tool_name": "lookup_deal_context",
+          "input_summary": "participant_id=P-002; allowed_fields=[deal_stage, persona, trial_usage, crm_notes]",
+          "output_summary": "CRM notes mention competitor bundle proposed at procurement stage and vendor consolidation flagged with no procurement-side detail.",
+          "context_source": "crm",
+          "context_available": true,
+          "note": "Deterministic replay \u2014 MCP tool call simulated from fixture data. Live MCP wiring arrives in WP6."
+        }
+      },
+      {
+        "index": 6,
+        "timestamp": "2026-05-03T15:43:06.043140+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-06",
+          "text": "The CRM mentions a competitor bundle \u2014 was the procurement decision tied to consolidating with another vendor?",
+          "matched_question_id": "Q-procurement-friction",
+          "maps_to": [
+            "procurement_friction"
+          ],
+          "follow_up_policy": "probe_specific_stage"
+        }
+      },
+      {
+        "index": 7,
+        "timestamp": "2026-05-03T15:43:06.043141+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-07",
+          "text": "Maybe. I'd be guessing \u2014 I wasn't in those conversations."
+        }
+      },
+      {
+        "index": 8,
+        "timestamp": "2026-05-03T15:43:06.043143+00:00",
+        "event_type": "guardrail_triggered",
+        "persona_id": "P-002",
+        "payload": {
+          "event_id": "GE-WL-2026-Q2-MM-001",
+          "event_type": "participant_vague_answer",
+          "variable_affected": "procurement_friction",
+          "trigger_turn_id": "T-002-07",
+          "trigger_text": "Maybe. I'd be guessing \u2014 I wasn't in those conversations.",
+          "action_taken": "mark_ambiguous",
+          "measurement_intent_preserved": true
+        }
+      },
+      {
+        "index": 9,
+        "timestamp": "2026-05-03T15:43:06.043159+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-09",
+          "text": "Got it \u2014 I'll mark procurement as ambiguous rather than guess. Was there a competitor offer you can confirm?",
+          "matched_question_id": "Q-procurement-friction",
+          "maps_to": [
+            "procurement_friction"
+          ],
+          "follow_up_policy": "probe_specific_stage"
+        }
+      },
+      {
+        "index": 10,
+        "timestamp": "2026-05-03T15:43:06.043159+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-002",
+        "payload": {
+          "turn_id": "T-002-10",
+          "text": "Yes, they mentioned a bundled deal from a competitor we already use elsewhere."
+        }
+      },
+      {
+        "index": 11,
+        "timestamp": "2026-05-03T15:43:06.043161+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-002",
+        "payload": {
+          "field": "security_concern",
+          "value": "low",
+          "confidence": 0.8,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-002-04",
+          "quote": "Honestly the security review was manageable in the end.",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 12,
+        "timestamp": "2026-05-03T15:43:06.043162+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-002",
+        "payload": {
+          "field": "primary_loss_reason",
+          "value": "competitor_pressure",
+          "confidence": 0.55,
+          "coverage_state": "covered_low_confidence",
+          "source_turn_id": "T-002-10",
+          "quote": "they mentioned a bundled deal from a competitor we already use elsewhere.",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 13,
+        "timestamp": "2026-05-03T15:43:06.043163+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-002",
+        "payload": {
+          "field": "secondary_loss_reason",
+          "value": "procurement_friction",
+          "confidence": 0.5,
+          "coverage_state": "covered_low_confidence",
+          "source_turn_id": "T-002-04",
+          "quote": "I think procurement or vendor consolidation mattered more, but I lost visibility after handoff.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 14,
+        "timestamp": "2026-05-03T15:43:06.043164+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-002",
+        "payload": {
+          "field": "competitor_pressure",
+          "value": "named_competitor",
+          "confidence": 0.6,
+          "coverage_state": "covered_low_confidence",
+          "source_turn_id": "T-002-10",
+          "quote": "they mentioned a bundled deal from a competitor we already use elsewhere.",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 15,
+        "timestamp": "2026-05-03T15:43:06.043164+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-002",
+        "payload": {
+          "field": "procurement_friction",
+          "value": "unknown",
+          "confidence": 0.25,
+          "coverage_state": "ambiguous",
+          "source_turn_id": "T-002-07",
+          "quote": "Maybe. I'd be guessing \u2014 I wasn't in those conversations.",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 16,
+        "timestamp": "2026-05-03T15:43:06.043167+00:00",
+        "event_type": "coverage_check",
+        "persona_id": "P-002",
+        "payload": {
+          "variables_covered_high": [
+            "security_concern"
+          ],
+          "variables_covered_low": [
+            "primary_loss_reason",
+            "secondary_loss_reason",
+            "roi_clarity",
+            "budget_timing",
+            "competitor_pressure",
+            "aha_moment_reached"
+          ],
+          "variables_ambiguous": [
+            "procurement_friction"
+          ],
+          "variables_missing": [],
+          "coverage_fraction": 0.875
+        }
+      },
+      {
+        "index": 17,
+        "timestamp": "2026-05-03T15:43:06.043168+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-002",
+        "payload": {
+          "variable": "security_concern",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 18,
+        "timestamp": "2026-05-03T15:43:06.043169+00:00",
+        "event_type": "conversation_complete",
+        "persona_id": "P-002",
+        "payload": {
+          "conversation_status": "complete",
+          "variables_at_stop": 1,
+          "variables_total": 8,
+          "guardrail_events_emitted": 1,
+          "variable_coverage": 0.875,
+          "ambiguity_resolved": false
+        }
+      }
+    ],
+    "P-003": [
+      {
+        "index": 0,
+        "timestamp": "2026-05-03T15:43:06.044990+00:00",
+        "event_type": "conversation_started",
+        "persona_id": "P-003",
+        "payload": {
+          "segment": "slipping_deal_champion",
+          "role": "Sales Operations Lead",
+          "context_sources": [
+            "crm",
+            "telemetry"
+          ],
+          "transcript_turns": 9
+        }
+      },
+      {
+        "index": 1,
+        "timestamp": "2026-05-03T15:43:06.045030+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-01",
+          "text": "Where does the deal stand right now?",
+          "matched_question_id": "Q-aha-moment",
+          "maps_to": [
+            "aha_moment_reached"
+          ],
+          "follow_up_policy": "probe_trial_experience"
+        }
+      },
+      {
+        "index": 2,
+        "timestamp": "2026-05-03T15:43:06.045033+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-02",
+          "text": "Still interested but stalled."
+        }
+      },
+      {
+        "index": 3,
+        "timestamp": "2026-05-03T15:43:06.045047+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-03",
+          "text": "What would need to change to move it forward?",
+          "matched_question_id": "Q-loss-reason-open",
+          "maps_to": [
+            "primary_loss_reason"
+          ],
+          "follow_up_policy": "clarify_vague_reason"
+        }
+      },
+      {
+        "index": 4,
+        "timestamp": "2026-05-03T15:43:06.045048+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-04",
+          "text": "Honestly we can't prove ROI to my VP. He hasn't even logged in."
+        }
+      },
+      {
+        "index": 5,
+        "timestamp": "2026-05-03T15:43:06.045050+00:00",
+        "event_type": "tool_call_executed",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-05",
+          "tool_name": "lookup_deal_context",
+          "input_summary": "participant_id=P-003; allowed_fields=[deal_stage, persona, trial_usage, crm_notes]",
+          "output_summary": "trial_usage shows operator users active, executive_logins=0; CRM notes confirm procurement not yet involved.",
+          "context_source": "crm+telemetry",
+          "context_available": true,
+          "note": "Deterministic replay \u2014 MCP tool call simulated from fixture data. Live MCP wiring arrives in WP6."
+        }
+      },
+      {
+        "index": 6,
+        "timestamp": "2026-05-03T15:43:06.045068+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-06",
+          "text": "Trial usage confirms that \u2014 operator users are active, no executive logins. Sounds like an executive-buyer engagement gap rather than a product-fit gap?",
+          "matched_question_id": "Q-procurement-friction",
+          "maps_to": [
+            "procurement_friction"
+          ],
+          "follow_up_policy": "probe_specific_stage"
+        }
+      },
+      {
+        "index": 7,
+        "timestamp": "2026-05-03T15:43:06.045069+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-07",
+          "text": "Exactly. My VP is the blocker."
+        }
+      },
+      {
+        "index": 8,
+        "timestamp": "2026-05-03T15:43:06.045080+00:00",
+        "event_type": "question_asked",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-08",
+          "text": "Was procurement involved at any point?",
+          "matched_question_id": "Q-budget-timing",
+          "maps_to": [
+            "budget_timing"
+          ],
+          "follow_up_policy": "confirm_or_deny"
+        }
+      },
+      {
+        "index": 9,
+        "timestamp": "2026-05-03T15:43:06.045080+00:00",
+        "event_type": "participant_response",
+        "persona_id": "P-003",
+        "payload": {
+          "turn_id": "T-003-09",
+          "text": "Not yet. We never got that far \u2014 the VP hasn't engaged."
+        }
+      },
+      {
+        "index": 10,
+        "timestamp": "2026-05-03T15:43:06.045082+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "primary_loss_reason",
+          "value": "unclear_roi",
+          "confidence": 0.84,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-003-04",
+          "quote": "Honestly we can't prove ROI to my VP. He hasn't even logged in.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.executive_logins"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 11,
+        "timestamp": "2026-05-03T15:43:06.045083+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "roi_clarity",
+          "value": "unclear",
+          "confidence": 0.83,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-003-04",
+          "quote": "Honestly we can't prove ROI to my VP. He hasn't even logged in.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.executive_logins"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 12,
+        "timestamp": "2026-05-03T15:43:06.045084+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "secondary_loss_reason",
+          "value": "economic_buyer_gap",
+          "confidence": 0.82,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-003-07",
+          "quote": "Exactly. My VP is the blocker.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.executive_logins"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 13,
+        "timestamp": "2026-05-03T15:43:06.045085+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "aha_moment_reached",
+          "value": "no",
+          "confidence": 0.85,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-003-04",
+          "quote": "He hasn't even logged in.",
+          "context_used": [
+            "lookup_deal_context.trial_usage.executive_logins"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 14,
+        "timestamp": "2026-05-03T15:43:06.045085+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "procurement_friction",
+          "value": "unknown",
+          "confidence": 0.3,
+          "coverage_state": "ambiguous",
+          "source_turn_id": "T-003-09",
+          "quote": "Not yet. We never got that far \u2014 the VP hasn't engaged.",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 15,
+        "timestamp": "2026-05-03T15:43:06.045086+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "security_concern",
+          "value": "none",
+          "confidence": 0.8,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-003-09",
+          "quote": "Not yet. We never got that far \u2014 the VP hasn't engaged.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 16,
+        "timestamp": "2026-05-03T15:43:06.045087+00:00",
+        "event_type": "field_extracted",
+        "persona_id": "P-003",
+        "payload": {
+          "field": "competitor_pressure",
+          "value": "none",
+          "confidence": 0.8,
+          "coverage_state": "covered_high_confidence",
+          "source_turn_id": "T-003-09",
+          "quote": "Not yet. We never got that far \u2014 the VP hasn't engaged.",
+          "context_used": [],
+          "extraction_source": "fixture_ground_truth"
+        }
+      },
+      {
+        "index": 17,
+        "timestamp": "2026-05-03T15:43:06.045089+00:00",
+        "event_type": "coverage_check",
+        "persona_id": "P-003",
+        "payload": {
+          "variables_covered_high": [
+            "primary_loss_reason",
+            "secondary_loss_reason",
+            "roi_clarity",
+            "security_concern",
+            "competitor_pressure",
+            "aha_moment_reached"
+          ],
+          "variables_covered_low": [
+            "budget_timing"
+          ],
+          "variables_ambiguous": [
+            "procurement_friction"
+          ],
+          "variables_missing": [],
+          "coverage_fraction": 0.875
+        }
+      },
+      {
+        "index": 18,
+        "timestamp": "2026-05-03T15:43:06.045091+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-003",
+        "payload": {
+          "variable": "primary_loss_reason",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 19,
+        "timestamp": "2026-05-03T15:43:06.045092+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-003",
+        "payload": {
+          "variable": "secondary_loss_reason",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 20,
+        "timestamp": "2026-05-03T15:43:06.045093+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-003",
+        "payload": {
+          "variable": "roi_clarity",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 21,
+        "timestamp": "2026-05-03T15:43:06.045093+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-003",
+        "payload": {
+          "variable": "security_concern",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 22,
+        "timestamp": "2026-05-03T15:43:06.045094+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-003",
+        "payload": {
+          "variable": "competitor_pressure",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 23,
+        "timestamp": "2026-05-03T15:43:06.045095+00:00",
+        "event_type": "stop_condition_met",
+        "persona_id": "P-003",
+        "payload": {
+          "variable": "aha_moment_reached",
+          "state": "covered_high_confidence",
+          "reason": "Variable reached covered_high_confidence threshold.",
+          "note": "Stop conditions derived from fixture coverage_state values, not evaluated at conversation runtime."
+        }
+      },
+      {
+        "index": 24,
+        "timestamp": "2026-05-03T15:43:06.045096+00:00",
+        "event_type": "conversation_complete",
+        "persona_id": "P-003",
+        "payload": {
+          "conversation_status": "complete",
+          "variables_at_stop": 6,
+          "variables_total": 8,
+          "guardrail_events_emitted": 0,
+          "variable_coverage": 0.875,
+          "ambiguity_resolved": false
+        }
+      }
+    ]
+  }
+}

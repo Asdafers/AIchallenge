@@ -1,0 +1,282 @@
+[
+  {
+    "participant_id": "P-001",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "lost_deal_economic_buyer",
+    "persona_summary": "VP Finance at lost mid-market deal",
+    "conversation_status": "complete",
+    "structured_fields": {
+      "primary_loss_reason": "unclear_roi",
+      "secondary_loss_reason": "budget_timing",
+      "roi_clarity": "unclear",
+      "budget_timing": "out_of_cycle",
+      "procurement_friction": "unknown",
+      "security_concern": "none",
+      "competitor_pressure": "none",
+      "aha_moment_reached": "no"
+    },
+    "field_confidence": {
+      "primary_loss_reason": 0.86,
+      "secondary_loss_reason": 0.55,
+      "roi_clarity": 0.82,
+      "budget_timing": 0.78,
+      "procurement_friction": 0.55,
+      "security_concern": 0.8,
+      "competitor_pressure": 0.8,
+      "aha_moment_reached": 0.9
+    },
+    "coverage_state": {
+      "primary_loss_reason": "covered_high_confidence",
+      "secondary_loss_reason": "covered_low_confidence",
+      "roi_clarity": "covered_high_confidence",
+      "budget_timing": "covered_high_confidence",
+      "procurement_friction": "covered_low_confidence",
+      "security_concern": "covered_high_confidence",
+      "competitor_pressure": "covered_high_confidence",
+      "aha_moment_reached": "covered_high_confidence"
+    },
+    "quality": {
+      "variable_coverage": 1.0,
+      "ambiguity_resolved": true,
+      "evidence_linked": true,
+      "requires_recontact": false
+    },
+    "evidence": [
+      {
+        "field": "primary_loss_reason",
+        "quote": "Finance never saw proof. We never got to the report output.",
+        "transcript_turn_id": "T-001-07",
+        "context_used": [
+          "lookup_deal_context.trial_usage.report_builder_reached"
+        ]
+      },
+      {
+        "field": "roi_clarity",
+        "quote": "Finance never saw proof. We never got to the report output.",
+        "transcript_turn_id": "T-001-07",
+        "context_used": [
+          "lookup_deal_context.trial_usage.report_builder_reached"
+        ]
+      },
+      {
+        "field": "budget_timing",
+        "quote": "The quarter had closed by the time we were ready to commit.",
+        "transcript_turn_id": "T-001-09",
+        "context_used": []
+      },
+      {
+        "field": "aha_moment_reached",
+        "quote": "We never got to the report output.",
+        "transcript_turn_id": "T-001-07",
+        "context_used": [
+          "lookup_deal_context.trial_usage.report_builder_reached"
+        ]
+      },
+      {
+        "field": "security_concern",
+        "quote": "No security or competitor issues.",
+        "transcript_turn_id": "T-001-11",
+        "context_used": []
+      },
+      {
+        "field": "competitor_pressure",
+        "quote": "No security or competitor issues.",
+        "transcript_turn_id": "T-001-11",
+        "context_used": []
+      },
+      {
+        "field": "procurement_friction",
+        "quote": "No procurement involvement \u2014 the deal closed before we got there.",
+        "transcript_turn_id": "T-001-11",
+        "context_used": []
+      }
+    ],
+    "unresolved_ambiguities": []
+  },
+  {
+    "participant_id": "P-002",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "lost_deal_champion",
+    "persona_summary": "RevOps Manager who championed the deal but lost visibility post-handoff",
+    "conversation_status": "complete",
+    "structured_fields": {
+      "primary_loss_reason": "competitor_pressure",
+      "secondary_loss_reason": "procurement_friction",
+      "roi_clarity": "partially_clear",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "low",
+      "competitor_pressure": "named_competitor",
+      "aha_moment_reached": "no"
+    },
+    "field_confidence": {
+      "primary_loss_reason": 0.55,
+      "secondary_loss_reason": 0.5,
+      "roi_clarity": 0.45,
+      "budget_timing": 0.3,
+      "procurement_friction": 0.25,
+      "security_concern": 0.8,
+      "competitor_pressure": 0.6,
+      "aha_moment_reached": 0.5
+    },
+    "coverage_state": {
+      "primary_loss_reason": "covered_low_confidence",
+      "secondary_loss_reason": "covered_low_confidence",
+      "roi_clarity": "covered_low_confidence",
+      "budget_timing": "covered_low_confidence",
+      "procurement_friction": "ambiguous",
+      "security_concern": "covered_high_confidence",
+      "competitor_pressure": "covered_low_confidence",
+      "aha_moment_reached": "covered_low_confidence"
+    },
+    "quality": {
+      "variable_coverage": 0.875,
+      "ambiguity_resolved": false,
+      "evidence_linked": true,
+      "requires_recontact": false
+    },
+    "evidence": [
+      {
+        "field": "security_concern",
+        "quote": "Honestly the security review was manageable in the end.",
+        "transcript_turn_id": "T-002-04",
+        "context_used": [
+          "lookup_deal_context.crm_notes"
+        ]
+      },
+      {
+        "field": "primary_loss_reason",
+        "quote": "they mentioned a bundled deal from a competitor we already use elsewhere.",
+        "transcript_turn_id": "T-002-10",
+        "context_used": [
+          "lookup_deal_context.crm_notes"
+        ]
+      },
+      {
+        "field": "secondary_loss_reason",
+        "quote": "I think procurement or vendor consolidation mattered more, but I lost visibility after handoff.",
+        "transcript_turn_id": "T-002-04",
+        "context_used": []
+      },
+      {
+        "field": "competitor_pressure",
+        "quote": "they mentioned a bundled deal from a competitor we already use elsewhere.",
+        "transcript_turn_id": "T-002-10",
+        "context_used": [
+          "lookup_deal_context.crm_notes"
+        ]
+      },
+      {
+        "field": "procurement_friction",
+        "quote": "Maybe. I'd be guessing \u2014 I wasn't in those conversations.",
+        "transcript_turn_id": "T-002-07",
+        "context_used": [
+          "lookup_deal_context.crm_notes"
+        ]
+      }
+    ],
+    "unresolved_ambiguities": [
+      "procurement_friction"
+    ]
+  },
+  {
+    "participant_id": "P-003",
+    "study_id": "WL-2026-Q2-MM",
+    "segment": "slipping_deal_champion",
+    "persona_summary": "Sales Operations Lead championing a slipping deal without executive sponsor",
+    "conversation_status": "complete",
+    "structured_fields": {
+      "primary_loss_reason": "unclear_roi",
+      "secondary_loss_reason": "economic_buyer_gap",
+      "roi_clarity": "unclear",
+      "budget_timing": "unknown",
+      "procurement_friction": "unknown",
+      "security_concern": "none",
+      "competitor_pressure": "none",
+      "aha_moment_reached": "no"
+    },
+    "field_confidence": {
+      "primary_loss_reason": 0.84,
+      "secondary_loss_reason": 0.82,
+      "roi_clarity": 0.83,
+      "budget_timing": 0.4,
+      "procurement_friction": 0.3,
+      "security_concern": 0.8,
+      "competitor_pressure": 0.8,
+      "aha_moment_reached": 0.85
+    },
+    "coverage_state": {
+      "primary_loss_reason": "covered_high_confidence",
+      "secondary_loss_reason": "covered_high_confidence",
+      "roi_clarity": "covered_high_confidence",
+      "budget_timing": "covered_low_confidence",
+      "procurement_friction": "ambiguous",
+      "security_concern": "covered_high_confidence",
+      "competitor_pressure": "covered_high_confidence",
+      "aha_moment_reached": "covered_high_confidence"
+    },
+    "quality": {
+      "variable_coverage": 0.875,
+      "ambiguity_resolved": false,
+      "evidence_linked": true,
+      "requires_recontact": false
+    },
+    "evidence": [
+      {
+        "field": "primary_loss_reason",
+        "quote": "Honestly we can't prove ROI to my VP. He hasn't even logged in.",
+        "transcript_turn_id": "T-003-04",
+        "context_used": [
+          "lookup_deal_context.trial_usage.executive_logins"
+        ]
+      },
+      {
+        "field": "roi_clarity",
+        "quote": "Honestly we can't prove ROI to my VP. He hasn't even logged in.",
+        "transcript_turn_id": "T-003-04",
+        "context_used": [
+          "lookup_deal_context.trial_usage.executive_logins"
+        ]
+      },
+      {
+        "field": "secondary_loss_reason",
+        "quote": "Exactly. My VP is the blocker.",
+        "transcript_turn_id": "T-003-07",
+        "context_used": [
+          "lookup_deal_context.trial_usage.executive_logins"
+        ]
+      },
+      {
+        "field": "aha_moment_reached",
+        "quote": "He hasn't even logged in.",
+        "transcript_turn_id": "T-003-04",
+        "context_used": [
+          "lookup_deal_context.trial_usage.executive_logins"
+        ]
+      },
+      {
+        "field": "procurement_friction",
+        "quote": "Not yet. We never got that far \u2014 the VP hasn't engaged.",
+        "transcript_turn_id": "T-003-09",
+        "context_used": [
+          "lookup_deal_context.crm_notes"
+        ]
+      },
+      {
+        "field": "security_concern",
+        "quote": "Not yet. We never got that far \u2014 the VP hasn't engaged.",
+        "transcript_turn_id": "T-003-09",
+        "context_used": []
+      },
+      {
+        "field": "competitor_pressure",
+        "quote": "Not yet. We never got that far \u2014 the VP hasn't engaged.",
+        "transcript_turn_id": "T-003-09",
+        "context_used": []
+      }
+    ],
+    "unresolved_ambiguities": [
+      "procurement_friction"
+    ]
+  }
+]
