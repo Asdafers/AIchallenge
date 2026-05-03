@@ -1,0 +1,278 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "generated_at": "2026-05-03T21:24:39.552641+00:00",
+  "engine_label": "real_mcp_boundary",
+  "honest_label": "Real MCP server boundary for lookup_deal_context. Server runs as a subprocess communicating via stdio JSON-RPC 2.0. Tool is backed by fixture CRM/telemetry data, but the agent calls it through MCP rather than reading local constants directly. Participant-path integration is derived dynamically by matching live MCP response fields against persona fixture transcripts.",
+  "transport": "stdio_jsonrpc_2.0",
+  "server": {
+    "command": "python3",
+    "script": "scripts/wp6_mcp_server.py",
+    "server_info": {
+      "name": "methodic-context",
+      "version": "1.23.3"
+    },
+    "tools_listed": [
+      "lookup_deal_context"
+    ]
+  },
+  "calls": [
+    {
+      "call_index": 0,
+      "participant_id": "P-001",
+      "request": {
+        "tool_name": "lookup_deal_context",
+        "arguments": {
+          "participant_id": "P-001",
+          "allowed_fields": [
+            "deal_stage",
+            "persona",
+            "trial_usage",
+            "crm_notes"
+          ]
+        }
+      },
+      "response": {
+        "isError": false,
+        "structured_output": {
+          "deal_stage": "lost_deal",
+          "persona": "economic_buyer",
+          "trial_usage": {
+            "logins": 3,
+            "report_builder_reached": false,
+            "executive_logins": 0,
+            "last_active": "2026-04-21T15:42:00Z",
+            "feature_touchpoints": [
+              "dashboard_overview"
+            ]
+          },
+          "crm_notes": [
+            "Finance stakeholder requested ROI proof but never reviewed report-builder output.",
+            "Quarter close passed before commit decision.",
+            "No procurement engagement on file; deal closed before procurement-stage handoff."
+          ]
+        }
+      },
+      "duration_ms": 2.9,
+      "context_available": true,
+      "context_source": "crm+telemetry",
+      "fields_requested": [
+        "deal_stage",
+        "persona",
+        "trial_usage",
+        "crm_notes"
+      ],
+      "fields_returned": [
+        "deal_stage",
+        "persona",
+        "trial_usage",
+        "crm_notes"
+      ],
+      "filtering_verified": true,
+      "participant_path": {
+        "integration_verified": true,
+        "tool_call_turn": "T-001-05",
+        "follow_up_turn": "T-001-06",
+        "fields_matched": [
+          {
+            "field": "trial_usage.logins",
+            "value": 3,
+            "in_output_summary": true,
+            "in_follow_up": true
+          },
+          {
+            "field": "trial_usage.report_builder_reached",
+            "value": false,
+            "in_output_summary": true,
+            "in_follow_up": true
+          },
+          {
+            "field": "crm_notes",
+            "value": [
+              "Finance stakeholder requested ROI proof but never reviewed report-builder output.",
+              "Quarter close passed before commit decision.",
+              "No procurement engagement on file; deal closed before procurement-stage handoff."
+            ],
+            "in_output_summary": true,
+            "in_follow_up": true
+          }
+        ],
+        "total_mcp_fields": 8,
+        "matched_count": 3
+      }
+    },
+    {
+      "call_index": 1,
+      "participant_id": "P-002",
+      "request": {
+        "tool_name": "lookup_deal_context",
+        "arguments": {
+          "participant_id": "P-002",
+          "allowed_fields": [
+            "deal_stage",
+            "persona",
+            "trial_usage",
+            "crm_notes"
+          ]
+        }
+      },
+      "response": {
+        "isError": false,
+        "structured_output": {
+          "deal_stage": "lost_deal",
+          "persona": "champion",
+          "trial_usage": {
+            "logins": 8,
+            "report_builder_reached": true
+          },
+          "crm_notes": [
+            "Security review completed with low residual concern.",
+            "Account exec note: competitor bundle proposed during procurement stage; champion lost visibility post-handoff.",
+            "Vendor consolidation flagged but no procurement-side detail confirmed."
+          ]
+        }
+      },
+      "duration_ms": 1.8,
+      "context_available": true,
+      "context_source": "crm",
+      "fields_requested": [
+        "deal_stage",
+        "persona",
+        "trial_usage",
+        "crm_notes"
+      ],
+      "fields_returned": [
+        "deal_stage",
+        "persona",
+        "trial_usage",
+        "crm_notes"
+      ],
+      "filtering_verified": true,
+      "participant_path": {
+        "integration_verified": true,
+        "tool_call_turn": "T-002-05",
+        "follow_up_turn": "T-002-06",
+        "fields_matched": [
+          {
+            "field": "crm_notes",
+            "value": [
+              "Security review completed with low residual concern.",
+              "Account exec note: competitor bundle proposed during procurement stage; champion lost visibility post-handoff.",
+              "Vendor consolidation flagged but no procurement-side detail confirmed."
+            ],
+            "in_output_summary": true,
+            "in_follow_up": true
+          }
+        ],
+        "total_mcp_fields": 5,
+        "matched_count": 1
+      }
+    },
+    {
+      "call_index": 2,
+      "participant_id": "P-003",
+      "request": {
+        "tool_name": "lookup_deal_context",
+        "arguments": {
+          "participant_id": "P-003",
+          "allowed_fields": [
+            "deal_stage",
+            "persona",
+            "trial_usage",
+            "crm_notes"
+          ]
+        }
+      },
+      "response": {
+        "isError": false,
+        "structured_output": {
+          "deal_stage": "slipping_deal",
+          "persona": "champion",
+          "trial_usage": {
+            "logins": 11,
+            "report_builder_reached": true,
+            "executive_logins": 0,
+            "last_active": "2026-04-29T09:18:00Z",
+            "feature_touchpoints": [
+              "dashboard_overview",
+              "report_builder",
+              "data_quality_view"
+            ]
+          },
+          "crm_notes": [
+            "Operator users active in trial; no executive logins on file.",
+            "ROI proof requested by champion but VP has not engaged.",
+            "Procurement not yet involved; deal stalled at champion-only stage."
+          ]
+        }
+      },
+      "duration_ms": 2.4,
+      "context_available": true,
+      "context_source": "crm+telemetry",
+      "fields_requested": [
+        "deal_stage",
+        "persona",
+        "trial_usage",
+        "crm_notes"
+      ],
+      "fields_returned": [
+        "deal_stage",
+        "persona",
+        "trial_usage",
+        "crm_notes"
+      ],
+      "filtering_verified": true,
+      "participant_path": {
+        "integration_verified": true,
+        "tool_call_turn": "T-003-05",
+        "follow_up_turn": "T-003-06",
+        "fields_matched": [
+          {
+            "field": "trial_usage.logins",
+            "value": 11,
+            "in_output_summary": true,
+            "in_follow_up": true
+          },
+          {
+            "field": "trial_usage.executive_logins",
+            "value": 0,
+            "in_output_summary": true,
+            "in_follow_up": true
+          },
+          {
+            "field": "crm_notes",
+            "value": [
+              "Operator users active in trial; no executive logins on file.",
+              "ROI proof requested by champion but VP has not engaged.",
+              "Procurement not yet involved; deal stalled at champion-only stage."
+            ],
+            "in_output_summary": true,
+            "in_follow_up": true
+          }
+        ],
+        "total_mcp_fields": 8,
+        "matched_count": 3
+      }
+    }
+  ],
+  "fallback_demo": {
+    "exercised": true,
+    "timed_out": true,
+    "trigger": "client_timeout_100ms_vs_server_delay_2000ms",
+    "exception_type": "McpError",
+    "exception_message": "Timed out while waiting for response to ClientRequest. Waited 0.1 seconds.",
+    "duration_ms": 102.4,
+    "degraded_response": {
+      "context_available": false,
+      "note": "MCP timeout \u2014 graceful fallback to context-free questioning."
+    }
+  },
+  "summary": {
+    "total_calls": 3,
+    "successful_calls": 3,
+    "failed_calls": 0,
+    "avg_duration_ms": 2.4,
+    "all_filtering_verified": true,
+    "all_participant_path_integrated": true,
+    "fallback_exercised": true
+  }
+}
