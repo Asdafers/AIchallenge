@@ -83,3 +83,32 @@ def test_check_coverage_all_covered():
     assert result["overall_coverage"] == 1.0
     assert result["ambiguous_variables"] == []
     assert result["missing_variables"] == []
+
+
+from methodic.tools.quality_scorer import score_quality
+
+
+def test_score_quality_complete():
+    r = _make_response(
+        coverage={f: "covered_high_confidence" for f in CANONICAL_FIELDS},
+        confidence={f: 0.9 for f in CANONICAL_FIELDS},
+    )
+    r.evidence = [EvidenceItem(field=f, quote="Q", transcript_turn_id="t-1", context_used=[]) for f in CANONICAL_FIELDS]
+    r.unresolved_ambiguities = []
+    q = score_quality(r)
+    assert q.variable_coverage == 1.0
+    assert q.ambiguity_resolved is True
+    assert q.requires_recontact is False
+
+
+def test_score_quality_partial():
+    r = _make_response(coverage={
+        "primary_loss_reason": "covered_high_confidence",
+        "procurement_friction": "ambiguous",
+    })
+    r.evidence = [EvidenceItem(field="primary_loss_reason", quote="Q", transcript_turn_id="t-1", context_used=[])]
+    r.unresolved_ambiguities = ["procurement_friction"]
+    q = score_quality(r)
+    assert q.variable_coverage < 1.0
+    assert q.ambiguity_resolved is False
+    assert q.requires_recontact is True
