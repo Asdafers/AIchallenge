@@ -24,3 +24,19 @@ def test_question_design_agent():
     assert isinstance(question_design_agent, Agent)
     assert question_design_agent.name == "question_design"
     assert question_design_agent.output_key == "question_pool"
+
+
+def test_interviewer_agent():
+    from methodic.agents.participant import interviewer_agent
+    assert isinstance(interviewer_agent, Agent)
+    assert interviewer_agent.name == "interviewer"
+    assert interviewer_agent.output_key == "latest_interviewer_turn"
+    assert "gemini" in interviewer_agent.model.lower()
+
+
+def test_participant_sim_agent():
+    from methodic.agents.participant_sim import participant_sim_agent
+    assert isinstance(participant_sim_agent, Agent)
+    assert participant_sim_agent.name == "participant_sim"
+    assert participant_sim_agent.output_key == "latest_participant_turn"
+    assert "gemini" in participant_sim_agent.model.lower()
