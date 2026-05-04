@@ -1,19 +1,15 @@
-FROM node:20-alpine
-
-RUN apk add --no-cache python3 py3-pip
+FROM python:3.13-slim
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir --break-system-packages -r requirements.txt \
-    && pip install --no-cache-dir --break-system-packages google-cloud-bigquery
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY methodic/ ./methodic/
+COPY scripts/wp6_mcp_server.py ./scripts/wp6_mcp_server.py
+COPY fixtures/ ./fixtures/
+COPY docs/schema/ ./docs/schema/
 
-RUN adduser -D appuser
-USER appuser
+ENV BIGQUERY_DRY_RUN=false
 
-ENV PORT=8080
-EXPOSE ${PORT}
-
-CMD ["python3", "scripts/wp9_demo_server.py"]
+CMD ["sh", "-c", "uvicorn methodic.server:app --host 0.0.0.0 --port ${PORT:-8080}"]
