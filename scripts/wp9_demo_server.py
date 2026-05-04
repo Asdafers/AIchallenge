@@ -70,6 +70,12 @@ DEMO_STEPS = [
         "extra_output_name": "wp5_coverage_summary.json",
     },
     {
+        "id": "wp6",
+        "label": "Real MCP Boundary (lookup_deal_context)",
+        "cmd": ["python3", "scripts/wp6_mcp_boundary.py", "--output"],
+        "output_name": "wp6_mcp_trace.json",
+    },
+    {
         "id": "wp7",
         "label": "Data Quality Scoring",
         "cmd": ["python3", "scripts/wp7_data_quality.py", "--output-report"],
