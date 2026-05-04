@@ -180,3 +180,29 @@ async def test_extract_marks_partial_on_total_failure():
         )
     assert result.conversation_status == "partial"
     assert all(v == "missing" for v in result.coverage_state.values())
+
+
+from methodic.tools.bigquery_export import export_to_bigquery, _flatten_response
+
+
+def test_export_dry_run():
+    result = export_to_bigquery([_make_response()], dry_run=True)
+    assert result["rows_written"] == 1
+    assert result["dry_run"] is True
+
+
+def test_export_flattens_fields():
+    r = _make_response(
+        coverage={f: "covered_high_confidence" for f in CANONICAL_FIELDS},
+        confidence={"primary_loss_reason": 0.95, "roi_clarity": 0.8},
+    )
+    row = _flatten_response(r)
+    assert row["primary_loss_reason"] == "unclear_roi"
+    assert row["conf_primary_loss_reason"] == 0.95
+    assert row["cov_primary_loss_reason"] == "covered_high_confidence"
+    assert "exported_at" in row
+
+
+def test_export_dry_run_fail_on_error():
+    result = export_to_bigquery([_make_response()], dry_run=True, fail_on_error=True)
+    assert result["rows_written"] == 1
