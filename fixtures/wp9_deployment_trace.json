@@ -1,0 +1,226 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "generated_at": "2026-05-04T02:00:43.320589+00:00",
+  "engine_label": "deployment_smoke_test",
+  "honest_label": "Local Docker smoke test \u2014 proves the container builds, starts, serves /demo, and orchestrates all WP steps. This is NOT a live Cloud Run deployment. See operator_steps in the demo trace for actual GCP deployment instructions.",
+  "smoke_test": {
+    "image": "methodic-demo:smoke",
+    "host_port": 8091,
+    "build": {
+      "success": true,
+      "duration_s": 6.2,
+      "stdout_tail": [],
+      "stderr_tail": [
+        "#12 naming to docker.io/library/methodic-demo:smoke done",
+        "#12 unpacking to docker.io/library/methodic-demo:smoke 0.0s done",
+        "#12 DONE 0.2s",
+        "",
+        "View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/zt6lz1u5eg5l1lb0630as65r9"
+      ]
+    },
+    "container": {
+      "success": true,
+      "container_id": "9f64e43af1c6",
+      "error": null
+    },
+    "health_check": {
+      "healthy": true,
+      "attempts": 2
+    },
+    "demo_call": {
+      "success": true,
+      "status_code": 200,
+      "duration_s": 0.1
+    },
+    "container_logs_tail": "WP9 demo server listening on 0.0.0.0:8080\n  mode: local_container\n  endpoints: /demo, /health\n\"GET /health HTTP/1.1\" 200 -\n\"GET /demo HTTP/1.1\" 200 -"
+  },
+  "demo_trace": {
+    "study_id": "WL-2026-Q2-MM",
+    "generated_at": "2026-05-04T02:00:43.281430+00:00",
+    "engine_label": "cloud_run_demo_server",
+    "honest_label": "Demo trace from local_container mode. WP4 forced to fallback mode (no GEMINI_API_KEY in container). WP9a forced to dry-run (no BigQuery credentials). This proves the vertical slice orchestration, not live cloud deployment.",
+    "mode": "local_container",
+    "mode_reason": "Running inside Docker container (/.dockerenv present)",
+    "pipeline": {
+      "steps_total": 6,
+      "steps_succeeded": 6,
+      "steps_failed": 0,
+      "total_duration_ms": 142.8,
+      "all_passed": true
+    },
+    "steps": [
+      {
+        "step_id": "wp3",
+        "label": "External Request & Organizer Flow",
+        "success": true,
+        "exit_code": 0,
+        "duration_ms": 30.7,
+        "stdout_summary": [
+          "OK: 5 events written to /tmp/tmpame1oi76/wp3_event_log.json"
+        ],
+        "stderr_summary": null,
+        "output_file": "wp3_event_log.json",
+        "output_keys": null
+      },
+      {
+        "step_id": "wp4",
+        "label": "Methodology Pushback & Question Design",
+        "success": true,
+        "exit_code": 0,
+        "duration_ms": 24.8,
+        "stdout_summary": [
+          "OK: WP4 methodology package written to /tmp/tmpame1oi76/wp4_methodology_package.json",
+          "    source: deterministic_fallback",
+          "    pushbacks: 4",
+          "    questions: 8",
+          "    revised participants: 7"
+        ],
+        "stderr_summary": null,
+        "output_file": "wp4_methodology_package.json",
+        "output_keys": [
+          "study_id",
+          "generated_at",
+          "methodology_review_source",
+          "question_pool_source",
+          "mode_requested",
+          "live_call_metadata",
+          "inputs",
+          "biased_sample_plan",
+          "methodology_review",
+          "sample_revision",
+          "question_pool"
+        ]
+      },
+      {
+        "step_id": "wp5",
+        "label": "Participant Conversations & Coverage Loop",
+        "success": true,
+        "exit_code": 0,
+        "duration_ms": 21.9,
+        "stdout_summary": [
+          "OK: WP5 conversation engine complete",
+          "    participants: 3",
+          "    responses written to: /tmp/tmpame1oi76/wp5_participant_responses.json",
+          "    coverage written to: /tmp/tmpame1oi76/wp5_coverage_summary.json",
+          "    aggregate procurement_friction: ambiguous"
+        ],
+        "stderr_summary": null,
+        "output_file": "wp5_participant_responses.json",
+        "output_keys": null
+      },
+      {
+        "step_id": "wp7",
+        "label": "Data Quality Scoring",
+        "success": true,
+        "exit_code": 0,
+        "duration_ms": 18.8,
+        "stdout_summary": [
+          "OK: WP7 data quality layer complete",
+          "    participants: 3 methodic, 3 static",
+          "    methodic composite: 0.761",
+          "    static composite:   0.069",
+          "    delta composite:    +0.692"
+        ],
+        "stderr_summary": null,
+        "output_file": "wp7_quality_report.json",
+        "output_keys": [
+          "study_id",
+          "generated_at",
+          "engine_label",
+          "honest_label",
+          "rubric",
+          "per_participant",
+          "comparison"
+        ]
+      },
+      {
+        "step_id": "wp8",
+        "label": "Autonomous Re-Plan Trigger",
+        "success": true,
+        "exit_code": 0,
+        "duration_ms": 25.9,
+        "stdout_summary": [
+          "OK: WP8 autonomous re-plan trigger complete",
+          "    primary sessions: 3",
+          "    trigger: procurement_friction unresolved",
+          "    reserve added: P-005 (Procurement Lead)",
+          "    resolved: procurement_friction"
+        ],
+        "stderr_summary": null,
+        "output_file": "wp8_replan_trace.json",
+        "output_keys": [
+          "study_id",
+          "generated_at",
+          "engine_label",
+          "honest_label",
+          "primary_sessions",
+          "replan_decision",
+          "replan_session",
+          "final_coverage",
+          "resolution_summary"
+        ]
+      },
+      {
+        "step_id": "wp9a",
+        "label": "BigQuery Export Setup (dry-run)",
+        "success": true,
+        "exit_code": 0,
+        "duration_ms": 18.0,
+        "stdout_summary": [
+          "OK: WP9a BigQuery export setup complete",
+          "    mode: dry_run_forced",
+          "    reason: --dry-run flag set by operator",
+          "    schema fields: 17",
+          "    rows validated: 6"
+        ],
+        "stderr_summary": null,
+        "output_file": "wp9a_bigquery_export_trace.json",
+        "output_keys": [
+          "study_id",
+          "generated_at",
+          "engine_label",
+          "honest_label",
+          "mode",
+          "mode_reason",
+          "schema",
+          "row_validation",
+          "live_result",
+          "operator_steps"
+        ]
+      }
+    ],
+    "operator_steps": {
+      "description": "Steps to deploy this server to Cloud Run",
+      "prerequisites": [
+        "GCP project with Cloud Run API and Artifact Registry enabled",
+        "gcloud CLI authenticated (gcloud auth login)",
+        "Docker installed locally for building the image"
+      ],
+      "build_and_push": [
+        "export PROJECT_ID=my-project-id",
+        "export REGION=us-central1",
+        "gcloud artifacts repositories create methodic --repository-format=docker --location=$REGION",
+        "docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/methodic/demo-server:latest .",
+        "docker push $REGION-docker.pkg.dev/$PROJECT_ID/methodic/demo-server:latest"
+      ],
+      "deploy": [
+        "gcloud run deploy methodic-demo --image $REGION-docker.pkg.dev/$PROJECT_ID/methodic/demo-server:latest --region $REGION --allow-unauthenticated --set-env-vars GOOGLE_CLOUD_PROJECT=$PROJECT_ID,BIGQUERY_DATASET=methodic"
+      ],
+      "iam_for_bigquery": {
+        "description": "Grant the Cloud Run service account BigQuery access at dataset scope",
+        "commands": [
+          "bq show --format=prettyjson $PROJECT_ID:methodic | jq '.access += [{\"role\": \"WRITER\", \"userByEmail\": \"$SA_EMAIL\"}]' | bq update --source /dev/stdin $PROJECT_ID:methodic",
+          "gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$SA_EMAIL --role=roles/bigquery.jobUser"
+        ],
+        "note": "dataEditor scoped to dataset (not project) per least-privilege principle"
+      },
+      "verify": "curl https://methodic-demo-HASH-uc.a.run.app/demo | jq ."
+    }
+  },
+  "verification": {
+    "all_steps_passed": true,
+    "mode": "local_container",
+    "steps_succeeded": 6,
+    "steps_total": 6
+  }
+}
