@@ -40,3 +40,18 @@ def test_participant_sim_agent():
     assert participant_sim_agent.name == "participant_sim"
     assert participant_sim_agent.output_key == "latest_participant_turn"
     assert "gemini" in participant_sim_agent.model.lower()
+
+
+def test_quality_agent():
+    from methodic.agents.quality import quality_agent
+    assert isinstance(quality_agent, Agent)
+    assert quality_agent.name == "quality_reviewer"
+    assert quality_agent.output_key == "quality_report"
+
+
+def test_replanner_agent():
+    from methodic.agents.replanner import replanner_agent
+    assert isinstance(replanner_agent, Agent)
+    assert replanner_agent.name == "replanner"
+    assert replanner_agent.output_key == "replan_decision"
+    assert len(replanner_agent.tools) > 0, "replanner must have check_coverage tool"
