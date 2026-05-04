@@ -116,12 +116,12 @@ python3 scripts/wp9a_bigquery_export.py --dry-run --output /tmp/demo_wp9a.json
 **On screen:** Structured JSON export with evidence quotes linked to variables. CSV export. BigQuery schema with 17 fields, 6 validated rows.
 
 **Voiceover:**
-> "The final dataset exports to BigQuery with full evidence linking — every data point traces back to the conversation turn that produced it."
+> "The final dataset is BigQuery-ready with full evidence linking — every data point traces back to the conversation turn that produced it. Schema validation and dry-run export confirm the rows are clean."
 
 **On screen:** Show the deployment trace (`fixtures/wp9_deployment_trace.json`): 7/7 steps pass in Docker container. Show the `honest_label` and `operator_steps` for Cloud Run deployment.
 
 **Voiceover:**
-> "Powered by Gemini, built with the Agent Development Kit, and containerized for Cloud Run, Methodic exports clean, decision-ready data. Static surveys give you 'price.' Methodic gives you the procurement friction that actually killed the deal."
+> "Powered by Gemini, connected through MCP, and containerized for Cloud Run, Methodic exports clean, decision-ready data. Static surveys give you 'price.' Methodic gives you the procurement friction that actually killed the deal."
 
 **On screen:** Side-by-side quality comparison: static composite 0.069 vs Methodic composite 0.761. Delta: +0.692.
 

@@ -28,12 +28,12 @@ Recording plan for the 3:30 Methodic demo video. Each shot specifies what to cap
 | 5 | 0:50-1:10 | Terminal | Revised sample + questions | `jq .sample_revision /tmp/demo_wp4.json` then `jq '.question_pool[:3]' /tmp/demo_wp4.json` | Show economic buyers added, question-variable mapping |
 | 6 | 1:10-1:30 | Split terminal | Static vs Methodic conversation | Left: `cat fixtures/static_baseline/P-001.json \| jq .responses[0]` Right: `python3 scripts/wp5_conversation_engine.py ...` | Emphasize follow-up probing vs flat answers |
 | 7 | 1:30-1:55 | Terminal | MCP triangulation | `python3 scripts/wp6_mcp_boundary.py --output /tmp/demo_wp6.json` | Show stdout: transport, tools, 3 calls. Then `jq '.calls[0].response' /tmp/demo_wp6.json` for CRM context |
-| 8 | 1:55-2:00 | Terminal | Guardrail event | `jq '.calls[0].follow_up_evidence' /tmp/demo_wp6.json` | Quick flash of guardrail handling in trace |
+| 8 | 1:55-2:00 | Terminal | Guardrail event | `jq '.processing_events["P-002"][] | select(.event_type=="guardrail_triggered")' fixtures/wp5_coverage_summary.json` | Quick flash of guardrail handling in trace |
 | 9 | 2:00-2:25 | Terminal | Quality scoring | `python3 scripts/wp7_data_quality.py --output-report /tmp/demo_wp7.json ...` | Show stdout: methodic 0.761 vs static 0.069, delta +0.692 |
 | 10 | 2:25-2:50 | Terminal | Re-plan trigger | `python3 scripts/wp8_replan_trigger.py --output /tmp/demo_wp8.json` | Show stdout: procurement_friction → P-005 → resolved |
 | 11 | 2:50-3:10 | Terminal | BigQuery export | `python3 scripts/wp9a_bigquery_export.py --dry-run --output /tmp/demo_wp9a.json` | Show stdout: 17 schema fields, 6 rows validated |
 | 12 | 3:10-3:25 | Terminal | Container demo proof | `jq '.demo_trace.pipeline' fixtures/wp9_deployment_trace.json` | Show 7/7 steps passed, total duration, local_container mode |
-| 13 | 3:25-3:30 | Title card | "Methodic — Decision in, governed data out." | Static overlay | Add: "Gemini · ADK · MCP · Cloud Run" |
+| 13 | 3:25-3:30 | Title card | "Methodic — Decision in, governed data out." | Static overlay | Add: "Gemini · MCP · Cloud Run · BigQuery" |
 
 ## Post-Production
 

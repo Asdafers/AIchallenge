@@ -13,7 +13,7 @@ Static B2B surveys produce shallow answers like "price." Methodic replaces them 
 3. **Conducts adaptive conversations** that probe vague answers into decision-relevant variables
 4. **Uses MCP to triangulate** CRM and telemetry context through a real server boundary
 5. **Tracks coverage and autonomously re-plans** when measurement gaps remain
-6. **Exports structured data** to BigQuery with full evidence traceability
+6. **Validates and exports structured data** in a BigQuery-ready schema with full evidence traceability
 
 Result: **+69% quality improvement** over static surveys (same rubric, same participants).
 

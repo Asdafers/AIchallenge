@@ -25,7 +25,7 @@ Methodic replaces static B2B surveys with an autonomous research operations work
 3. Conducts interactive participant conversations that probe vague answers ("price") into decision-relevant variables ("procurement friction vs. ROI justification")
 4. Uses MCP to securely look up CRM and telemetry context, turning generic responses into evidence-linked data points
 5. Tracks variable coverage in real time and autonomously re-plans when gaps remain
-6. Exports structured, scored data to BigQuery with full evidence traceability
+6. Validates and exports structured, scored data in a BigQuery-ready schema with full evidence traceability
 
 The result: a +69% quality improvement over static surveys, measured by the same rubric applied to both.
 
@@ -73,7 +73,6 @@ The hardest part of building an autonomous agent isn't the AI — it's the gover
 ## Built with
 
 - Gemini API
-- Agent Development Kit (ADK)
 - Model Context Protocol (MCP)
 - Cloud Run (containerized, deployment-ready)
 - BigQuery (schema-validated, dry-run export)
