@@ -112,3 +112,71 @@ def test_score_quality_partial():
     assert q.variable_coverage < 1.0
     assert q.ambiguity_resolved is False
     assert q.requires_recontact is True
+
+
+from unittest.mock import patch
+from methodic.tools.extractor import extract_structured_fields
+
+
+@pytest.mark.asyncio
+async def test_extract_structured_fields_mock():
+    mock_extraction = {
+        "primary_loss_reason": "unclear_roi",
+        "secondary_loss_reason": None,
+        "roi_clarity": "unclear",
+        "budget_timing": "out_of_cycle",
+        "procurement_friction": "none",
+        "security_concern": "none",
+        "competitor_pressure": "none",
+        "aha_moment_reached": "no",
+        "field_confidence": {"primary_loss_reason": 0.92, "roi_clarity": 0.85},
+        "evidence": [{
+            "field": "primary_loss_reason",
+            "quote": "We could never prove the ROI",
+            "transcript_turn_id": "turn-003",
+            "context_used": ["crm_notes"],
+        }],
+    }
+
+    with patch("methodic.tools.extractor._call_gemini_extraction") as mock:
+        mock.return_value = mock_extraction
+        result = await extract_structured_fields(
+            transcript=[
+                {"role": "interviewer", "content": "What led to the decision?"},
+                {"role": "participant", "content": "We could never prove the ROI internally."},
+            ],
+            participant_id="P-001",
+            study_id="STUDY-001",
+        )
+    assert result.structured_fields.primary_loss_reason == "unclear_roi"
+    assert result.field_confidence["primary_loss_reason"] == pytest.approx(0.92)
+    assert len(result.evidence) == 1
+
+
+@pytest.mark.asyncio
+async def test_extract_handles_invalid_json():
+    with patch("methodic.tools.extractor._call_gemini_extraction") as mock:
+        mock.side_effect = [ValueError("Invalid JSON"), {
+            "primary_loss_reason": "unknown", "secondary_loss_reason": None,
+            "roi_clarity": "unknown", "budget_timing": "unknown",
+            "procurement_friction": "unknown", "security_concern": "unknown",
+            "competitor_pressure": "unknown", "aha_moment_reached": "unknown",
+            "field_confidence": {}, "evidence": [],
+        }]
+        result = await extract_structured_fields(
+            transcript=[{"role": "interviewer", "content": "Hello"}],
+            participant_id="P-001", study_id="STUDY-001",
+        )
+    assert result.conversation_status == "partial"
+
+
+@pytest.mark.asyncio
+async def test_extract_marks_partial_on_total_failure():
+    with patch("methodic.tools.extractor._call_gemini_extraction") as mock:
+        mock.side_effect = Exception("API timeout")
+        result = await extract_structured_fields(
+            transcript=[{"role": "interviewer", "content": "Hello"}],
+            participant_id="P-001", study_id="STUDY-001",
+        )
+    assert result.conversation_status == "partial"
+    assert all(v == "missing" for v in result.coverage_state.values())
