@@ -14,7 +14,7 @@ Use this table to verify that every required proof beat is visible in the demo, 
 | B6 | Autonomous re-plan | `scripts/wp8_replan_trigger.py` | `fixtures/wp8_replan_trace.json` (`procurement_friction` unresolved → P-005 Procurement Lead added → resolved) | Scene 4: `procurement_friction: AMBIGUOUS` triggers one extra session; dashboard updates to resolved |
 | B7 | Measurable quality delta | `scripts/wp7_data_quality.py` | `fixtures/wp7_quality_report.json` (methodic composite: 0.761 vs static: 0.069, delta: +0.692), `fixtures/wp7_quality_export.csv`, `fixtures/wp7_bigquery_schema.json` | Scene 5: Side-by-side quality comparison, same rubric applied to both |
 | B8 | Google-aligned deployability | `scripts/wp9_demo_server.py`, `scripts/wp9_deployment_smoke.py`, `Dockerfile` | `fixtures/wp9_deployment_trace.json` (7/7 steps pass in `local_container` mode, operator_steps for Cloud Run deploy), `fixtures/wp9a_bigquery_export_trace.json` (BigQuery schema + dry-run validation) | Scene 5: BigQuery-ready dry-run export, Cloud Run deployment instructions in trace, Docker container proof |
-| B9 | Guardrail recovery | `scripts/wp5_conversation_engine.py` | `fixtures/wp5_participant_responses.json` (guardrail events: contradiction handling for P-001, frustration handling for P-003, logged without forcing category change) | Scene 3: Quick callout in trace log showing guardrail event handled + logged |
+| B9 | Guardrail recovery | `scripts/wp5_conversation_engine.py` | `fixtures/wp5_coverage_summary.json` (guardrail event: P-002 vague answer on `procurement_friction` at T-002-07, action `mark_ambiguous`, `measurement_intent_preserved: true`) | Scene 3: Quick callout in trace log showing guardrail event handled + logged |
 
 ## Verification Commands
 

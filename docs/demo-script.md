@@ -71,7 +71,7 @@ python3 scripts/wp6_mcp_boundary.py --output /tmp/demo_wp6.json
 **Voiceover:**
 > "Methodic uses the Model Context Protocol to securely pull CRM telemetry, turning vague answers into precise, evidence-linked data. The MCP server filters fields to only what the study approves — no data leakage."
 
-**On screen:** Show `filtering_verified: true` in the trace, the `allowed_fields` list, and the guardrail event log (B9: contradiction handled for P-001 without forcing category).
+**On screen:** Show `filtering_verified: true` in the trace, the `allowed_fields` list, and the guardrail event log (B9: P-002 vague answer on `procurement_friction` handled by marking ambiguous, measurement intent preserved).
 
 **Proof beats:** B3 (interactive capture), B4 (MCP triangulation), B9 (guardrail recovery)
 
