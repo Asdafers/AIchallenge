@@ -25,8 +25,8 @@ AGENT_CARD = {
     ),
     "version": "1.0.0",
     "url": "https://methodic.run.app",
-    "capabilities": {},
-    "supportedInterfaces": ["text"],
+    "capabilities": {"streaming": False, "pushNotifications": False},
+    "authentication": {"schemes": ["none"]},
     "defaultInputModes": ["text/plain"],
     "defaultOutputModes": ["text/plain", "application/json"],
     "skills": [{

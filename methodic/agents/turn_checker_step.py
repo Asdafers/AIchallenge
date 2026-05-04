@@ -6,10 +6,11 @@ because ADK workflow sub_agents must be agent instances.
 """
 
 from __future__ import annotations
-from typing import Any
+from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
-from google.genai import types
+from google.adk.agents.invocation_context import InvocationContext
+from google.adk.events import Event
 
 from methodic.schemas import CANONICAL_FIELDS
 
@@ -30,9 +31,11 @@ class TurnCheckerStep(BaseAgent):
             return True
         return False
 
-    async def _run_async_impl(self, ctx) -> types.Content | None:
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
         state = ctx.session.state
         state["turn_count"] = state.get("turn_count", 0) + 1
         if self.should_escalate(state):
             ctx.actions.escalate = True
-        return None
+        yield Event(author=self.name, content=None)

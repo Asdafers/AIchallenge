@@ -87,9 +87,11 @@ async def _call_gemini_extraction(transcript_text: str) -> dict[str, Any]:
         contents=EXTRACTION_PROMPT.format(transcript=transcript_text),
         config={
             "response_mime_type": "application/json",
-            "response_json_schema": EXTRACTION_SCHEMA,
+            "response_schema": EXTRACTION_SCHEMA,
         },
     )
+    if not response.text:
+        raise ValueError("Empty response from Gemini")
     return json.loads(response.text)
 
 

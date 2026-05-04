@@ -50,11 +50,9 @@ def test_quality_agent():
 
 
 def test_replanner_agent():
-    from methodic.agents.replanner import replanner_agent
-    assert isinstance(replanner_agent, Agent)
+    from methodic.agents.replanner import replanner_agent, ReplannerStep
+    assert isinstance(replanner_agent, ReplannerStep)
     assert replanner_agent.name == "replanner"
-    assert replanner_agent.output_key == "replan_decision"
-    assert len(replanner_agent.tools) > 0, "replanner must have check_coverage tool"
 
 
 from google.adk.agents.sequential_agent import SequentialAgent

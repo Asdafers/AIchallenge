@@ -10,13 +10,14 @@ root_agent (SequentialAgent)
   |
   +-- fieldwork_loop (LoopAgent, max_iterations=3)
   |     +-- session_runner (SequentialAgent)
+  |     |     +-- session_init (custom BaseAgent, resets turn_count)
   |     |     +-- interview_loop (LoopAgent, max_iterations=6)
   |     |           +-- interviewer (LlmAgent + MCP tools)
   |     |           +-- participant_sim (LlmAgent)
-  |     |           +-- extractor_step (custom BaseAgent)
-  |     |           +-- turn_checker (custom BaseAgent, escalates)
+  |     |           +-- extractor_step (custom BaseAgent, assembles transcript)
+  |     |           +-- turn_checker (custom BaseAgent, escalates inner loop)
   |     +-- coverage_step (custom BaseAgent)
-  |     +-- replanner (LlmAgent + check_coverage tool, escalates)
+  |     +-- replanner (custom BaseAgent, escalates outer loop on STOP)
   |
   +-- finalize (SequentialAgent)
         +-- quality_reviewer (LlmAgent)
@@ -40,6 +41,7 @@ from methodic.agents.extractor_step import ExtractorStep
 from methodic.agents.turn_checker_step import TurnCheckerStep
 from methodic.agents.coverage_step import CoverageStep
 from methodic.agents.bigquery_export_step import BigQueryExportStep
+from methodic.agents.session_init_step import SessionInitStep
 
 # Phase 1: Study Planning
 study_planner = SequentialAgent(
@@ -61,7 +63,7 @@ interview_loop = LoopAgent(
 
 session_runner = SequentialAgent(
     name="session_runner",
-    sub_agents=[interview_loop],
+    sub_agents=[SessionInitStep(name="session_init"), interview_loop],
 )
 
 fieldwork_loop = LoopAgent(

@@ -1,9 +1,11 @@
 """Coverage step - computes study-wide coverage from all participant responses."""
 
 from __future__ import annotations
+from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
-from google.genai import types
+from google.adk.agents.invocation_context import InvocationContext
+from google.adk.events import Event
 
 from methodic.schemas import ParticipantResponse
 from methodic.tools.coverage_checker import check_coverage
@@ -17,9 +19,11 @@ class CoverageStep(BaseAgent):
         ]
         return check_coverage(responses)
 
-    async def _run_async_impl(self, ctx) -> types.Content | None:
+    async def _run_async_impl(
+        self, ctx: InvocationContext
+    ) -> AsyncGenerator[Event, None]:
         state = ctx.session.state
         responses_by_id = state.get("participant_response_by_id", {})
         result = self.compute(responses_by_id)
         state["coverage_state"] = result
-        return None
+        yield Event(author=self.name, content=None)
