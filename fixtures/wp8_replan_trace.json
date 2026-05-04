@@ -1,0 +1,316 @@
+{
+  "study_id": "WL-2026-Q2-MM",
+  "generated_at": "2026-05-04T00:32:17.503917+00:00",
+  "engine_label": "autonomous_replan_trigger",
+  "honest_label": "Autonomous re-plan triggered by unresolved coverage gap in primary sessions. Reserve participant added from fixture data using deterministic replay. This demonstrates the re-plan mechanism, not live participant recruitment.",
+  "primary_sessions": {
+    "participants": [
+      "P-001",
+      "P-002",
+      "P-003"
+    ],
+    "coverage_check": {
+      "triggered": true,
+      "unresolved_variables": [
+        "procurement_friction"
+      ],
+      "unresolved_details": {
+        "procurement_friction": {
+          "aggregate_state": "ambiguous",
+          "contributing_personas": {
+            "P-001": {
+              "state": "covered_low_confidence",
+              "value": "unknown"
+            },
+            "P-002": {
+              "state": "ambiguous",
+              "value": "unknown"
+            },
+            "P-003": {
+              "state": "ambiguous",
+              "value": "unknown"
+            }
+          }
+        }
+      },
+      "recommended_action": "Add P-005 (slipping_deal_procurement, Procurement Lead) to resolve procurement_friction with a targeted session."
+    }
+  },
+  "replan_decision": {
+    "triggered": true,
+    "trigger_variable": [
+      "procurement_friction"
+    ],
+    "rationale": "After 3 primary sessions, procurement_friction remained ambiguous/unresolved. The coverage loop identified P-005 (Procurement Lead, segment: slipping_deal_procurement) as a reserve participant scoped to procurement_friction. Adding exactly one targeted session to resolve the gap.",
+    "reserve_participant": {
+      "participant_id": "P-005",
+      "role": "Procurement Lead",
+      "segment": "slipping_deal_procurement",
+      "replan_scope_variables": [
+        "procurement_friction"
+      ]
+    },
+    "added_before_trigger": false,
+    "added_count": 1
+  },
+  "replan_session": {
+    "participant_id": "P-005",
+    "response": {
+      "participant_id": "P-005",
+      "study_id": "WL-2026-Q2-MM",
+      "segment": "slipping_deal_procurement",
+      "persona_summary": "Procurement Lead at slipping deal blocked on vendor consolidation",
+      "conversation_status": "partial",
+      "structured_fields": {
+        "primary_loss_reason": "unknown",
+        "secondary_loss_reason": "unclear_roi",
+        "roi_clarity": "unknown",
+        "budget_timing": "unknown",
+        "procurement_friction": "high",
+        "security_concern": "unknown",
+        "competitor_pressure": "unknown",
+        "aha_moment_reached": "unknown"
+      },
+      "field_confidence": {
+        "secondary_loss_reason": 0.55,
+        "procurement_friction": 0.88
+      },
+      "coverage_state": {
+        "primary_loss_reason": "missing",
+        "secondary_loss_reason": "covered_low_confidence",
+        "roi_clarity": "missing",
+        "budget_timing": "missing",
+        "procurement_friction": "covered_high_confidence",
+        "security_concern": "missing",
+        "competitor_pressure": "missing",
+        "aha_moment_reached": "missing"
+      },
+      "quality": {
+        "variable_coverage": 0.25,
+        "ambiguity_resolved": true,
+        "evidence_linked": true,
+        "requires_recontact": true
+      },
+      "evidence": [
+        {
+          "field": "procurement_friction",
+          "quote": "We're consolidating vendors. To add another vendor we need stronger ROI evidence than the team brought.",
+          "transcript_turn_id": "T-005-04",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ]
+        },
+        {
+          "field": "procurement_friction",
+          "quote": "An exception exists but the bar is high. The team didn't meet it.",
+          "transcript_turn_id": "T-005-07",
+          "context_used": [
+            "lookup_deal_context.crm_notes"
+          ]
+        },
+        {
+          "field": "secondary_loss_reason",
+          "quote": "we need stronger ROI evidence than the team brought.",
+          "transcript_turn_id": "T-005-04",
+          "context_used": []
+        }
+      ],
+      "unresolved_ambiguities": []
+    },
+    "transcript_turns": 7
+  },
+  "final_coverage": {
+    "primary_loss_reason": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "unclear_roi"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "competitor_pressure"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "unclear_roi"
+        },
+        "P-005": {
+          "state": "missing",
+          "value": "unknown"
+        }
+      }
+    },
+    "secondary_loss_reason": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_low_confidence",
+          "value": "budget_timing"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "procurement_friction"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "economic_buyer_gap"
+        },
+        "P-005": {
+          "state": "covered_low_confidence",
+          "value": "unclear_roi"
+        }
+      }
+    },
+    "roi_clarity": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "unclear"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "partially_clear"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "unclear"
+        },
+        "P-005": {
+          "state": "missing",
+          "value": "unknown"
+        }
+      }
+    },
+    "budget_timing": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "out_of_cycle"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "unknown"
+        },
+        "P-003": {
+          "state": "covered_low_confidence",
+          "value": "unknown"
+        },
+        "P-005": {
+          "state": "missing",
+          "value": "unknown"
+        }
+      }
+    },
+    "procurement_friction": {
+      "state": "covered_high_confidence",
+      "previous_state": "ambiguous",
+      "changed": true,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_low_confidence",
+          "value": "unknown"
+        },
+        "P-002": {
+          "state": "ambiguous",
+          "value": "unknown"
+        },
+        "P-003": {
+          "state": "ambiguous",
+          "value": "unknown"
+        },
+        "P-005": {
+          "state": "covered_high_confidence",
+          "value": "high"
+        }
+      }
+    },
+    "security_concern": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        },
+        "P-002": {
+          "state": "covered_high_confidence",
+          "value": "low"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        },
+        "P-005": {
+          "state": "missing",
+          "value": "unknown"
+        }
+      }
+    },
+    "competitor_pressure": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "named_competitor"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "none"
+        },
+        "P-005": {
+          "state": "missing",
+          "value": "unknown"
+        }
+      }
+    },
+    "aha_moment_reached": {
+      "state": "covered_high_confidence",
+      "previous_state": "covered_high_confidence",
+      "changed": false,
+      "contributing_personas": {
+        "P-001": {
+          "state": "covered_high_confidence",
+          "value": "no"
+        },
+        "P-002": {
+          "state": "covered_low_confidence",
+          "value": "no"
+        },
+        "P-003": {
+          "state": "covered_high_confidence",
+          "value": "no"
+        },
+        "P-005": {
+          "state": "missing",
+          "value": "unknown"
+        }
+      }
+    }
+  },
+  "resolution_summary": {
+    "resolved_variables": [
+      "procurement_friction"
+    ],
+    "still_unresolved": [],
+    "procurement_friction_final": "covered_high_confidence",
+    "all_target_variables_resolved": true
+  }
+}
