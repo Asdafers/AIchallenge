@@ -15,9 +15,9 @@ To ensure Methodic is seen as an **agentic workflow**, the demo must emphasize i
 - **Coverage & Re-plan:** It doesn't just collect transcripts; it tracks variable coverage and autonomously decides to field another interview when a variable is ambiguous.
 
 ### Showing the Google Stack (Without Distracting)
-- **Gemini & ADK:** Narrated during the planning and conversation phases.
+- **Gemini:** Narrated during the planning and conversation phases, with deterministic fallback clearly labeled when no API key is present.
 - **MCP:** Visually demonstrated during the participant conversation via a subtle "Developer Overlay" or "Trace Panel" showing the tool call (`lookup_deal_context`).
-- **Cloud Run / BigQuery:** Proven at the end during the export phase, cementing the enterprise-readiness of the stack.
+- **Cloud Run / BigQuery:** Shown honestly at the end as local container proof for Cloud Run readiness and BigQuery-ready dry-run schema validation.
 
 ### What to Cut or Compress
 If the 3-4 minute demo feels too busy:
@@ -52,9 +52,9 @@ If the 3-4 minute demo feels too busy:
 - **Voiceover:** "Methodic pursues measurement coverage. When a variable remains ambiguous, it autonomously re-plans and fields an additional session."
 
 ### Scene 5: Export & Google Stack Close (2:50 - 3:30)
-- **Visual:** The structured JSON/CSV and the BigQuery export table.
+- **Visual:** The structured JSON/CSV, BigQuery-ready schema validation, and dry-run export trace.
 - **Action:** Show the evidence quotes linked directly to the structured variables.
-- **Voiceover:** "Powered by Gemini, built with the Agent Development Kit, and deployed on Cloud Run, Methodic exports clean, decision-ready data to BigQuery. Methodic: Decision in, governed data out."
+- **Voiceover:** "Powered by Gemini, connected through MCP, and containerized for Cloud Run, Methodic produces BigQuery-ready, evidence-linked data. Methodic: Decision in, governed data out."
 
 ---
 
@@ -64,4 +64,4 @@ If the 3-4 minute demo feels too busy:
 | :--- | :--- | :--- |
 | **Text-Heavy Split Screen** | Major | The split-screen comparison (Static vs Methodic) is crucial but hard to read quickly. Highlight or zoom in on the exact text of the Methodic follow-up question and the MCP trace. |
 | **Re-plan Confusion** | Major | If the coverage metric isn't visually obvious, the re-plan looks random. Ensure the dashboard clearly displays `procurement_friction: AMBIGUOUS` turning red before the re-plan triggers. |
-| **Stack Distraction** | Minor | Over-explaining ADK/Cloud Run could dilute the B2B SaaS product story. Keep the stack mentions brief and relegated to the developer overlay and export step. |
+| **Stack Distraction** | Minor | Over-explaining stack details could dilute the B2B SaaS product story. Keep the technical mentions brief and relegated to the developer overlay and export step. |
