@@ -26,6 +26,7 @@ CRM_DIR = REPO_ROOT / "fixtures" / "crm"
 TELEMETRY_DIR = REPO_ROOT / "fixtures" / "telemetry"
 
 ALLOWED_FIELDS_ENUM = ["deal_stage", "persona", "trial_usage", "crm_notes"]
+TELEMETRY_FIELDS = ["login_count", "features_used", "report_builder_reached", "executive_logins"]
 
 server = Server("methodic-context")
 _DELAY_SECONDS = 0.0
@@ -88,27 +89,54 @@ async def list_tools() -> list[Tool]:
                 },
                 "required": ["participant_id", "allowed_fields"],
             },
-        )
+        ),
+        Tool(
+            name="lookup_trial_telemetry",
+            description=(
+                "Look up trial usage telemetry for a participant. Returns login count, "
+                "features used, report builder access, and executive login data."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "participant_id": {
+                        "type": "string",
+                        "description": "Participant identifier (e.g., P-001)",
+                    },
+                },
+                "required": ["participant_id"],
+            },
+        ),
     ]
 
 
 @server.call_tool()
-async def call_tool(
-    name: str, arguments: dict[str, Any],
-) -> list[TextContent]:
-    if name != "lookup_deal_context":
-        raise ValueError(f"Unknown tool: {name}")
-
+async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
     participant_id = arguments["participant_id"]
-    allowed_fields = arguments.get("allowed_fields", ALLOWED_FIELDS_ENUM)
 
-    merged = _build_merged_context(participant_id)
-    filtered = {k: merged[k] for k in allowed_fields if k in merged}
+    if name == "lookup_deal_context":
+        allowed_fields = arguments.get("allowed_fields", ALLOWED_FIELDS_ENUM)
+        merged = _build_merged_context(participant_id)
+        filtered = {k: merged[k] for k in allowed_fields if k in merged}
+        if _DELAY_SECONDS > 0:
+            await asyncio.sleep(_DELAY_SECONDS)
+        return [TextContent(type="text", text=json.dumps(filtered, indent=2))]
 
-    if _DELAY_SECONDS > 0:
-        await asyncio.sleep(_DELAY_SECONDS)
+    elif name == "lookup_trial_telemetry":
+        telemetry_path = TELEMETRY_DIR / f"{participant_id}.json"
+        if not telemetry_path.exists():
+            return [TextContent(
+                type="text",
+                text=json.dumps({"error": f"No telemetry data found for {participant_id}"}),
+            )]
+        telemetry = _load_json(telemetry_path)
+        filtered = {k: telemetry[k] for k in TELEMETRY_FIELDS if k in telemetry}
+        if _DELAY_SECONDS > 0:
+            await asyncio.sleep(_DELAY_SECONDS)
+        return [TextContent(type="text", text=json.dumps(filtered, indent=2))]
 
-    return [TextContent(type="text", text=json.dumps(filtered, indent=2))]
+    else:
+        raise ValueError(f"Unknown tool: {name}")
 
 
 async def main() -> None:
