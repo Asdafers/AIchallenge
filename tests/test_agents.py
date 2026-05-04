@@ -55,3 +55,39 @@ def test_replanner_agent():
     assert replanner_agent.name == "replanner"
     assert replanner_agent.output_key == "replan_decision"
     assert len(replanner_agent.tools) > 0, "replanner must have check_coverage tool"
+
+
+from google.adk.agents.sequential_agent import SequentialAgent
+from google.adk.agents import LoopAgent
+
+
+def test_root_agent():
+    from methodic.agent import root_agent
+    assert isinstance(root_agent, SequentialAgent)
+    assert root_agent.name == "methodic"
+    assert len(root_agent.sub_agents) == 3
+
+
+def test_interview_loop_has_4_steps():
+    from methodic.agent import interview_loop
+    assert isinstance(interview_loop, LoopAgent)
+    assert interview_loop.max_iterations == 6
+    names = [a.name for a in interview_loop.sub_agents]
+    assert "interviewer" in names
+    assert "participant_sim" in names
+    assert "extractor_step" in names
+    assert "turn_checker" in names
+
+
+def test_fieldwork_loop_has_replanner():
+    from methodic.agent import fieldwork_loop
+    assert isinstance(fieldwork_loop, LoopAgent)
+    names = [a.name for a in fieldwork_loop.sub_agents]
+    assert "replanner" in names
+
+
+def test_finalize_has_export():
+    from methodic.agent import finalize
+    names = [a.name for a in finalize.sub_agents]
+    assert "bigquery_export" in names
+    assert "quality_reviewer" in names
