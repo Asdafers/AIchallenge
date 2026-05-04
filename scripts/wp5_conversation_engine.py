@@ -471,7 +471,7 @@ def build_coverage_summary(
                 "resolve procurement_friction with a targeted session."
                 if unresolved else "No re-plan needed."
             ),
-            "note": "This signal is consumed by WP6 autonomous re-plan.",
+            "note": "This signal is consumed by WP8 autonomous re-plan.",
         },
         "quality_summary": {
             "methodic": {

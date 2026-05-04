@@ -1,6 +1,6 @@
 {
   "study_id": "WL-2026-Q2-MM",
-  "generated_at": "2026-05-03T15:43:06.045239+00:00",
+  "generated_at": "2026-05-03T21:24:17.735113+00:00",
   "engine_label": "deterministic_fixture_replay",
   "extraction_source": "fixture_ground_truth",
   "honest_label": "This is NOT a production conversation engine. It is an honestly labeled prototype that demonstrates the conversation pipeline using deterministic fixture data. Structured field extraction uses fixture ground truth, not NLP.",
@@ -181,7 +181,7 @@
       "procurement_friction"
     ],
     "recommended_action": "Add P-005 (slipping_deal_procurement, Procurement Lead) to resolve procurement_friction with a targeted session.",
-    "note": "This signal is consumed by WP6 autonomous re-plan."
+    "note": "This signal is consumed by WP8 autonomous re-plan."
   },
   "quality_summary": {
     "methodic": {
@@ -251,7 +251,7 @@
     "P-001": [
       {
         "index": 0,
-        "timestamp": "2026-05-03T15:43:06.042053+00:00",
+        "timestamp": "2026-05-03T21:24:17.731470+00:00",
         "event_type": "conversation_started",
         "persona_id": "P-001",
         "payload": {
@@ -266,7 +266,7 @@
       },
       {
         "index": 1,
-        "timestamp": "2026-05-03T15:43:06.042203+00:00",
+        "timestamp": "2026-05-03T21:24:17.731663+00:00",
         "event_type": "question_asked",
         "persona_id": "P-001",
         "payload": {
@@ -281,7 +281,7 @@
       },
       {
         "index": 2,
-        "timestamp": "2026-05-03T15:43:06.042205+00:00",
+        "timestamp": "2026-05-03T21:24:17.731666+00:00",
         "event_type": "participant_response",
         "persona_id": "P-001",
         "payload": {
@@ -291,7 +291,7 @@
       },
       {
         "index": 3,
-        "timestamp": "2026-05-03T15:43:06.042221+00:00",
+        "timestamp": "2026-05-03T21:24:17.731682+00:00",
         "event_type": "question_asked",
         "persona_id": "P-001",
         "payload": {
@@ -306,7 +306,7 @@
       },
       {
         "index": 4,
-        "timestamp": "2026-05-03T15:43:06.042222+00:00",
+        "timestamp": "2026-05-03T21:24:17.731683+00:00",
         "event_type": "participant_response",
         "persona_id": "P-001",
         "payload": {
@@ -316,7 +316,7 @@
       },
       {
         "index": 5,
-        "timestamp": "2026-05-03T15:43:06.042224+00:00",
+        "timestamp": "2026-05-03T21:24:17.731686+00:00",
         "event_type": "tool_call_executed",
         "persona_id": "P-001",
         "payload": {
@@ -331,7 +331,7 @@
       },
       {
         "index": 6,
-        "timestamp": "2026-05-03T15:43:06.042243+00:00",
+        "timestamp": "2026-05-03T21:24:17.731706+00:00",
         "event_type": "question_asked",
         "persona_id": "P-001",
         "payload": {
@@ -346,7 +346,7 @@
       },
       {
         "index": 7,
-        "timestamp": "2026-05-03T15:43:06.042245+00:00",
+        "timestamp": "2026-05-03T21:24:17.731707+00:00",
         "event_type": "participant_response",
         "persona_id": "P-001",
         "payload": {
@@ -356,7 +356,7 @@
       },
       {
         "index": 8,
-        "timestamp": "2026-05-03T15:43:06.042259+00:00",
+        "timestamp": "2026-05-03T21:24:17.731722+00:00",
         "event_type": "question_asked",
         "persona_id": "P-001",
         "payload": {
@@ -371,7 +371,7 @@
       },
       {
         "index": 9,
-        "timestamp": "2026-05-03T15:43:06.042261+00:00",
+        "timestamp": "2026-05-03T21:24:17.731723+00:00",
         "event_type": "participant_response",
         "persona_id": "P-001",
         "payload": {
@@ -381,7 +381,7 @@
       },
       {
         "index": 10,
-        "timestamp": "2026-05-03T15:43:06.042274+00:00",
+        "timestamp": "2026-05-03T21:24:17.731737+00:00",
         "event_type": "question_asked",
         "persona_id": "P-001",
         "payload": {
@@ -396,7 +396,7 @@
       },
       {
         "index": 11,
-        "timestamp": "2026-05-03T15:43:06.042275+00:00",
+        "timestamp": "2026-05-03T21:24:17.731737+00:00",
         "event_type": "participant_response",
         "persona_id": "P-001",
         "payload": {
@@ -406,7 +406,7 @@
       },
       {
         "index": 12,
-        "timestamp": "2026-05-03T15:43:06.042276+00:00",
+        "timestamp": "2026-05-03T21:24:17.731740+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -424,7 +424,7 @@
       },
       {
         "index": 13,
-        "timestamp": "2026-05-03T15:43:06.042278+00:00",
+        "timestamp": "2026-05-03T21:24:17.731741+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -442,7 +442,7 @@
       },
       {
         "index": 14,
-        "timestamp": "2026-05-03T15:43:06.042279+00:00",
+        "timestamp": "2026-05-03T21:24:17.731742+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -458,7 +458,7 @@
       },
       {
         "index": 15,
-        "timestamp": "2026-05-03T15:43:06.042280+00:00",
+        "timestamp": "2026-05-03T21:24:17.731743+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -476,7 +476,7 @@
       },
       {
         "index": 16,
-        "timestamp": "2026-05-03T15:43:06.042281+00:00",
+        "timestamp": "2026-05-03T21:24:17.731744+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -492,7 +492,7 @@
       },
       {
         "index": 17,
-        "timestamp": "2026-05-03T15:43:06.042282+00:00",
+        "timestamp": "2026-05-03T21:24:17.731745+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -508,7 +508,7 @@
       },
       {
         "index": 18,
-        "timestamp": "2026-05-03T15:43:06.042283+00:00",
+        "timestamp": "2026-05-03T21:24:17.731746+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-001",
         "payload": {
@@ -524,7 +524,7 @@
       },
       {
         "index": 19,
-        "timestamp": "2026-05-03T15:43:06.042285+00:00",
+        "timestamp": "2026-05-03T21:24:17.731749+00:00",
         "event_type": "coverage_check",
         "persona_id": "P-001",
         "payload": {
@@ -547,7 +547,7 @@
       },
       {
         "index": 20,
-        "timestamp": "2026-05-03T15:43:06.042288+00:00",
+        "timestamp": "2026-05-03T21:24:17.731752+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-001",
         "payload": {
@@ -559,7 +559,7 @@
       },
       {
         "index": 21,
-        "timestamp": "2026-05-03T15:43:06.042289+00:00",
+        "timestamp": "2026-05-03T21:24:17.731753+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-001",
         "payload": {
@@ -571,7 +571,7 @@
       },
       {
         "index": 22,
-        "timestamp": "2026-05-03T15:43:06.042289+00:00",
+        "timestamp": "2026-05-03T21:24:17.731753+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-001",
         "payload": {
@@ -583,7 +583,7 @@
       },
       {
         "index": 23,
-        "timestamp": "2026-05-03T15:43:06.042290+00:00",
+        "timestamp": "2026-05-03T21:24:17.731754+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-001",
         "payload": {
@@ -595,7 +595,7 @@
       },
       {
         "index": 24,
-        "timestamp": "2026-05-03T15:43:06.042291+00:00",
+        "timestamp": "2026-05-03T21:24:17.731755+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-001",
         "payload": {
@@ -607,7 +607,7 @@
       },
       {
         "index": 25,
-        "timestamp": "2026-05-03T15:43:06.042291+00:00",
+        "timestamp": "2026-05-03T21:24:17.731756+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-001",
         "payload": {
@@ -619,7 +619,7 @@
       },
       {
         "index": 26,
-        "timestamp": "2026-05-03T15:43:06.042293+00:00",
+        "timestamp": "2026-05-03T21:24:17.731757+00:00",
         "event_type": "conversation_complete",
         "persona_id": "P-001",
         "payload": {
@@ -635,7 +635,7 @@
     "P-002": [
       {
         "index": 0,
-        "timestamp": "2026-05-03T15:43:06.043076+00:00",
+        "timestamp": "2026-05-03T21:24:17.732657+00:00",
         "event_type": "conversation_started",
         "persona_id": "P-002",
         "payload": {
@@ -649,7 +649,7 @@
       },
       {
         "index": 1,
-        "timestamp": "2026-05-03T15:43:06.043104+00:00",
+        "timestamp": "2026-05-03T21:24:17.732672+00:00",
         "event_type": "question_asked",
         "persona_id": "P-002",
         "payload": {
@@ -664,7 +664,7 @@
       },
       {
         "index": 2,
-        "timestamp": "2026-05-03T15:43:06.043105+00:00",
+        "timestamp": "2026-05-03T21:24:17.732673+00:00",
         "event_type": "participant_response",
         "persona_id": "P-002",
         "payload": {
@@ -674,7 +674,7 @@
       },
       {
         "index": 3,
-        "timestamp": "2026-05-03T15:43:06.043121+00:00",
+        "timestamp": "2026-05-03T21:24:17.732689+00:00",
         "event_type": "question_asked",
         "persona_id": "P-002",
         "payload": {
@@ -689,7 +689,7 @@
       },
       {
         "index": 4,
-        "timestamp": "2026-05-03T15:43:06.043122+00:00",
+        "timestamp": "2026-05-03T21:24:17.732690+00:00",
         "event_type": "participant_response",
         "persona_id": "P-002",
         "payload": {
@@ -699,7 +699,7 @@
       },
       {
         "index": 5,
-        "timestamp": "2026-05-03T15:43:06.043124+00:00",
+        "timestamp": "2026-05-03T21:24:17.732692+00:00",
         "event_type": "tool_call_executed",
         "persona_id": "P-002",
         "payload": {
@@ -714,7 +714,7 @@
       },
       {
         "index": 6,
-        "timestamp": "2026-05-03T15:43:06.043140+00:00",
+        "timestamp": "2026-05-03T21:24:17.732709+00:00",
         "event_type": "question_asked",
         "persona_id": "P-002",
         "payload": {
@@ -729,7 +729,7 @@
       },
       {
         "index": 7,
-        "timestamp": "2026-05-03T15:43:06.043141+00:00",
+        "timestamp": "2026-05-03T21:24:17.732710+00:00",
         "event_type": "participant_response",
         "persona_id": "P-002",
         "payload": {
@@ -739,7 +739,7 @@
       },
       {
         "index": 8,
-        "timestamp": "2026-05-03T15:43:06.043143+00:00",
+        "timestamp": "2026-05-03T21:24:17.732712+00:00",
         "event_type": "guardrail_triggered",
         "persona_id": "P-002",
         "payload": {
@@ -754,7 +754,7 @@
       },
       {
         "index": 9,
-        "timestamp": "2026-05-03T15:43:06.043159+00:00",
+        "timestamp": "2026-05-03T21:24:17.732728+00:00",
         "event_type": "question_asked",
         "persona_id": "P-002",
         "payload": {
@@ -769,7 +769,7 @@
       },
       {
         "index": 10,
-        "timestamp": "2026-05-03T15:43:06.043159+00:00",
+        "timestamp": "2026-05-03T21:24:17.732728+00:00",
         "event_type": "participant_response",
         "persona_id": "P-002",
         "payload": {
@@ -779,7 +779,7 @@
       },
       {
         "index": 11,
-        "timestamp": "2026-05-03T15:43:06.043161+00:00",
+        "timestamp": "2026-05-03T21:24:17.732730+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-002",
         "payload": {
@@ -797,7 +797,7 @@
       },
       {
         "index": 12,
-        "timestamp": "2026-05-03T15:43:06.043162+00:00",
+        "timestamp": "2026-05-03T21:24:17.732731+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-002",
         "payload": {
@@ -815,7 +815,7 @@
       },
       {
         "index": 13,
-        "timestamp": "2026-05-03T15:43:06.043163+00:00",
+        "timestamp": "2026-05-03T21:24:17.732732+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-002",
         "payload": {
@@ -831,7 +831,7 @@
       },
       {
         "index": 14,
-        "timestamp": "2026-05-03T15:43:06.043164+00:00",
+        "timestamp": "2026-05-03T21:24:17.732733+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-002",
         "payload": {
@@ -849,7 +849,7 @@
       },
       {
         "index": 15,
-        "timestamp": "2026-05-03T15:43:06.043164+00:00",
+        "timestamp": "2026-05-03T21:24:17.732734+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-002",
         "payload": {
@@ -867,7 +867,7 @@
       },
       {
         "index": 16,
-        "timestamp": "2026-05-03T15:43:06.043167+00:00",
+        "timestamp": "2026-05-03T21:24:17.732736+00:00",
         "event_type": "coverage_check",
         "persona_id": "P-002",
         "payload": {
@@ -891,7 +891,7 @@
       },
       {
         "index": 17,
-        "timestamp": "2026-05-03T15:43:06.043168+00:00",
+        "timestamp": "2026-05-03T21:24:17.732737+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-002",
         "payload": {
@@ -903,7 +903,7 @@
       },
       {
         "index": 18,
-        "timestamp": "2026-05-03T15:43:06.043169+00:00",
+        "timestamp": "2026-05-03T21:24:17.732738+00:00",
         "event_type": "conversation_complete",
         "persona_id": "P-002",
         "payload": {
@@ -919,7 +919,7 @@
     "P-003": [
       {
         "index": 0,
-        "timestamp": "2026-05-03T15:43:06.044990+00:00",
+        "timestamp": "2026-05-03T21:24:17.734846+00:00",
         "event_type": "conversation_started",
         "persona_id": "P-003",
         "payload": {
@@ -934,7 +934,7 @@
       },
       {
         "index": 1,
-        "timestamp": "2026-05-03T15:43:06.045030+00:00",
+        "timestamp": "2026-05-03T21:24:17.734887+00:00",
         "event_type": "question_asked",
         "persona_id": "P-003",
         "payload": {
@@ -949,7 +949,7 @@
       },
       {
         "index": 2,
-        "timestamp": "2026-05-03T15:43:06.045033+00:00",
+        "timestamp": "2026-05-03T21:24:17.734888+00:00",
         "event_type": "participant_response",
         "persona_id": "P-003",
         "payload": {
@@ -959,7 +959,7 @@
       },
       {
         "index": 3,
-        "timestamp": "2026-05-03T15:43:06.045047+00:00",
+        "timestamp": "2026-05-03T21:24:17.734900+00:00",
         "event_type": "question_asked",
         "persona_id": "P-003",
         "payload": {
@@ -974,7 +974,7 @@
       },
       {
         "index": 4,
-        "timestamp": "2026-05-03T15:43:06.045048+00:00",
+        "timestamp": "2026-05-03T21:24:17.734901+00:00",
         "event_type": "participant_response",
         "persona_id": "P-003",
         "payload": {
@@ -984,7 +984,7 @@
       },
       {
         "index": 5,
-        "timestamp": "2026-05-03T15:43:06.045050+00:00",
+        "timestamp": "2026-05-03T21:24:17.734905+00:00",
         "event_type": "tool_call_executed",
         "persona_id": "P-003",
         "payload": {
@@ -999,7 +999,7 @@
       },
       {
         "index": 6,
-        "timestamp": "2026-05-03T15:43:06.045068+00:00",
+        "timestamp": "2026-05-03T21:24:17.734924+00:00",
         "event_type": "question_asked",
         "persona_id": "P-003",
         "payload": {
@@ -1014,7 +1014,7 @@
       },
       {
         "index": 7,
-        "timestamp": "2026-05-03T15:43:06.045069+00:00",
+        "timestamp": "2026-05-03T21:24:17.734925+00:00",
         "event_type": "participant_response",
         "persona_id": "P-003",
         "payload": {
@@ -1024,7 +1024,7 @@
       },
       {
         "index": 8,
-        "timestamp": "2026-05-03T15:43:06.045080+00:00",
+        "timestamp": "2026-05-03T21:24:17.734936+00:00",
         "event_type": "question_asked",
         "persona_id": "P-003",
         "payload": {
@@ -1039,7 +1039,7 @@
       },
       {
         "index": 9,
-        "timestamp": "2026-05-03T15:43:06.045080+00:00",
+        "timestamp": "2026-05-03T21:24:17.734937+00:00",
         "event_type": "participant_response",
         "persona_id": "P-003",
         "payload": {
@@ -1049,7 +1049,7 @@
       },
       {
         "index": 10,
-        "timestamp": "2026-05-03T15:43:06.045082+00:00",
+        "timestamp": "2026-05-03T21:24:17.734938+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1067,7 +1067,7 @@
       },
       {
         "index": 11,
-        "timestamp": "2026-05-03T15:43:06.045083+00:00",
+        "timestamp": "2026-05-03T21:24:17.734939+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1085,7 +1085,7 @@
       },
       {
         "index": 12,
-        "timestamp": "2026-05-03T15:43:06.045084+00:00",
+        "timestamp": "2026-05-03T21:24:17.734940+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1103,7 +1103,7 @@
       },
       {
         "index": 13,
-        "timestamp": "2026-05-03T15:43:06.045085+00:00",
+        "timestamp": "2026-05-03T21:24:17.734941+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1121,7 +1121,7 @@
       },
       {
         "index": 14,
-        "timestamp": "2026-05-03T15:43:06.045085+00:00",
+        "timestamp": "2026-05-03T21:24:17.734942+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1139,7 +1139,7 @@
       },
       {
         "index": 15,
-        "timestamp": "2026-05-03T15:43:06.045086+00:00",
+        "timestamp": "2026-05-03T21:24:17.734943+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1155,7 +1155,7 @@
       },
       {
         "index": 16,
-        "timestamp": "2026-05-03T15:43:06.045087+00:00",
+        "timestamp": "2026-05-03T21:24:17.734944+00:00",
         "event_type": "field_extracted",
         "persona_id": "P-003",
         "payload": {
@@ -1171,7 +1171,7 @@
       },
       {
         "index": 17,
-        "timestamp": "2026-05-03T15:43:06.045089+00:00",
+        "timestamp": "2026-05-03T21:24:17.734946+00:00",
         "event_type": "coverage_check",
         "persona_id": "P-003",
         "payload": {
@@ -1195,7 +1195,7 @@
       },
       {
         "index": 18,
-        "timestamp": "2026-05-03T15:43:06.045091+00:00",
+        "timestamp": "2026-05-03T21:24:17.734948+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-003",
         "payload": {
@@ -1207,7 +1207,7 @@
       },
       {
         "index": 19,
-        "timestamp": "2026-05-03T15:43:06.045092+00:00",
+        "timestamp": "2026-05-03T21:24:17.734949+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-003",
         "payload": {
@@ -1219,7 +1219,7 @@
       },
       {
         "index": 20,
-        "timestamp": "2026-05-03T15:43:06.045093+00:00",
+        "timestamp": "2026-05-03T21:24:17.734950+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-003",
         "payload": {
@@ -1231,7 +1231,7 @@
       },
       {
         "index": 21,
-        "timestamp": "2026-05-03T15:43:06.045093+00:00",
+        "timestamp": "2026-05-03T21:24:17.734951+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-003",
         "payload": {
@@ -1243,7 +1243,7 @@
       },
       {
         "index": 22,
-        "timestamp": "2026-05-03T15:43:06.045094+00:00",
+        "timestamp": "2026-05-03T21:24:17.734951+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-003",
         "payload": {
@@ -1255,7 +1255,7 @@
       },
       {
         "index": 23,
-        "timestamp": "2026-05-03T15:43:06.045095+00:00",
+        "timestamp": "2026-05-03T21:24:17.734952+00:00",
         "event_type": "stop_condition_met",
         "persona_id": "P-003",
         "payload": {
@@ -1267,7 +1267,7 @@
       },
       {
         "index": 24,
-        "timestamp": "2026-05-03T15:43:06.045096+00:00",
+        "timestamp": "2026-05-03T21:24:17.734953+00:00",
         "event_type": "conversation_complete",
         "persona_id": "P-003",
         "payload": {
