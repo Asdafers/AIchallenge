@@ -102,6 +102,7 @@ def test_server_has_a2a_card():
     assert "/.well-known/agent-card.json" in paths
     assert "/api/demo/run" in paths
     assert "/api/demo/{study_id}/status" in paths
+    assert "/api/stream" in paths
 
 
 def test_turn_checker_exits_loop():

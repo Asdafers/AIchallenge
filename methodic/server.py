@@ -8,11 +8,13 @@ with get_fast_api_app composition). Upgrade path documented.
 from __future__ import annotations
 
 import asyncio
+import json
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from starlette.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -94,6 +96,73 @@ def create_app() -> FastAPI:
         if not session:
             return JSONResponse(status_code=404, content={"error": "Study not found"})
         return {"study_id": study_id, "status": session.get("status", "unknown")}
+
+    @app.post("/api/stream")
+    async def stream_study(request: Request):
+        body = await request.json()
+        brief_text = body.get("study_brief", body.get("message", ""))
+        if isinstance(brief_text, dict):
+            brief_text = json.dumps(brief_text)
+        if not brief_text:
+            return JSONResponse(status_code=400, content={"error": "study_brief or message required"})
+
+        async def event_generator():
+            from methodic.agent import root_agent
+            from google.adk.runners import Runner
+            from google.adk.sessions import InMemorySessionService
+            from google.genai import types
+
+            session_service = InMemorySessionService()
+            runner = Runner(
+                agent=root_agent,
+                app_name="methodic_demo",
+                session_service=session_service,
+            )
+            adk_session = await session_service.create_session(
+                app_name="methodic_demo",
+                user_id="demo_stream",
+            )
+            user_message = types.Content(
+                role="user",
+                parts=[types.Part(text=brief_text)],
+            )
+
+            try:
+                async for event in runner.run_async(
+                    session_id=adk_session.id,
+                    user_id="demo_stream",
+                    new_message=user_message,
+                ):
+                    author = getattr(event, "author", None)
+                    if not author:
+                        continue
+
+                    text_parts = []
+                    content = getattr(event, "content", None)
+                    for part in getattr(content, "parts", []) or []:
+                        t = getattr(part, "text", None)
+                        if t:
+                            text_parts.append(t)
+
+                    actions = getattr(event, "actions", None)
+                    state_delta = {}
+                    if actions:
+                        raw_delta = getattr(actions, "state_delta", None) or {}
+                        if isinstance(raw_delta, dict):
+                            state_delta = raw_delta
+
+                    payload = {
+                        "author": author,
+                        "text": " ".join(text_parts),
+                        "state_delta": state_delta,
+                    }
+                    yield f"data: {json.dumps(payload)}\n\n"
+
+                yield f"data: {json.dumps({'author': 'system', 'text': 'Stream complete.', 'state_delta': {}})}\n\n"
+            except Exception as e:
+                yield f"data: {json.dumps({'author': 'error', 'text': str(e), 'state_delta': {}})}\n\n"
+
+        return StreamingResponse(event_generator(), media_type="text/event-stream")
 
     return app
 
