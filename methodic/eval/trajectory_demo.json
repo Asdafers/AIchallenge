@@ -1,0 +1,198 @@
+{
+  "_description": "ADK Evaluation trajectory for the Methodic win-loss research agent. Documents the expected agent step sequence, state flow, and one golden-path test case.",
+  "_adk_eval_version": "1.0",
+  "agent_name": "methodic",
+  "agent_graph": {
+    "root": "methodic (SequentialAgent)",
+    "phases": [
+      {
+        "name": "study_planner",
+        "type": "SequentialAgent",
+        "steps": ["organizer", "methodology", "question_design"]
+      },
+      {
+        "name": "fieldwork_loop",
+        "type": "LoopAgent",
+        "max_iterations": 3,
+        "steps": [
+          {
+            "name": "session_runner",
+            "type": "SequentialAgent",
+            "steps": [
+              "session_init",
+              {
+                "name": "interview_loop",
+                "type": "LoopAgent",
+                "max_iterations": 6,
+                "steps": ["interviewer", "participant_sim", "extractor_step", "turn_checker"]
+              }
+            ]
+          },
+          "coverage_step",
+          "replanner"
+        ]
+      },
+      {
+        "name": "finalize",
+        "type": "SequentialAgent",
+        "steps": ["quality_reviewer", "bigquery_export", "completion_responder"]
+      }
+    ]
+  },
+  "step_definitions": [
+    {
+      "step_name": "organizer",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-pro",
+      "input_state_keys": [],
+      "output_state_keys": ["study_brief"],
+      "expected_behavior": "Parses user request into structured study brief JSON with study_objective, target_segment, required_variables, participant_pool, reserve_participants, and hypotheses."
+    },
+    {
+      "step_name": "methodology",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-pro",
+      "input_state_keys": ["study_brief"],
+      "output_state_keys": ["methodology_review"],
+      "expected_behavior": "Reviews study brief for methodological rigor. Returns verdict (APPROVE/REVISE_REQUIRED) with issues and recommendations in JSON."
+    },
+    {
+      "step_name": "question_design",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-pro",
+      "input_state_keys": ["study_brief", "methodology_review"],
+      "output_state_keys": ["question_pool"],
+      "expected_behavior": "Designs adaptive interview questions targeting the 8 canonical fields. Returns JSON array of questions with question_id, text, target_variables, and follow_up_probes."
+    },
+    {
+      "step_name": "session_init",
+      "type": "BaseAgent (custom)",
+      "model": null,
+      "input_state_keys": ["question_pool"],
+      "output_state_keys": ["turn_count", "current_participant"],
+      "expected_behavior": "Resets turn_count to 0 and sets current_participant for the next interview session."
+    },
+    {
+      "step_name": "interviewer",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-pro",
+      "input_state_keys": ["question_pool", "turn_count", "current_participant", "transcript"],
+      "output_state_keys": ["transcript"],
+      "expected_behavior": "Conducts adaptive interview using questions from the pool. Probes for detail when answers are vague. Applies guardrail pushback on ambiguous or one-word responses."
+    },
+    {
+      "step_name": "participant_sim",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-flash-lite",
+      "input_state_keys": ["transcript", "current_participant"],
+      "output_state_keys": ["transcript"],
+      "expected_behavior": "Simulates participant responses with realistic B2B buyer behavior. May give vague initial answers that require interviewer follow-up."
+    },
+    {
+      "step_name": "extractor_step",
+      "type": "BaseAgent (custom)",
+      "model": null,
+      "input_state_keys": ["transcript"],
+      "output_state_keys": ["participant_coverage", "field_confidence", "evidence"],
+      "expected_behavior": "Extracts structured fields from the latest transcript exchange. Updates coverage state and evidence for each canonical field mentioned."
+    },
+    {
+      "step_name": "turn_checker",
+      "type": "BaseAgent (custom)",
+      "model": null,
+      "input_state_keys": ["turn_count", "participant_coverage"],
+      "output_state_keys": ["turn_count"],
+      "expected_behavior": "Increments turn_count. Escalates (exits interview_loop) if turn_count >= 6 OR all 8 canonical fields have coverage_state == covered_high_confidence."
+    },
+    {
+      "step_name": "coverage_step",
+      "type": "BaseAgent (custom)",
+      "model": null,
+      "input_state_keys": ["participant_coverage", "field_confidence"],
+      "output_state_keys": ["coverage_state", "missing_variables"],
+      "expected_behavior": "Aggregates coverage across all participants. Computes per-variable coverage status (missing/ambiguous/covered_low_confidence/covered_high_confidence) and identifies gaps."
+    },
+    {
+      "step_name": "replanner",
+      "type": "BaseAgent (custom)",
+      "model": null,
+      "input_state_keys": ["coverage_state", "missing_variables"],
+      "output_state_keys": ["replan_decision"],
+      "expected_behavior": "Decides whether to continue fieldwork (another iteration of fieldwork_loop) or stop. Escalates with STOP signal when coverage is sufficient or max iterations reached."
+    },
+    {
+      "step_name": "quality_reviewer",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-pro",
+      "input_state_keys": ["coverage_state", "evidence", "transcript"],
+      "output_state_keys": ["quality_review"],
+      "expected_behavior": "Reviews overall study quality: variable coverage, evidence linkage, ambiguity resolution. Flags any participants needing recontact."
+    },
+    {
+      "step_name": "bigquery_export",
+      "type": "BaseAgent (custom)",
+      "model": null,
+      "input_state_keys": ["coverage_state", "evidence", "field_confidence"],
+      "output_state_keys": ["export_status"],
+      "expected_behavior": "Exports structured participant responses to BigQuery table methodic_results.study_responses. Returns rows_written count and table reference."
+    },
+    {
+      "step_name": "completion_responder",
+      "type": "LlmAgent",
+      "model": "gemini-2.5-pro",
+      "input_state_keys": ["coverage_state", "quality_review", "export_status"],
+      "output_state_keys": [],
+      "expected_behavior": "Generates final summary of study results including key findings, coverage achieved, themes identified, and BigQuery export status."
+    }
+  ],
+  "test_cases": [
+    {
+      "test_name": "golden_path_win_loss_study",
+      "description": "Standard win-loss study with 3 participants, targeting all 8 canonical fields.",
+      "input": {
+        "user_message": "Run a win-loss study on recent Q1 2026 lost deals. Focus on understanding why deals were lost, especially around ROI clarity and procurement friction. Available participants: P-001, P-002, P-003. Reserve: P-005."
+      },
+      "expected_trajectory": [
+        {"step": "organizer", "produces_state": ["study_brief"]},
+        {"step": "methodology", "produces_state": ["methodology_review"]},
+        {"step": "question_design", "produces_state": ["question_pool"]},
+        {"step": "session_init", "produces_state": ["turn_count", "current_participant"]},
+        {"step": "interviewer", "produces_state": ["transcript"], "note": "First interview turn"},
+        {"step": "participant_sim", "produces_state": ["transcript"]},
+        {"step": "extractor_step", "produces_state": ["participant_coverage"]},
+        {"step": "turn_checker", "produces_state": ["turn_count"], "note": "Continues if turn_count < 6 and coverage incomplete"},
+        {"step": "interviewer", "produces_state": ["transcript"], "note": "Subsequent turns repeat until exit"},
+        {"step": "participant_sim", "produces_state": ["transcript"]},
+        {"step": "extractor_step", "produces_state": ["participant_coverage"]},
+        {"step": "turn_checker", "produces_state": ["turn_count"], "note": "Exits when coverage complete or max turns"},
+        {"step": "coverage_step", "produces_state": ["coverage_state", "missing_variables"]},
+        {"step": "replanner", "produces_state": ["replan_decision"], "note": "May loop for next participant or stop"},
+        {"step": "quality_reviewer", "produces_state": ["quality_review"]},
+        {"step": "bigquery_export", "produces_state": ["export_status"]},
+        {"step": "completion_responder", "produces_state": [], "note": "Final summary to user"}
+      ],
+      "expected_final_state": {
+        "coverage_state": {
+          "primary_loss_reason": "covered_high_confidence",
+          "secondary_loss_reason": "covered_low_confidence",
+          "roi_clarity": "covered_high_confidence",
+          "budget_timing": "covered_low_confidence",
+          "procurement_friction": "covered_high_confidence",
+          "security_concern": "covered_low_confidence",
+          "competitor_pressure": "ambiguous",
+          "aha_moment_reached": "covered_low_confidence"
+        }
+      },
+      "canonical_fields": [
+        "primary_loss_reason",
+        "secondary_loss_reason",
+        "roi_clarity",
+        "budget_timing",
+        "procurement_friction",
+        "security_concern",
+        "competitor_pressure",
+        "aha_moment_reached"
+      ]
+    }
+  ]
+}
