@@ -1,0 +1,18 @@
+{
+  "name": "methodic",
+  "description": "Autonomous B2B win-loss research agent. Accepts study requests, conducts governed participant interviews, returns evidence-linked structured data.",
+  "version": "1.0.0",
+  "url": "https://methodic-2030382823.us-central1.run.app",
+  "capabilities": {"streaming": true},
+  "authentication": {"schemes": ["bearer"]},
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "win_loss_study",
+      "name": "Win-Loss Study",
+      "description": "Conduct a B2B win-loss research study with methodology review, adaptive interviews, and BigQuery export",
+      "tags": ["research", "b2b", "win-loss"]
+    }
+  ]
+}

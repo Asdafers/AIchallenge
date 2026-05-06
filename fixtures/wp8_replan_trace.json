@@ -1,6 +1,6 @@
 {
   "study_id": "WL-2026-Q2-MM",
-  "generated_at": "2026-05-04T00:32:17.503917+00:00",
+  "generated_at": "2026-05-04T00:36:15.369222+00:00",
   "engine_label": "autonomous_replan_trigger",
   "honest_label": "Autonomous re-plan triggered by unresolved coverage gap in primary sessions. Reserve participant added from fixture data using deterministic replay. This demonstrates the re-plan mechanism, not live participant recruitment.",
   "primary_sessions": {

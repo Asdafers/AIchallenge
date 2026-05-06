@@ -43,10 +43,12 @@ _demo_sessions: dict[str, dict] = {}
 def create_app() -> FastAPI:
     try:
         from google.adk.cli.fast_api import get_fast_api_app
+        import os
         app = get_fast_api_app(
             agents_dir=str(Path(__file__).resolve().parent),
             allow_origins=["*"],
             web=True,
+            trace_to_cloud=os.environ.get("TRACE_TO_CLOUD", "").lower() in ("1", "true"),
         )
     except Exception:
         app = FastAPI(title="Methodic ADK Agent")
@@ -57,6 +59,10 @@ def create_app() -> FastAPI:
     @app.get("/.well-known/agent-card.json")
     async def agent_card():
         return JSONResponse(content=AGENT_CARD)
+
+    @app.get("/health")
+    async def health():
+        return {"status": "ok"}
 
     @app.post("/api/demo/run")
     async def run_demo():

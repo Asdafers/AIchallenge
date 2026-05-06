@@ -1,0 +1,28 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN adduser --disabled-password --gecos "" appuser
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nodejs npm && rm -rf /var/lib/apt/lists/*
+
+USER appuser
+ENV PATH="/home/appuser/.local/bin:$PATH"
+
+ENV GOOGLE_GENAI_USE_VERTEXAI=1
+ENV GOOGLE_CLOUD_PROJECT=methodic-ai-challenge
+ENV GOOGLE_CLOUD_LOCATION=us-central1
+ENV TRACE_TO_CLOUD=true
+
+COPY --chown=appuser:appuser methodic/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir google-adk==1.32.0 -r /tmp/requirements.txt
+
+COPY --chown=appuser:appuser methodic/ /app/methodic/
+COPY --chown=appuser:appuser scripts/wp6_mcp_server.py /app/scripts/wp6_mcp_server.py
+COPY --chown=appuser:appuser fixtures/ /app/fixtures/
+COPY --chown=appuser:appuser docs/schema/ /app/docs/schema/
+
+EXPOSE 8000
+
+CMD ["sh", "-c", "uvicorn methodic.server:app --host 0.0.0.0 --port ${PORT:-8000}"]

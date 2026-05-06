@@ -98,6 +98,7 @@ def test_bigquery_export_dry_run():
 def test_server_has_a2a_card():
     from methodic.server import app
     paths = [r.path for r in app.routes if hasattr(r, 'path')]
+    assert "/health" in paths
     assert "/.well-known/agent-card.json" in paths
     assert "/api/demo/run" in paths
     assert "/api/demo/{study_id}/status" in paths

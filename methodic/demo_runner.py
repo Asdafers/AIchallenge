@@ -7,8 +7,32 @@ Updates the demo session dict with events and coverage snapshots.
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 log = logging.getLogger(__name__)
+
+
+def _extract_event_text(event: Any) -> str:
+    """Return displayable text from an ADK event if present."""
+    content = getattr(event, "content", None)
+    parts = getattr(content, "parts", None)
+    if not parts:
+        return ""
+
+    texts: list[str] = []
+    for part in parts:
+        text = getattr(part, "text", None)
+        if text:
+            texts.append(text)
+    return " ".join(texts).strip()
+
+
+def _event_role(author: str) -> str:
+    if author == "participant_sim":
+        return "participant"
+    if author in {"request", "pipeline_started", "complete"}:
+        return "system"
+    return "agent"
 
 
 async def run_demo_pipeline(
@@ -25,7 +49,12 @@ async def run_demo_pipeline(
         return
 
     try:
-        session["events"].append({"step": "request", "status": "done"})
+        session["events"].append({
+            "step": "request",
+            "status": "done",
+            "role": "system",
+            "text": "Sales Insights requests a win-loss study for slipping Q1 2026 deals.",
+        })
 
         from methodic.agent import root_agent
         from google.adk.runners import Runner
@@ -56,7 +85,12 @@ async def run_demo_pipeline(
             ))],
         )
 
-        session["events"].append({"step": "pipeline_started", "status": "running"})
+        session["events"].append({
+            "step": "pipeline_started",
+            "status": "running",
+            "role": "system",
+            "text": "Methodic starts organizer, methodology, fieldwork, quality, and export pipeline.",
+        })
 
         async for event in runner.run_async(
             session_id=adk_session.id,
@@ -64,7 +98,14 @@ async def run_demo_pipeline(
             new_message=user_message,
         ):
             if hasattr(event, "author") and event.author:
-                session["events"].append({"step": event.author, "status": "done"})
+                author = event.author
+                text = _extract_event_text(event)
+                session["events"].append({
+                    "step": author,
+                    "status": "done",
+                    "role": _event_role(author),
+                    "text": text or f"{author} completed.",
+                })
 
         final_session = await session_service.get_session(
             app_name="methodic_demo",
@@ -76,11 +117,17 @@ async def run_demo_pipeline(
             session["coverage"] = coverage
 
         session["status"] = "complete"
-        session["events"].append({"step": "complete", "status": "done"})
+        session["events"].append({
+            "step": "complete",
+            "status": "done",
+            "role": "system",
+            "text": "Demo run complete. Coverage and export status are ready for review.",
+        })
 
     except Exception as e:
         log.exception("Demo pipeline failed: %s", e)
         session["status"] = "failed"
         session["events"].append({
-            "step": "error", "status": "failed", "detail": str(e),
+            "step": "error", "status": "failed", "role": "error",
+            "text": f"Demo pipeline failed: {e}", "detail": str(e),
         })
