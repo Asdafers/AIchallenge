@@ -146,7 +146,7 @@ gcloud run deploy methodic \
 
 # 4. Test (authenticated)
 TOKEN=$(gcloud auth print-identity-token)
-curl -H "Authorization: Bearer $TOKEN" https://<SERVICE_URL>/list-apps
+curl -H "Authorization: Bearer $TOKEN" https://methodic-2030382823.us-central1.run.app/list-apps
 ```
 
 ### Required IAM Bindings
@@ -165,10 +165,31 @@ curl -H "Authorization: Bearer $TOKEN" https://<SERVICE_URL>/list-apps
 | `/apps/{app}/users/{user}/sessions` | POST | Create session |
 | `/run_sse` | POST | Run agent query (SSE stream) |
 
-## Recommendations
+## Final Deployment Status
 
-1. Deploy Methodic to Cloud Run using `adk api_server` via the proven workflow above
-2. Build container locally, push to Artifact Registry, deploy from pre-built image
-3. Add minimal OpenTelemetry/Cloud Trace instrumentation
-4. Create one ADK Evaluation trajectory artifact
-5. Reference this spike in submission to show platform exploration
+**Service URL:** `https://methodic-2030382823.us-central1.run.app`
+**Image:** `us-central1-docker.pkg.dev/methodic-ai-challenge/methodic-repo/methodic:v5`
+**Revision:** `methodic-00004-bnc`
+**Verified:** 2026-05-06T21:58Z
+
+### Endpoint Verification
+
+| Endpoint | Method | Status | Notes |
+|----------|--------|--------|-------|
+| `/health` | GET | OK | `{"status":"ok"}` |
+| `/list-apps` | GET | OK | Returns `["docs","fixtures","methodic","scripts"]` |
+| `/.well-known/agent-card.json` | GET | OK | A2A 1.0 card with win_loss_study skill |
+| `/apps/methodic/users/{u}/sessions` | POST | OK | Session creation succeeds |
+| `/run_sse` | POST | OK | Full pipeline streams (organizer→methodology→interviewer→sim) |
+| `/api/stream` | POST | OK | SSE proxy with author/text/state_delta payloads |
+| `/static/demo.html` | GET | OK | Split-screen demo UI loads (HTTP 200) |
+
+### Models Verified
+
+| Constant | Model ID | Status |
+|----------|----------|--------|
+| `MODEL` | `gemini-2.5-pro` | Working (organizer, methodology, interviewer agents) |
+| `MODEL_FAST` | `gemini-2.5-flash-lite` | Working (participant_sim, extractor agents) |
+| `MODEL_STABLE_FALLBACK` | `gemini-2.5-flash` | Available (not triggered in demo) |
+
+Note: `gemini-3.x-preview` models returned 404 (project not allowlisted). Downgraded to 2.5 family.
