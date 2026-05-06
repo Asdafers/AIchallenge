@@ -45,7 +45,7 @@ def create_app() -> FastAPI:
         from google.adk.cli.fast_api import get_fast_api_app
         import os
         app = get_fast_api_app(
-            agents_dir=str(Path(__file__).resolve().parent),
+            agents_dir=str(Path(__file__).resolve().parent.parent),
             allow_origins=["*"],
             web=True,
             trace_to_cloud=os.environ.get("TRACE_TO_CLOUD", "").lower() in ("1", "true"),
