@@ -73,21 +73,28 @@ def main():
 
         page.wait_for_load_state("networkidle")
         page.wait_for_timeout(1500)
+        # 01_idle: capture the intro overlay — this IS the "before" state
         page.screenshot(path=str(OUTPUT_DIR / "01_idle.png"))
-        print("📸 01_idle.png — empty state captured")
+        print("📸 01_idle.png — intro overlay captured")
 
-        page.locator("#run-btn").click()
+        # Dismiss the intro overlay to reveal the app
+        page.locator("#start-btn").click()
         page.wait_for_timeout(500)
 
+        # Now start the pipeline
+        page.locator("#run-btn").click()
+
         if args.mock:
+            # Mock SSE is delivered near-instantly; capture running state right
+            # after the first bubble appears (before final report overlay covers it)
             page.wait_for_function(
-                'document.querySelectorAll(".conv-event").length >= 3',
+                'document.querySelectorAll(".bubble").length >= 1',
                 timeout=10_000,
             )
-            page.wait_for_timeout(300)
+            page.wait_for_timeout(100)
         else:
             page.wait_for_function(
-                'document.querySelectorAll(".conv-event").length >= 4',
+                'document.querySelectorAll(".bubble").length >= 4',
                 timeout=300_000,
             )
             page.wait_for_timeout(2000)
@@ -97,14 +104,14 @@ def main():
 
         try:
             page.wait_for_function(
-                'document.querySelector(".conv-event.guardrail") !== null',
+                'document.querySelector(".probe-badge") !== null',
                 timeout=300_000 if not args.mock else 5_000,
             )
-            page.wait_for_timeout(500)
+            page.wait_for_timeout(100)
             page.screenshot(path=str(OUTPUT_DIR / "03_guardrail.png"))
-            print("📸 03_guardrail.png — guardrail highlight captured")
+            print("📸 03_guardrail.png — probe badge captured")
         except Exception:
-            print("⚠️  No guardrail event detected, skipping 03_guardrail.png")
+            print("⚠️  No probe badge detected, skipping 03_guardrail.png")
 
         page.wait_for_function(
             'document.getElementById("status-badge").textContent === "complete"',
