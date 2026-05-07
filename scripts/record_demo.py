@@ -108,7 +108,7 @@ def main():
 
         page.wait_for_function(
             'document.getElementById("status-badge").textContent === "complete"',
-            timeout=120_000 if not args.mock else 10_000,
+            timeout=600_000 if not args.mock else 10_000,
         )
         page.wait_for_timeout(1000)
         page.screenshot(path=str(OUTPUT_DIR / "04_complete.png"))
