@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodic - Autonomous Win-Loss Research</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: #16213e; border-bottom: 1px solid #0f3460; }
+  header h1 { font-size: 1.2rem; font-weight: 600; letter-spacing: 0.02em; }
+  #status-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #444; color: #aaa; }
+  #status-badge.running  { background: #1a5276; color: #85c1e9; }
+  #status-badge.complete { background: #1e8449; color: #a9dfbf; }
+  #status-badge.failed   { background: #922b21; color: #f1948a; }
+
+  main { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
+
+  .panel { background: #16213e; border: 1px solid #0f3460; border-radius: 6px; padding: 14px; }
+  .panel-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #85c1e9; margin-bottom: 10px; }
+
+  #survey-baseline p { font-size: 0.82rem; line-height: 1.6; color: #9aa; }
+  .survey-answer { padding: 8px 0; border-bottom: 1px solid #1e2d50; }
+  .survey-q { font-size: 0.72rem; color: #85c1e9; text-transform: uppercase; letter-spacing: 0.04em; }
+  .survey-a { margin-top: 4px; font-family: 'Courier New', monospace; color: #f39c12; }
+  .survey-gap { margin-top: 10px; font-size: 0.78rem; line-height: 1.5; color: #9aa; font-style: italic; }
+  .survey-gap-tag { display: inline-block; margin: 2px 4px 2px 0; padding: 1px 6px; border-radius: 3px; background: #922b21; color: #f1948a; font-size: 0.7rem; font-style: normal; }
+
+  #conversation-log { font-family: 'Courier New', monospace; font-size: 0.78rem; height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+  .conv-event { padding: 4px 6px; border-radius: 3px; border-bottom: 1px solid #1e2d50; color: #b0c4de; }
+  .conv-event .author-tag { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 6px; }
+  .conv-event.agent .author-tag  { color: #85c1e9; }
+  .conv-event.participant .author-tag { color: #f39c12; }
+  .conv-event.system .author-tag { color: #a9dfbf; }
+  .conv-event.error .author-tag  { color: #f1948a; }
+  .conv-event.guardrail { background: #2c1810; border-left: 3px solid #e67e22; animation: flash-guardrail 0.6s ease-out; }
+
+  @keyframes flash-guardrail {
+    0% { background: #4a2a10; }
+    100% { background: #2c1810; }
+  }
+
+  .coverage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cov-row { display: flex; flex-direction: column; gap: 3px; }
+  .cov-label { font-size: 0.7rem; color: #9aa; font-family: 'Courier New', monospace; }
+  .cov-bar-bg { height: 14px; background: #0f1f3d; border-radius: 3px; overflow: hidden; }
+  .cov-bar-fill { height: 100%; width: 0%; border-radius: 3px; transition: width 0.4s, background 0.4s; background: #555; }
+
+  #timeline { display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 0.78rem; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-dot { width: 10px; height: 10px; border-radius: 50%; background: #444; flex-shrink: 0; }
+  .step-dot.done    { background: #2ecc71; }
+  .step-dot.active  { background: #f39c12; animation: pulse 1s infinite; }
+  .step-dot.failed  { background: #e74c3c; }
+  .step-text { color: #b0c4de; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .controls { display: flex; align-items: center; gap: 16px; padding: 12px 20px; background: #16213e; border-top: 1px solid #0f3460; }
+  #run-btn { background: #0f3460; color: #85c1e9; border: 1px solid #1a5276; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+  #run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  #run-btn:hover:not(:disabled) { background: #1a5276; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Methodic &mdash; Autonomous Win-Loss Research</h1>
+  <span id="status-badge">idle</span>
+</header>
+
+<main>
+  <div class="split">
+    <div class="panel" id="survey-baseline">
+      <div class="panel-title">Before: Static Survey</div>
+      <div class="survey-answer">
+        <div class="survey-q">Why did you not move forward?</div>
+        <div class="survey-a">"Price."</div>
+      </div>
+      <div class="survey-answer">
+        <div class="survey-q">Was pricing a concern?</div>
+        <div class="survey-a">"Yes."</div>
+      </div>
+      <div class="survey-answer">
+        <div class="survey-q">Would you consider us again?</div>
+        <div class="survey-a">"Maybe."</div>
+      </div>
+      <div class="survey-gap">
+        No follow-up. No context lookup. No evidence quotes. No confidence scores.
+        <div style="margin-top: 6px;">
+          <span class="survey-gap-tag">procurement_friction</span>
+          <span class="survey-gap-tag">roi_clarity</span>
+          <span class="survey-gap-tag">budget_timing</span>
+          <span class="survey-gap-tag">security_concern</span>
+          <span class="survey-gap-tag">aha_moment_reached</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">After: Live Agent Conversation</div>
+      <div id="conversation-log"></div>
+    </div>
+  </div>
+
+  <div class="split">
+    <div class="panel">
+      <div class="panel-title">Coverage &mdash; 8 Canonical Fields</div>
+      <div class="coverage-grid" id="coverage-grid"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Pipeline Timeline</div>
+      <div id="timeline"></div>
+    </div>
+  </div>
+</main>
+
+<div class="controls">
+  <button id="run-btn">Run Demo</button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var FIELDS = [
+    'primary_loss_reason',
+    'secondary_loss_reason',
+    'roi_clarity',
+    'budget_timing',
+    'procurement_friction',
+    'security_concern',
+    'competitor_pressure',
+    'aha_moment_reached'
+  ];
+
+  var STATE_COLORS = {
+    missing:                '#555',
+    ambiguous:              '#f39c12',
+    covered_low_confidence: '#3498db',
+    covered_high_confidence:'#2ecc71'
+  };
+
+  var GUARDRAIL_KEYWORDS = [
+    'could you elaborate', 'can you tell me more', 'what specifically',
+    'help me understand', 'could you clarify', 'pushback', 'vague',
+    'more detail', 'specifics', 'walk me through'
+  ];
+
+  var badge = document.getElementById('status-badge');
+  var runBtn = document.getElementById('run-btn');
+  var convLog = document.getElementById('conversation-log');
+  var covGrid = document.getElementById('coverage-grid');
+  var timelineEl = document.getElementById('timeline');
+  var seenAuthors = {};
+  var activeStep = null;
+
+  var barFills = {};
+  FIELDS.forEach(function (field) {
+    var row = document.createElement('div');
+    row.className = 'cov-row';
+
+    var label = document.createElement('div');
+    label.className = 'cov-label';
+    label.textContent = field;
+
+    var bg = document.createElement('div');
+    bg.className = 'cov-bar-bg';
+
+    var fill = document.createElement('div');
+    fill.className = 'cov-bar-fill';
+
+    bg.appendChild(fill);
+    row.appendChild(label);
+    row.appendChild(bg);
+    covGrid.appendChild(row);
+    barFills[field] = fill;
+  });
+
+  function setStatus(s) {
+    badge.textContent = s;
+    badge.className = s;
+  }
+
+  function isGuardrail(text) {
+    var lower = text.toLowerCase();
+    for (var i = 0; i < GUARDRAIL_KEYWORDS.length; i++) {
+      if (lower.indexOf(GUARDRAIL_KEYWORDS[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function roleClass(author) {
+    if (author === 'participant_sim') return 'participant';
+    if (author === 'system' || author === 'error') return author;
+    return 'agent';
+  }
+
+  function addConvEvent(author, text) {
+    if (!text) return;
+    var role = roleClass(author);
+    var el = document.createElement('div');
+    el.className = 'conv-event ' + role;
+
+    if (role === 'agent' && isGuardrail(text)) {
+      el.className += ' guardrail';
+    }
+
+    var tag = document.createElement('span');
+    tag.className = 'author-tag';
+    tag.textContent = author;
+
+    var msg = document.createElement('span');
+    msg.textContent = text;
+
+    el.appendChild(tag);
+    el.appendChild(msg);
+    convLog.appendChild(el);
+    convLog.scrollTop = convLog.scrollHeight;
+  }
+
+  function updateCoverage(data) {
+    FIELDS.forEach(function (field) {
+      var state = (data && data[field]) ? data[field] : 'missing';
+      var fill = barFills[field];
+      var pct = { missing: 5, ambiguous: 35, covered_low_confidence: 65, covered_high_confidence: 100 }[state] || 5;
+      fill.style.width = pct + '%';
+      fill.style.background = STATE_COLORS[state] || STATE_COLORS.missing;
+    });
+  }
+
+  function addTimelineStep(author, status) {
+    if (seenAuthors[author]) {
+      var existing = seenAuthors[author];
+      existing.dot.className = 'step-dot ' + status;
+      return;
+    }
+
+    if (activeStep) {
+      activeStep.dot.className = 'step-dot done';
+    }
+
+    var row = document.createElement('div');
+    row.className = 'step';
+
+    var dot = document.createElement('div');
+    dot.className = 'step-dot ' + status;
+
+    var txt = document.createElement('div');
+    txt.className = 'step-text';
+    txt.textContent = author;
+
+    row.appendChild(dot);
+    row.appendChild(txt);
+    timelineEl.appendChild(row);
+    timelineEl.scrollTop = timelineEl.scrollHeight;
+
+    var entry = { dot: dot, row: row };
+    seenAuthors[author] = entry;
+    if (status === 'active') activeStep = entry;
+  }
+
+  function reset() {
+    while (convLog.firstChild) convLog.removeChild(convLog.firstChild);
+    while (timelineEl.firstChild) timelineEl.removeChild(timelineEl.firstChild);
+    updateCoverage(null);
+    seenAuthors = {};
+    activeStep = null;
+  }
+
+  function consumeSSE(response) {
+    var reader = response.body.getReader();
+    var decoder = new TextDecoder();
+    var buffer = '';
+
+    function processChunk() {
+      return reader.read().then(function (result) {
+        if (result.done) {
+          setStatus('complete');
+          if (activeStep) activeStep.dot.className = 'step-dot done';
+          runBtn.disabled = false;
+          return;
+        }
+
+        buffer += decoder.decode(result.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop();
+
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (line.indexOf('data: ') !== 0) continue;
+          var jsonStr = line.substring(6);
+          try {
+            var evt = JSON.parse(jsonStr);
+            handleEvent(evt);
+          } catch (e) {
+            // skip malformed events
+          }
+        }
+
+        return processChunk();
+      });
+    }
+
+    return processChunk().catch(function (err) {
+      setStatus('failed');
+      addConvEvent('error', 'Stream error: ' + err.message);
+      runBtn.disabled = false;
+    });
+  }
+
+  function handleEvent(evt) {
+    var author = evt.author || 'unknown';
+    var text = evt.text || '';
+    var delta = evt.state_delta || {};
+
+    if (author === 'system' && text === 'Stream complete.') {
+      setStatus('complete');
+      if (activeStep) activeStep.dot.className = 'step-dot done';
+      return;
+    }
+
+    if (author === 'error') {
+      addConvEvent('error', text);
+      addTimelineStep(author, 'failed');
+      return;
+    }
+
+    addTimelineStep(author, 'active');
+    if (text) addConvEvent(author, text);
+
+    if (delta.coverage_state) {
+      updateCoverage(delta.coverage_state);
+    }
+    if (delta.participant_coverage) {
+      updateCoverage(delta.participant_coverage);
+    }
+  }
+
+  runBtn.addEventListener('click', function () {
+    runBtn.disabled = true;
+    reset();
+    setStatus('running');
+
+    var studyBrief = 'Run a win-loss study on recent Q1 2026 lost deals. ' +
+      'Focus on understanding why deals were lost, especially around ROI clarity ' +
+      'and procurement friction. Available participants: P-001, P-002, P-003. Reserve: P-005.';
+
+    fetch('/api/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ study_brief: studyBrief })
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Server returned ' + response.status);
+        }
+        addConvEvent('system', 'Connected to Methodic pipeline...');
+        return consumeSSE(response);
+      })
+      .catch(function (err) {
+        setStatus('failed');
+        addConvEvent('error', 'Connection failed: ' + err.message);
+        runBtn.disabled = false;
+      });
+  });
+
+}());
+</script>
+</body>
+</html>

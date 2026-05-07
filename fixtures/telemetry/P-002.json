@@ -1,0 +1,10 @@
+{
+  "participant_id": "P-002",
+  "logins": 7,
+  "login_count": 7,
+  "features_used": ["dashboard", "reporting", "integrations"],
+  "report_builder_reached": true,
+  "executive_logins": 0,
+  "last_active": "2026-03-15T09:00:00Z",
+  "feature_touchpoints": ["dashboard", "reporting", "integrations"]
+}

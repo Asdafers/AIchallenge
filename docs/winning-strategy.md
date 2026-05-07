@@ -187,6 +187,63 @@ Make the demo visual, concrete, and comparative. Judges should see the differenc
 9. Developer trace view for agent handoffs, MCP calls, and agent request flow.
 10. Cloud Run deployment plus real BigQuery export.
 
+## May 5 Execution Focus
+
+As of May 5, 2026, the submission deadline is June 5, 2026. The project has about 31 days left. The highest-leverage move is to stop expanding review scope and make one live vertical slice real.
+
+The current fixture pipeline already tells the story. It should remain as regression evidence and demo fallback, not the core build claim. The next phase must prove that Methodic can run a real agent path:
+
+1. Organizer creates a study brief from a business decision.
+2. Methodology agent pushes back on an invalid or weak study design.
+3. Participant agent conducts one live Gemini-powered interview.
+4. The participant path calls an MCP tool for approved deal or telemetry context.
+5. Gemini extracts structured fields with schema validation.
+6. A deterministic coverage checker triggers one re-plan when a variable remains ambiguous.
+7. BigQuery receives at least one real export row.
+8. Cloud Run hosts the demo endpoint and working UI.
+
+The demo should make the data-quality delta visible within seconds:
+
+- Static survey captures "price" and stops.
+- Methodic asks what "price" actually means.
+- Methodic uses MCP context to ask a sharper follow-up.
+- The UI shows extracted fields, confidence, evidence quote, coverage state, and export result.
+
+### Immediate Plan Correction
+
+Before implementation resumes, revise the ADK design and implementation plan so they are executable:
+
+- Replace FunctionTool-as-sub-agent graph nodes with wrapper/custom agents.
+- Define the full session state contract instead of relying on `output_key` to append or merge participant data.
+- Make LoopAgent exit a real tool/custom step that sets `tool_context.actions.escalate = True`.
+- Use the current `google-genai` SDK path for Gemini structured output.
+- Verify model IDs before committing to preview model names.
+- Treat A2A as a proven implementation only after a real A2A client smoke test; otherwise label it as A2A-pattern.
+- Add BigQuery dataset/table setup and insert-error handling.
+
+### Next 72 Hours
+
+1. Patch the ADK design/plan into a v2 that fixes graph semantics, state, loop exit, model IDs, and A2A claims.
+2. Create the `methodic/` runtime skeleton.
+3. Implement schema models plus deterministic coverage and quality wrappers.
+4. Implement one Gemini structured-output extraction call.
+5. Wrap the existing MCP server through ADK `McpToolset`.
+6. Prove one participant session produces a validated `ParticipantResponse`.
+
+UI work should wait until the live run produces non-empty events and coverage. The UI should then present the working experience, not a landing page.
+
+### Winning Bar
+
+The submission should be able to make these claims honestly:
+
+- Methodic is an autonomous research operations agent, not a form generator.
+- The demo uses Gemini, ADK, MCP, Cloud Run, and BigQuery in a visible path.
+- At least one participant conversation is live, not fixture replay.
+- The system produces schema-valid, evidence-linked data.
+- The system measures data quality against a static-survey baseline.
+- The system detects insufficient coverage and re-plans once.
+- The product case is narrow and commercial: B2B SaaS win-loss research for revenue, product, and research-operations teams.
+
 ## Scope Cuts
 
 Do not build a broad analytics dashboard. The product wins by capturing better data, not by becoming another BI surface.

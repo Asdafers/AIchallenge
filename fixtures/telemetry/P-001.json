@@ -1,6 +1,8 @@
 {
   "participant_id": "P-001",
   "logins": 3,
+  "login_count": 3,
+  "features_used": ["dashboard"],
   "report_builder_reached": false,
   "executive_logins": 0,
   "last_active": "2026-04-21T15:42:00Z",
