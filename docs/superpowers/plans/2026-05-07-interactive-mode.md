@@ -4,11 +4,22 @@
 
 **Goal:** Add a human-in-the-loop interview mode where a real person replaces the simulated participant and converses live with the Gemini interviewer agent.
 
-**Architecture:** A `HumanInputStep(BaseAgent)` replaces `participant_sim_agent` in the interview loop, blocking on `asyncio.Event` until the human responds via a POST endpoint. The agent graph is built by a factory function that swaps the participant agent based on mode. A new `interactive.html` frontend provides configuration → live chat → results card.
+**Architecture:** A `HumanInputStep(BaseAgent)` replaces `participant_sim_agent` in the interview loop, blocking on `asyncio.Queue.get()` until the human responds via a POST endpoint. The agent graph is built by a factory function that swaps the participant agent based on mode. Module-level demo exports (`root_agent`, `study_planner`, etc.) are preserved. A new `interactive.html` frontend provides configuration → live chat → results card.
 
 **Tech Stack:** Python 3.11, Google ADK 1.32, FastAPI, SSE (text/event-stream), vanilla JS/CSS/HTML
 
 **Design doc:** `docs/superpowers/specs/2026-05-07-interactive-mode-design.md`
+
+**Review feedback incorporated (Gemini + Codex):**
+- Use `asyncio.Queue` for human message delivery instead of single string slot (race condition fix)
+- Track `input_requested` as a separate bool on `InteractiveSession`, not via `event.is_set()`
+- Pass `InteractiveSession` directly to `HumanInputStep` (remove `RegistryProxy`)
+- Preserve module-level exports in `methodic/agent.py` for existing test compatibility
+- Add terminal error events to SSE stream so frontend doesn't hang
+- Deploy with `--max-instances=1` (in-memory session registry requires single instance)
+- Add session cleanup background task
+- Use consistent status vocabulary: `planning|interviewing|complete|failed|expired`
+- Reject `/respond` when no input is currently requested (409 Conflict)
 
 ---
 
@@ -133,9 +144,16 @@ git commit -m "feat: add study preset configurations for interactive mode"
 
 import asyncio
 import pytest
+from dataclasses import dataclass, field
 from unittest.mock import MagicMock
 
 from methodic.agents.human_input_step import HumanInputStep
+
+
+@dataclass
+class MockInteractiveSession:
+    input_queue: asyncio.Queue = field(default_factory=asyncio.Queue)
+    input_requested: bool = False
 
 
 def _make_ctx(session_id: str = "test-session"):
@@ -151,18 +169,13 @@ def _make_ctx(session_id: str = "test-session"):
 
 @pytest.mark.asyncio
 async def test_human_input_step_signals_input_requested():
-    registry = {
-        "test-session": {
-            "event": asyncio.Event(),
-            "message": "",
-        },
-    }
+    isess = MockInteractiveSession()
+    registry = {"test-session": isess}
     step = HumanInputStep(name="participant", session_registry=registry)
     ctx = _make_ctx()
 
-    # Set event immediately so the step doesn't block
-    registry["test-session"]["message"] = "My answer"
-    registry["test-session"]["event"].set()
+    # Pre-load the queue so the step doesn't block
+    await isess.input_queue.put("My answer")
 
     events = []
     async for event in step._run_async_impl(ctx):
@@ -179,13 +192,34 @@ async def test_human_input_step_signals_input_requested():
 
 
 @pytest.mark.asyncio
+async def test_human_input_step_sets_input_requested_flag():
+    isess = MockInteractiveSession()
+    registry = {"test-session": isess}
+    step = HumanInputStep(name="participant", session_registry=registry)
+    ctx = _make_ctx()
+
+    assert isess.input_requested is False
+
+    # Put message after a short delay so we can observe the flag
+    async def delayed_put():
+        await asyncio.sleep(0.05)
+        assert isess.input_requested is True
+        await isess.input_queue.put("Delayed answer")
+
+    asyncio.create_task(delayed_put())
+
+    events = []
+    async for event in step._run_async_impl(ctx):
+        events.append(event)
+
+    assert isess.input_requested is False
+    assert events[1].content.parts[0].text == "Delayed answer"
+
+
+@pytest.mark.asyncio
 async def test_human_input_step_timeout():
-    registry = {
-        "test-session": {
-            "event": asyncio.Event(),
-            "message": "",
-        },
-    }
+    isess = MockInteractiveSession()
+    registry = {"test-session": isess}
     step = HumanInputStep(
         name="participant", session_registry=registry, timeout_seconds=0.1,
     )
@@ -195,30 +229,9 @@ async def test_human_input_step_timeout():
     async for event in step._run_async_impl(ctx):
         events.append(event)
 
-    # After timeout, should deliver a timeout message
     assert len(events) == 2
     assert "No response" in events[1].content.parts[0].text
-
-
-@pytest.mark.asyncio
-async def test_human_input_step_clears_event():
-    registry = {
-        "test-session": {
-            "event": asyncio.Event(),
-            "message": "Hello",
-        },
-    }
-    step = HumanInputStep(name="participant", session_registry=registry)
-    ctx = _make_ctx()
-
-    registry["test-session"]["event"].set()
-
-    events = []
-    async for event in step._run_async_impl(ctx):
-        events.append(event)
-
-    # Event should be cleared after consumption
-    assert not registry["test-session"]["event"].is_set()
+    assert isess.input_requested is False
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
@@ -230,7 +243,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'methodic.agents.human
 
 ```python
 # methodic/agents/human_input_step.py
-"""Human input step - blocks on asyncio.Event for real participant input.
+"""Human input step - blocks on asyncio.Queue for real participant input.
 
 Replaces participant_sim_agent in the interview loop for interactive mode.
 Writes the human's response to latest_participant_turn in state, same key
@@ -256,7 +269,9 @@ class HumanInputStep(BaseAgent):
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
         session_id = ctx.session.id
-        reg = self.session_registry[session_id]
+        isess = self.session_registry[session_id]
+
+        isess.input_requested = True
 
         yield Event(
             author=self.name,
@@ -267,14 +282,13 @@ class HumanInputStep(BaseAgent):
         )
 
         try:
-            await asyncio.wait_for(
-                reg["event"].wait(), timeout=self.timeout_seconds
+            human_text = await asyncio.wait_for(
+                isess.input_queue.get(), timeout=self.timeout_seconds
             )
         except asyncio.TimeoutError:
-            reg["message"] = "No response provided."
+            human_text = "No response provided."
 
-        human_text = reg["message"]
-        reg["event"].clear()
+        isess.input_requested = False
 
         yield Event(
             author=self.name,
@@ -326,14 +340,23 @@ def test_root_agent_still_exists():
     assert root_agent.name == "methodic"
 
 
+def test_module_level_exports_preserved():
+    """Existing code imports these names from methodic.agent."""
+    from methodic.agent import study_planner, fieldwork_loop, finalize, interview_loop
+    assert study_planner is not None
+    assert fieldwork_loop is not None
+    assert finalize is not None
+    assert interview_loop is not None
+
+
 def test_build_demo_mode():
     graph = build_agent_graph(interactive=False)
     assert graph.name == "methodic"
     # Find interview_loop and check for participant_sim
-    fieldwork = graph.sub_agents[1]  # fieldwork_loop
-    session_runner = fieldwork.sub_agents[0]
-    interview_loop = session_runner.sub_agents[1]
-    participant = interview_loop.sub_agents[1]
+    fw = graph.sub_agents[1]  # fieldwork_loop
+    sr = fw.sub_agents[0]
+    il = sr.sub_agents[1]
+    participant = il.sub_agents[1]
     assert participant.name == "participant_sim"
 
 
@@ -342,20 +365,20 @@ def test_build_interactive_mode():
     graph = build_agent_graph(interactive=True, session_registry=registry)
     assert graph.name == "methodic_interactive"
     # Find interview_loop and check for HumanInputStep
-    fieldwork = graph.sub_agents[1]
-    session_runner = fieldwork.sub_agents[0]
-    interview_loop = session_runner.sub_agents[1]
-    participant = interview_loop.sub_agents[1]
+    fw = graph.sub_agents[1]
+    sr = fw.sub_agents[0]
+    il = sr.sub_agents[1]
+    participant = il.sub_agents[1]
     assert isinstance(participant, HumanInputStep)
     # Fieldwork max_iterations should be 1 for single participant
-    assert fieldwork.max_iterations == 1
+    assert fw.max_iterations == 1
 
 
 def test_interactive_mode_skips_quality_and_export():
     registry = {}
     graph = build_agent_graph(interactive=True, session_registry=registry)
-    finalize = graph.sub_agents[2]
-    agent_names = [a.name for a in finalize.sub_agents]
+    fin = graph.sub_agents[2]
+    agent_names = [a.name for a in fin.sub_agents]
     assert "quality_reviewer" not in agent_names
     assert "bigquery_export" not in agent_names
     assert "completion_responder" in agent_names
@@ -500,8 +523,12 @@ def build_agent_graph(
     )
 
 
-# Module-level root_agent for ADK Dev UI and demo mode compatibility.
+# Module-level exports for ADK Dev UI, demo mode, and existing test compatibility.
 root_agent = build_agent_graph(interactive=False)
+study_planner = root_agent.sub_agents[0]
+fieldwork_loop = root_agent.sub_agents[1]
+interview_loop = fieldwork_loop.sub_agents[0].sub_agents[1]
+finalize = root_agent.sub_agents[2]
 ```
 
 - [ ] **Step 4: Run tests to verify they pass**
@@ -630,10 +657,10 @@ Add the `InteractiveSession` dataclass and session registries after the `_demo_s
 class InteractiveSession:
     session_id: str
     adk_session_id: str
-    event: asyncio.Event = field(default_factory=asyncio.Event)
-    message: str = ""
+    input_queue: asyncio.Queue = field(default_factory=asyncio.Queue)
+    input_requested: bool = False
     status: str = "planning"
-    queue: asyncio.Queue = field(default_factory=asyncio.Queue)
+    sse_queue: asyncio.Queue = field(default_factory=asyncio.Queue)
     created_at: float = field(default_factory=time.time)
     last_activity: float = field(default_factory=time.time)
     results: dict | None = None
@@ -711,11 +738,14 @@ Add the interactive endpoints inside `create_app()`, after the existing endpoint
         async def event_generator():
             while True:
                 try:
-                    payload = await asyncio.wait_for(isess.queue.get(), timeout=600)
+                    payload = await asyncio.wait_for(isess.sse_queue.get(), timeout=600)
                 except asyncio.TimeoutError:
                     break
                 yield f"data: {json.dumps(payload)}\n\n"
-                if payload.get("author") == "system" and "complete" in payload.get("text", "").lower():
+                author = payload.get("author", "")
+                if author == "error":
+                    break
+                if author == "system" and "complete" in payload.get("text", "").lower():
                     break
 
         return StreamingResponse(event_generator(), media_type="text/event-stream")
@@ -734,9 +764,11 @@ Add the interactive endpoints inside `create_app()`, after the existing endpoint
         if not isess:
             return JSONResponse(status_code=404, content={"error": "Session not found"})
 
-        isess.message = message
+        if not isess.input_requested:
+            return JSONResponse(status_code=409, content={"error": "Not awaiting input"})
+
         isess.last_activity = time.time()
-        isess.event.set()
+        await isess.input_queue.put(message)
         return {"status": "ok"}
 
     @app.get("/api/interactive/{session_id}/status")
@@ -750,7 +782,7 @@ Add the interactive endpoints inside `create_app()`, after the existing endpoint
         return {
             "session_id": session_id,
             "status": isess.status,
-            "input_requested": isess.event.is_set(),
+            "input_requested": isess.input_requested,
         }
 
     @app.get("/api/interactive/{session_id}/results")
@@ -780,20 +812,9 @@ async def _start_interactive_pipeline(
         from google.adk.runners import Runner
         from google.genai import types
 
-        registry = {adk_session_id: {"event": isess.event, "message": ""}}
+        registry = {adk_session_id: isess}
 
-        def get_message():
-            return isess.message
-
-        class RegistryProxy(dict):
-            def __getitem__(self, key):
-                entry = super().__getitem__(key)
-                entry["message"] = isess.message
-                return entry
-
-        proxy = RegistryProxy({adk_session_id: {"event": isess.event, "message": ""}})
-
-        agent = build_agent_graph(interactive=True, session_registry=proxy)
+        agent = build_agent_graph(interactive=True, session_registry=registry)
         runner = Runner(
             agent=agent,
             app_name="methodic_interactive",
@@ -834,7 +855,10 @@ async def _start_interactive_pipeline(
                 "text": " ".join(text_parts),
                 "state_delta": state_delta,
             }
-            await isess.queue.put(payload)
+            await isess.sse_queue.put(payload)
+
+            if author == "participant" and state_delta.get("input_requested"):
+                isess.status = "interviewing"
 
         # Collect results from session state
         final_session = await session_service.get_session(
@@ -851,7 +875,7 @@ async def _start_interactive_pipeline(
             }
 
         isess.status = "complete"
-        await isess.queue.put({
+        await isess.sse_queue.put({
             "author": "system",
             "text": "Stream complete.",
             "state_delta": {},
@@ -859,7 +883,7 @@ async def _start_interactive_pipeline(
 
     except Exception as e:
         isess.status = "failed"
-        await isess.queue.put({
+        await isess.sse_queue.put({
             "author": "error",
             "text": str(e),
             "state_delta": {},
@@ -1061,14 +1085,14 @@ def test_interactive_start_returns_stream_url(client):
     assert "VP of Engineering" in data["persona_hint"]
 
 
-def test_interactive_respond_triggers_event(client):
-    """Test that POST /respond sets the asyncio event on the session."""
+def test_interactive_respond_queues_message(client):
+    """Test that POST /respond puts message on the input queue."""
     from methodic.server import _interactive_sessions, _session_lookup, InteractiveSession
 
-    # Create a fake session
     adk_sid = "fake-adk-session"
     session_id = "INT-test1234"
     isess = InteractiveSession(session_id=session_id, adk_session_id=adk_sid)
+    isess.input_requested = True  # Must be awaiting input
     _interactive_sessions[adk_sid] = isess
     _session_lookup[session_id] = adk_sid
 
@@ -1078,8 +1102,29 @@ def test_interactive_respond_triggers_event(client):
             json={"message": "It was about price."},
         )
         assert resp.status_code == 200
-        assert isess.message == "It was about price."
-        assert isess.event.is_set()
+        assert not isess.input_queue.empty()
+    finally:
+        _interactive_sessions.pop(adk_sid, None)
+        _session_lookup.pop(session_id, None)
+
+
+def test_interactive_respond_rejects_when_not_awaiting(client):
+    """POST /respond should 409 when no input is requested."""
+    from methodic.server import _interactive_sessions, _session_lookup, InteractiveSession
+
+    adk_sid = "fake-adk-session-reject"
+    session_id = "INT-reject"
+    isess = InteractiveSession(session_id=session_id, adk_session_id=adk_sid)
+    isess.input_requested = False
+    _interactive_sessions[adk_sid] = isess
+    _session_lookup[session_id] = adk_sid
+
+    try:
+        resp = client.post(
+            f"/api/interactive/{session_id}/respond",
+            json={"message": "Too early"},
+        )
+        assert resp.status_code == 409
     finally:
         _interactive_sessions.pop(adk_sid, None)
         _session_lookup.pop(session_id, None)
@@ -1091,6 +1136,7 @@ def test_interactive_status_returns_state(client):
     adk_sid = "fake-adk-session-2"
     session_id = "INT-test5678"
     isess = InteractiveSession(session_id=session_id, adk_session_id=adk_sid, status="interviewing")
+    isess.input_requested = True
     _interactive_sessions[adk_sid] = isess
     _session_lookup[session_id] = adk_sid
 
@@ -1099,6 +1145,7 @@ def test_interactive_status_returns_state(client):
         assert resp.status_code == 200
         data = resp.json()
         assert data["status"] == "interviewing"
+        assert data["input_requested"] is True
         assert data["session_id"] == session_id
     finally:
         _interactive_sessions.pop(adk_sid, None)
@@ -1151,7 +1198,8 @@ gcloud run deploy methodic \
   --project=methodic-ai-challenge \
   --allow-unauthenticated \
   --memory 1Gi \
-  --timeout 600
+  --timeout 600 \
+  --max-instances=1
 cp Dockerfile.bak Dockerfile 2>/dev/null; rm -f Dockerfile.bak
 ```
 
