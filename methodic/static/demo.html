@@ -757,7 +757,7 @@ main {
 
       <!-- Chat Panel -->
       <div id="chat-panel">
-        <div id="chat-messages" role="log" aria-live="polite" aria-label="Interview conversation"></div>
+        <div id="chat-messages" role="log" aria-live="polite" aria-label="Interview conversation" tabindex="-1"></div>
         <div id="baseline-cue">Static survey said: &ldquo;Price.&rdquo; &mdash; Watch Methodic probe for specifics.</div>
         <div id="typing-indicator" class="hidden">
           <div class="typing-dot"></div>
@@ -776,7 +776,7 @@ main {
         </div>
 
         <!-- Agentic Moments -->
-        <div class="sidebar-section" id="agentic-section" class="hidden">
+        <div class="sidebar-section hidden" id="agentic-section">
           <div class="sidebar-title">Agentic Moments</div>
           <div id="agentic-moments"></div>
         </div>
@@ -1025,7 +1025,7 @@ main {
 
     // System stream complete
     if (author === 'system' && text === 'Stream complete.') {
-      setStatus('complete');
+      if (state.status !== 'failed') setStatus('complete');
       return;
     }
 
