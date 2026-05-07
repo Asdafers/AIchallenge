@@ -1,0 +1,44 @@
+data: {"author": "organizer", "text": "Study brief parsed. Objective: understand Q1 2026 lost deal drivers, focusing on ROI clarity and procurement friction. Target segment: lost_deal_economic_buyer. Participants: P-001, P-002, P-003. Reserve: P-005.", "state_delta": {"study_brief": {"study_objective": "Understand why Q1 2026 deals were lost", "target_segment": "lost_deal_economic_buyer", "participant_pool": ["P-001", "P-002", "P-003"], "reserve_participants": ["P-005"]}}}
+
+data: {"author": "methodology", "text": "Methodology review complete. Verdict: APPROVE. Study design is sound with adequate participant pool size for exploratory win-loss research. Recommend prioritizing ROI clarity and procurement friction variables.", "state_delta": {"methodology_review": {"verdict": "APPROVE", "issues": [], "recommendations": ["Prioritize ROI clarity probes", "Use open-ended procurement questions"]}}}
+
+data: {"author": "question_design", "text": "Question pool generated. 12 adaptive questions targeting 8 canonical fields with follow-up probes for ambiguous responses.", "state_delta": {"question_pool": [{"question_id": "Q1", "text": "Walk me through the decision process", "target_variables": ["primary_loss_reason"]}, {"question_id": "Q2", "text": "How did you evaluate the ROI case?", "target_variables": ["roi_clarity"]}]}}
+
+data: {"author": "session_init", "text": "Session initialized for P-001.", "state_delta": {"turn_count": 0, "current_participant": "P-001"}}
+
+data: {"author": "interviewer", "text": "Thank you for taking the time to speak with me today. I'd like to understand your experience evaluating our solution. Could you walk me through the decision-making process that led to not moving forward with the purchase?", "state_delta": {}}
+
+data: {"author": "participant_sim", "text": "Yeah, I mean, it was mostly about the price. We just couldn't justify it.", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "I appreciate that. Could you elaborate on what specifically about the pricing was difficult to justify? Was it the total cost, the per-seat pricing, or something about how the ROI case was presented?", "state_delta": {}}
+
+data: {"author": "participant_sim", "text": "It was really the ROI case. Your team showed us projections but they felt generic — not tailored to our industry. Our CFO wanted to see benchmarks from similar-sized companies in manufacturing, and your sales team couldn't provide those. So the business case fell apart in the final review.", "state_delta": {}}
+
+data: {"author": "extractor_step", "text": "", "state_delta": {"participant_coverage": {"primary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "secondary_loss_reason": "missing", "budget_timing": "missing", "procurement_friction": "missing", "security_concern": "missing", "competitor_pressure": "missing", "aha_moment_reached": "missing"}}}
+
+data: {"author": "interviewer", "text": "That's really helpful context. Can you tell me more about the procurement process itself? Were there any friction points — approvals that took too long, compliance requirements, or security reviews that created obstacles?", "state_delta": {}}
+
+data: {"author": "participant_sim", "text": "Actually yes. Our procurement team flagged that your SOC 2 Type II report was from 2024 and they wanted a current one. That added three weeks to the timeline and by then our budget window had closed for the quarter.", "state_delta": {}}
+
+data: {"author": "extractor_step", "text": "", "state_delta": {"participant_coverage": {"primary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "secondary_loss_reason": "covered_low_confidence", "budget_timing": "covered_high_confidence", "procurement_friction": "covered_high_confidence", "security_concern": "covered_low_confidence", "competitor_pressure": "missing", "aha_moment_reached": "missing"}}}
+
+data: {"author": "interviewer", "text": "I see — so the security compliance delay directly impacted the budget timing. Were you also evaluating any competing solutions during this period? And was there a specific moment during the evaluation where you felt the solution could genuinely solve your problem?", "state_delta": {}}
+
+data: {"author": "participant_sim", "text": "We looked at CompetitorX briefly but they were even more expensive. There was a moment during the initial demo where we saw the automated reporting feature — that was impressive and our team got excited. But it wasn't enough to overcome the ROI gap.", "state_delta": {}}
+
+data: {"author": "extractor_step", "text": "", "state_delta": {"participant_coverage": {"primary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "secondary_loss_reason": "covered_low_confidence", "budget_timing": "covered_high_confidence", "procurement_friction": "covered_high_confidence", "security_concern": "covered_low_confidence", "competitor_pressure": "ambiguous", "aha_moment_reached": "covered_low_confidence"}}}
+
+data: {"author": "turn_checker", "text": "", "state_delta": {"turn_count": 3}}
+
+data: {"author": "coverage_step", "text": "", "state_delta": {"coverage_state": {"primary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "secondary_loss_reason": "covered_low_confidence", "budget_timing": "covered_high_confidence", "procurement_friction": "covered_high_confidence", "security_concern": "covered_low_confidence", "competitor_pressure": "ambiguous", "aha_moment_reached": "covered_low_confidence"}}}
+
+data: {"author": "replanner", "text": "Coverage sufficient for P-001. 6/8 fields covered, 1 ambiguous. Proceeding to finalize.", "state_delta": {"replan_decision": "STOP"}}
+
+data: {"author": "quality_reviewer", "text": "Study quality assessment: Variable coverage 87.5%. Evidence linked for all covered fields. No ambiguity resolution needed for primary variables. No recontact required.", "state_delta": {"quality_review": {"variable_coverage": 0.875, "ambiguity_resolved": true, "evidence_linked": true, "requires_recontact": false}}}
+
+data: {"author": "bigquery_export", "text": "", "state_delta": {"export_status": {"rows_written": 1, "table": "methodic_results.study_responses", "dry_run": false}}}
+
+data: {"author": "completion_responder", "text": "Study complete. Key findings: Primary loss reason was unclear ROI — generic projections failed to convince CFO without industry-specific benchmarks. Procurement friction from outdated SOC 2 report caused 3-week delay that exceeded budget window. Competitor evaluation (CompetitorX) was brief and non-threatening. Aha moment reached during initial demo (automated reporting) but insufficient to overcome ROI gap. Coverage: 6/8 fields high confidence, 1 low confidence, 1 ambiguous. Data exported to BigQuery.", "state_delta": {}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}
+

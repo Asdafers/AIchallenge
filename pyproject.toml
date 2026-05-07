@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+markers = [
+    "live: marks tests that hit the real Cloud Run endpoint (deselect with '-m not live')",
+]
+asyncio_mode = "strict"
