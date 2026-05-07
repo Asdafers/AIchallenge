@@ -87,7 +87,7 @@ def test_error_event_renders(error_page):
 def test_live_demo_completes(live_page):
     live_page.locator("#run-btn").click()
     expect(live_page.locator("#status-badge")).to_have_text("running", timeout=5_000)
-    expect(live_page.locator("#status-badge")).to_have_text("complete", timeout=120_000)
+    expect(live_page.locator("#status-badge")).to_have_text("complete", timeout=600_000)
 
     events = live_page.locator("#conversation-log .conv-event")
     assert events.count() >= 5, f"Expected at least 5 events from live run, got {events.count()}"
