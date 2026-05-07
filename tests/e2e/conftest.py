@@ -43,6 +43,9 @@ def demo_page(page: Page, demo_server: str):
 
     page.route("**/api/stream", handle_stream)
     page.goto(f"{demo_server}/demo.html")
+    # Dismiss intro overlay so the main app is accessible
+    page.locator("#start-btn").click()
+    page.locator("#app").wait_for(state="visible")
     return page
 
 
@@ -59,6 +62,9 @@ def error_page(page: Page, demo_server: str):
 
     page.route("**/api/stream", handle_error)
     page.goto(f"{demo_server}/demo.html")
+    # Dismiss intro overlay so the main app is accessible
+    page.locator("#start-btn").click()
+    page.locator("#app").wait_for(state="visible")
     return page
 
 
