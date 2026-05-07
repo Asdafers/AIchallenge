@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodic - Interactive Interview</title>
+<style>
+/* ─── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1e1e2f;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Utility ────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ─── Config Screen ─────────────────────────────────────────── */
+#config-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.config-card {
+  background: #252538;
+  border: 1px solid #3a3a5c;
+  border-radius: 12px;
+  padding: 32px 36px;
+  max-width: 640px;
+  width: 90%;
+}
+
+.config-card h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #85c1e9;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.config-subtitle {
+  font-size: 0.82rem;
+  color: #9aa;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* ─── Preset Grid ───────────────────────────────────────────── */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.preset-card {
+  background: #1a1a2e;
+  border: 2px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.preset-card:hover {
+  border-color: #3a3a5c;
+  background: #20203a;
+}
+
+.preset-card.selected {
+  border-color: #85c1e9;
+  background: #1a2a40;
+}
+
+.preset-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #c0d0e0;
+  margin-bottom: 6px;
+}
+
+.preset-desc {
+  font-size: 0.72rem;
+  color: #7a8a9a;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.preset-persona {
+  font-size: 0.68rem;
+  color: #556;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* ─── Advanced Configuration ────────────────────────────────── */
+.advanced-toggle {
+  font-size: 0.78rem;
+  color: #6a8fa8;
+  cursor: pointer;
+  padding: 6px 0;
+  margin-bottom: 8px;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.advanced-toggle:hover {
+  color: #85c1e9;
+}
+
+.advanced-panel {
+  margin-bottom: 16px;
+}
+
+.advanced-panel label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #8899aa;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+
+.advanced-panel label:first-child {
+  margin-top: 0;
+}
+
+.advanced-panel input,
+.advanced-panel textarea {
+  width: 100%;
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.advanced-panel input:focus,
+.advanced-panel textarea:focus {
+  border-color: #85c1e9;
+}
+
+.advanced-panel textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+/* ─── Start Button ──────────────────────────────────────────── */
+#start-btn {
+  background: #1a5276;
+  color: #85c1e9;
+  border: 1px solid #2980b9;
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+#start-btn:hover { background: #2471a3; }
+#start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── App Shell ─────────────────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* ─── Header ────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #16213e;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #e0e0e0;
+}
+
+#phase-label {
+  font-size: 0.78rem;
+  color: #85c1e9;
+  font-weight: 500;
+  flex: 1;
+}
+
+#turn-counter {
+  font-size: 0.75rem;
+  color: #6a8fa8;
+  white-space: nowrap;
+}
+
+#status-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #333;
+  color: #888;
+}
+
+#status-badge.running      { background: #1a5276; color: #85c1e9; }
+#status-badge.interviewing { background: #1a5276; color: #85c1e9; }
+#status-badge.complete     { background: #1e8449; color: #a9dfbf; }
+#status-badge.failed       { background: #922b21; color: #f1948a; }
+
+/* ─── Main Content Area ─────────────────────────────────────── */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* ─── Chat Panel ────────────────────────────────────────────── */
+#chat-panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #2a2a4a;
+  overflow: hidden;
+  position: relative;
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+/* ─── Typing Indicator ──────────────────────────────────────── */
+#typing-indicator {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #6a8fa8;
+}
+
+.typing-label {
+  margin-left: 4px;
+}
+
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #555;
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ─── Input Area ────────────────────────────────────────────── */
+.input-area {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #1a1a2e;
+  border-top: 1px solid #2a2a4a;
+  flex-shrink: 0;
+}
+
+#user-input {
+  flex: 1;
+  background: #252538;
+  border: 1px solid #2a2a4a;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+#user-input:focus:not(:disabled) {
+  border-color: #85c1e9;
+}
+
+#user-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#send-btn {
+  background: #1a5276;
+  color: #85c1e9;
+  border: 1px solid #2980b9;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+#send-btn:hover:not(:disabled) { background: #2471a3; }
+#send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Chat Bubbles ──────────────────────────────────────────── */
+.bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.55;
+  font-size: 0.875rem;
+  animation: bubbleIn 0.25s ease-out;
+  position: relative;
+}
+
+.bubble.agent {
+  align-self: flex-start;
+  background: #1a3a5e;
+  border: 1px solid #1e4d80;
+}
+
+.bubble.participant {
+  align-self: flex-end;
+  background: #2d1f4e;
+  border: 1px solid #3d2a6e;
+}
+
+.bubble.system-msg {
+  align-self: center;
+  background: #1a2e1a;
+  border: 1px solid #2a4a2a;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.bubble.error {
+  align-self: center;
+  background: #3d1010;
+  border: 1px solid #7b2020;
+  color: #f1948a;
+  font-size: 0.82rem;
+}
+
+.bubble-author {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bubble.agent       .bubble-author { color: #85c1e9; }
+.bubble.participant .bubble-author { color: #c39bd3; }
+.bubble.system-msg  .bubble-author { color: #7dcea0; }
+.bubble.error       .bubble-author { color: #f1948a; }
+
+.role-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.02em;
+}
+
+.bubble.agent       .role-badge { background: #0f3460; color: #85c1e9; }
+.bubble.participant .role-badge { background: #1a0f35; color: #c39bd3; }
+.bubble.system-msg  .role-badge { background: #0f2820; color: #7dcea0; }
+.bubble.error       .role-badge { background: #4a1010; color: #f1948a; }
+
+.bubble-text {
+  color: #d0d0e0;
+  word-break: break-word;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  background: #1a1a30;
+}
+
+.sidebar-section {
+  padding: 14px;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.sidebar-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #85c1e9;
+  margin-bottom: 10px;
+}
+
+/* ─── Insight Cards ─────────────────────────────────────────── */
+.insight-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  transition: background 0.35s, opacity 0.35s;
+  opacity: 0.45;
+  background: #1e1e2f;
+}
+
+.insight-card.missing              { opacity: 0.45; background: #1e1e2f; }
+.insight-card.ambiguous            { opacity: 1;    background: #2d2000; }
+.insight-card.covered_low_confidence  { opacity: 1; background: #0f2540; }
+.insight-card.covered_high_confidence {
+  opacity: 1;
+  background: #0f2820;
+  animation: insightPulse 0.6s ease-out;
+}
+
+.insight-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: border-color 0.35s, background 0.35s, color 0.35s;
+}
+
+.insight-card.missing              .insight-icon { border-color: #333; color: #444; }
+.insight-card.ambiguous            .insight-icon { border-color: #f39c12; background: #3d2800; color: #f39c12; }
+.insight-card.covered_low_confidence  .insight-icon { border-color: #3498db; background: #0f2540; color: #3498db; }
+.insight-card.covered_high_confidence .insight-icon { border-color: #2ecc71; background: #0f2820; color: #2ecc71; }
+
+.insight-label {
+  font-size: 0.72rem;
+  font-family: 'Courier New', monospace;
+  color: #8899aa;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.insight-card:not(.missing) .insight-label { color: #c0d0e0; }
+
+.insight-state {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.insight-card.missing              .insight-state { color: #444; }
+.insight-card.ambiguous            .insight-state { color: #f39c12; }
+.insight-card.covered_low_confidence  .insight-state { color: #3498db; }
+.insight-card.covered_high_confidence .insight-state { color: #2ecc71; }
+
+@keyframes insightPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.5); }
+  70%  { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+/* ─── Agentic Moment Cards ──────────────────────────────────── */
+#agentic-moments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agentic-card {
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  animation: agenticIn 0.3s ease-out;
+  border-left: 3px solid #555;
+}
+
+.agentic-card.methodology {
+  background: #1e0f0f;
+  border-left-color: #c0392b;
+}
+
+.agentic-card.replan {
+  background: #1e1500;
+  border-left-color: #e67e22;
+}
+
+.agentic-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 5px;
+}
+
+.agentic-card.methodology .agentic-label { color: #e74c3c; }
+.agentic-card.replan      .agentic-label { color: #e67e22; }
+
+.agentic-text {
+  color: #bbb;
+  line-height: 1.5;
+}
+
+@keyframes agenticIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Phase Progress ────────────────────────────────────────── */
+#phase-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.phase-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.phase-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #333;
+  flex-shrink: 0;
+  margin-top: 3px;
+  transition: background 0.3s;
+}
+
+.phase-dot.done   { background: #2ecc71; }
+.phase-dot.active { background: #f39c12; animation: phasePulse 1s infinite; }
+
+@keyframes phasePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+.phase-info { flex: 1; }
+
+.phase-name {
+  font-size: 0.78rem;
+  color: #b0c4de;
+  line-height: 1.4;
+}
+
+.phase-detail {
+  font-size: 0.68rem;
+  color: #556;
+  margin-top: 2px;
+}
+
+.phase-item.active .phase-name  { color: #f39c12; }
+.phase-item.done   .phase-name  { color: #7dcea0; }
+
+/* ─── Coverage Footer ───────────────────────────────────────── */
+#coverage-footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: #16213e;
+  border-top: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.coverage-label {
+  font-size: 0.75rem;
+  color: #6a8fa8;
+  white-space: nowrap;
+}
+
+.coverage-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: #0f1f3d;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.coverage-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #1a5276, #2ecc71);
+  transition: width 0.5s ease-out;
+}
+
+#coverage-text {
+  font-size: 0.75rem;
+  color: #85c1e9;
+  white-space: nowrap;
+  min-width: 100px;
+  text-align: right;
+}
+
+#turn-text {
+  font-size: 0.75rem;
+  color: #6a8fa8;
+  white-space: nowrap;
+}
+
+/* ─── Results Overlay ───────────────────────────────────────── */
+#results-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.4s ease-out;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.results-card {
+  background: #252538;
+  border: 2px solid #3a3a5c;
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.results-card h2 {
+  font-size: 1.1rem;
+  color: #a9dfbf;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #1a1a2e;
+  border-radius: 6px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2ecc71;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  color: #7dcea0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+
+/* ─── Field Detail Cards ────────────────────────────────────── */
+.field-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.field-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a1a2e;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.field-name {
+  font-size: 0.72rem;
+  font-family: 'Courier New', monospace;
+  color: #c0d0e0;
+}
+
+.coverage-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.coverage-badge.high   { background: #0f2820; color: #2ecc71; }
+.coverage-badge.low    { background: #0f2540; color: #3498db; }
+.coverage-badge.ambig  { background: #2d2000; color: #f39c12; }
+.coverage-badge.miss   { background: #1e1e2f; color: #555; }
+
+/* ─── Results Buttons ───────────────────────────────────────── */
+.results-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.results-actions button {
+  flex: 1;
+  padding: 9px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+#download-btn {
+  background: #1a5276;
+  color: #85c1e9;
+  border: 1px solid #2980b9;
+}
+
+#download-btn:hover { background: #2471a3; }
+
+#new-interview-btn {
+  background: #1e8449;
+  color: #a9dfbf;
+  border: 1px solid #27ae60;
+}
+
+#new-interview-btn:hover { background: #27ae60; }
+
+/* ─── Animations ────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Reduced Motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .content-area { grid-template-columns: 1fr; }
+  #sidebar { border-top: 1px solid #2a2a4a; max-height: 300px; }
+  .preset-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .field-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── Config Screen ──────────────────────────────────────────── -->
+<div id="config-screen">
+  <div class="config-card">
+    <h2>Interactive Interview</h2>
+    <p class="config-subtitle">Select a study preset or configure a custom interview. You will play the role of the participant while the AI conducts the interview.</p>
+    <div class="preset-grid">
+      <div class="preset-card" data-preset="lost_deals">
+        <div class="preset-title">Lost Deal Analysis</div>
+        <div class="preset-desc">Investigate why Q1 2026 deals were lost, focusing on ROI clarity and procurement friction.</div>
+        <div class="preset-persona">Role: VP of Engineering who chose a competitor</div>
+      </div>
+      <div class="preset-card" data-preset="churn">
+        <div class="preset-title">Enterprise Churn</div>
+        <div class="preset-desc">Understand why enterprise customers are not renewing, covering security and competitor pressure.</div>
+        <div class="preset-persona">Role: CTO who found a cheaper alternative</div>
+      </div>
+      <div class="preset-card" data-preset="competitive">
+        <div class="preset-title">Competitive Displacement</div>
+        <div class="preset-desc">Learn why customers switch to competitors, exploring feature gaps and integration concerns.</div>
+        <div class="preset-persona">Role: Head of IT who switched after a procurement review</div>
+      </div>
+    </div>
+    <div class="advanced-toggle" id="advanced-toggle">Advanced Configuration &#9660;</div>
+    <div class="advanced-panel hidden" id="advanced-panel">
+      <label for="custom-topic">Custom Topic</label>
+      <input id="custom-topic" type="text" placeholder="e.g. Why did enterprise deals stall in Q4?">
+      <label for="custom-persona">Custom Persona</label>
+      <textarea id="custom-persona" placeholder="Describe the participant role you want to play..."></textarea>
+    </div>
+    <button id="start-btn">Start Interview &rarr;</button>
+  </div>
+</div>
+
+<!-- ─── Main App (hidden until interview starts) ───────────────── -->
+<div id="app" class="hidden">
+
+  <header>
+    <span class="logo">Methodic</span>
+    <span id="phase-label"></span>
+    <span id="turn-counter"></span>
+    <span id="status-badge">config</span>
+  </header>
+
+  <main>
+    <div class="content-area">
+
+      <!-- Chat Panel -->
+      <div id="chat-panel">
+        <div id="messages" role="log" aria-live="polite" aria-label="Interview conversation" tabindex="-1"></div>
+        <div id="typing-indicator" class="hidden">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <span class="typing-label">Interviewer is thinking...</span>
+        </div>
+        <div class="input-area">
+          <input id="user-input" type="text" disabled placeholder="Waiting for interviewer..." autocomplete="off">
+          <button id="send-btn" disabled>Send</button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div id="sidebar">
+
+        <!-- Live Insights -->
+        <div class="sidebar-section" id="insights-panel">
+          <div class="sidebar-title">Live Insights</div>
+          <div id="insight-list"></div>
+        </div>
+
+        <!-- Agentic Moments -->
+        <div class="sidebar-section hidden" id="agentic-section">
+          <div class="sidebar-title">Agentic Moments</div>
+          <div id="agentic-moments"></div>
+        </div>
+
+        <!-- Phase Progress -->
+        <div class="sidebar-section" id="phase-progress">
+          <div class="sidebar-title">Pipeline</div>
+          <div id="phase-list"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Coverage Footer -->
+  <div id="coverage-footer">
+    <span class="coverage-label">Coverage</span>
+    <div class="coverage-bar-bg">
+      <div
+        class="coverage-bar-fill"
+        id="coverage-bar"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="8"
+        aria-valuenow="0"
+        aria-label="Field coverage progress"
+      ></div>
+    </div>
+    <span id="coverage-text">0 / 8 fields</span>
+    <span id="turn-text"></span>
+  </div>
+
+</div>
+
+<!-- ─── Results Overlay (hidden until complete) ────────────────── -->
+<div id="results-overlay" class="hidden"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ─── Constants ──────────────────────────────────────────────── */
+
+  var FIELDS = [
+    'primary_loss_reason',
+    'secondary_loss_reason',
+    'roi_clarity',
+    'budget_timing',
+    'procurement_friction',
+    'security_concern',
+    'competitor_pressure',
+    'aha_moment_reached'
+  ];
+
+  var FIELD_LABELS = {
+    primary_loss_reason:    'primary_loss',
+    secondary_loss_reason:  'secondary_loss',
+    roi_clarity:            'roi_clarity',
+    budget_timing:          'budget_timing',
+    procurement_friction:   'proc_friction',
+    security_concern:       'security',
+    competitor_pressure:    'competitor',
+    aha_moment_reached:     'aha_moment'
+  };
+
+  var STATE_ICONS = {
+    missing:                '',
+    ambiguous:              '?',
+    covered_low_confidence: '~',
+    covered_high_confidence:'+'
+  };
+
+  var STATE_ABBR = {
+    missing:                '—',
+    ambiguous:              'ambig',
+    covered_low_confidence: 'low',
+    covered_high_confidence:'high'
+  };
+
+  // Authors routed to chat as conversation bubbles
+  var CHAT_AUTHORS = {
+    'interviewer': { label: 'Interviewer', side: 'left', color: '#85c1e9' },
+    'participant': { label: 'You', side: 'right', color: '#c39bd3' }
+  };
+
+  // Authors that trigger agentic moment cards
+  var AGENTIC_AUTHORS = {
+    methodology_reviewer: 'methodology',
+    methodology: 'methodology',
+    replanner:   'replan'
+  };
+
+  // Phase definitions
+  var PHASES = [
+    {
+      id: 'study_planning',
+      label: 'Study planned',
+      agents: ['organizer', 'methodology_reviewer', 'methodology']
+    },
+    {
+      id: 'question_design',
+      label: 'Questions designed',
+      agents: ['question_designer', 'question_design']
+    },
+    {
+      id: 'interviewing',
+      label: 'Interviewing',
+      agents: ['session_init', 'interviewer', 'participant',
+               'extractor_step', 'turn_checker', 'coverage_step', 'replanner']
+    },
+    {
+      id: 'quality_review',
+      label: 'Quality review',
+      agents: ['quality_reviewer']
+    },
+    {
+      id: 'completion',
+      label: 'Complete',
+      agents: ['completion_responder']
+    }
+  ];
+
+  /* ─── State ──────────────────────────────────────────────────── */
+
+  var state = {
+    sessionId: null,
+    personaHint: '',
+    messages: [],
+    insights: [],
+    agenticMoments: [],
+    phases: [],
+    coverage: {},
+    participantResponses: {},
+    turnCount: 0,
+    inputRequested: false,
+    status: 'config',
+    completedPhases: {},
+    lastSentMessage: null
+  };
+
+  /* ─── DOM Cache ──────────────────────────────────────────────── */
+
+  var dom = {};
+
+  function init() {
+    dom.configScreen   = document.getElementById('config-screen');
+    dom.app            = document.getElementById('app');
+    dom.startBtn       = document.getElementById('start-btn');
+    dom.advancedToggle = document.getElementById('advanced-toggle');
+    dom.advancedPanel  = document.getElementById('advanced-panel');
+    dom.customTopic    = document.getElementById('custom-topic');
+    dom.customPersona  = document.getElementById('custom-persona');
+    dom.statusBadge    = document.getElementById('status-badge');
+    dom.phaseLabel     = document.getElementById('phase-label');
+    dom.turnCounter    = document.getElementById('turn-counter');
+    dom.messages       = document.getElementById('messages');
+    dom.typingInd      = document.getElementById('typing-indicator');
+    dom.userInput      = document.getElementById('user-input');
+    dom.sendBtn        = document.getElementById('send-btn');
+    dom.insightList    = document.getElementById('insight-list');
+    dom.agenticSection = document.getElementById('agentic-section');
+    dom.agenticMoments = document.getElementById('agentic-moments');
+    dom.phaseList      = document.getElementById('phase-list');
+    dom.coverageBar    = document.getElementById('coverage-bar');
+    dom.coverageText   = document.getElementById('coverage-text');
+    dom.turnText       = document.getElementById('turn-text');
+    dom.resultsOverlay = document.getElementById('results-overlay');
+
+    // Preset card selection
+    var presetCards = document.querySelectorAll('.preset-card');
+    for (var i = 0; i < presetCards.length; i++) {
+      presetCards[i].addEventListener('click', handlePresetClick);
+    }
+
+    // Advanced toggle
+    dom.advancedToggle.addEventListener('click', function () {
+      var panel = dom.advancedPanel;
+      var isHidden = panel.classList.contains('hidden');
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        dom.advancedToggle.textContent = 'Advanced Configuration ▲';
+      } else {
+        panel.classList.add('hidden');
+        dom.advancedToggle.textContent = 'Advanced Configuration ▼';
+      }
+    });
+
+    // Start button
+    dom.startBtn.addEventListener('click', startInterview);
+
+    // Send button
+    dom.sendBtn.addEventListener('click', sendMessage);
+
+    // Enter key in input
+    dom.userInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    renderInsights();
+    renderPhases();
+    renderCoverage();
+  }
+
+  /* ─── Preset Selection ──────────────────────────────────────── */
+
+  var selectedPreset = null;
+
+  function handlePresetClick(e) {
+    var card = e.currentTarget;
+    var preset = card.dataset.preset;
+
+    // Deselect if clicking the same card
+    if (selectedPreset === preset) {
+      card.classList.remove('selected');
+      selectedPreset = null;
+      return;
+    }
+
+    // Deselect all
+    var allCards = document.querySelectorAll('.preset-card');
+    for (var i = 0; i < allCards.length; i++) {
+      allCards[i].classList.remove('selected');
+    }
+
+    // Select this card
+    card.classList.add('selected');
+    selectedPreset = preset;
+  }
+
+  /* ─── Status ────────────────────────────────────────────────── */
+
+  function setStatus(s) {
+    state.status = s;
+    dom.statusBadge.textContent = s;
+    dom.statusBadge.className = '';
+    if (s === 'running' || s === 'interviewing') {
+      dom.statusBadge.classList.add('running');
+    } else if (s === 'complete') {
+      dom.statusBadge.classList.add('complete');
+    } else if (s === 'failed') {
+      dom.statusBadge.classList.add('failed');
+    }
+  }
+
+  /* ─── Start Interview ──────────────────────────────────────── */
+
+  function startInterview() {
+    var body = {};
+
+    // Check custom topic first
+    var customTopic = dom.customTopic.value.trim();
+    var customPersona = dom.customPersona.value.trim();
+
+    if (customTopic) {
+      body.topic = customTopic;
+      if (customPersona) {
+        body.persona = customPersona;
+      }
+    } else if (selectedPreset) {
+      body.preset = selectedPreset;
+    } else {
+      // Nothing selected, default to first preset
+      body.preset = 'lost_deals';
+    }
+
+    dom.startBtn.disabled = true;
+    dom.startBtn.textContent = 'Starting...';
+    setStatus('running');
+
+    fetch('/api/interactive/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          return response.json().then(function (err) {
+            throw new Error(err.error || 'Server returned ' + response.status);
+          });
+        }
+        return response.json();
+      })
+      .then(function (data) {
+        state.sessionId = data.session_id;
+        state.personaHint = data.persona_hint || '';
+
+        // Hide config, show app
+        dom.configScreen.classList.add('hidden');
+        dom.app.classList.remove('hidden');
+
+        // Add system message with persona hint
+        if (state.personaHint) {
+          addSystemMessage('Your role: ' + state.personaHint);
+        }
+
+        // Start consuming SSE stream
+        return fetch(data.stream_url);
+      })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Stream failed: ' + response.status);
+        }
+        return consumeSSE(response);
+      })
+      .catch(function (err) {
+        setStatus('failed');
+        dom.startBtn.disabled = false;
+        dom.startBtn.textContent = 'Start Interview →';
+        addErrorBubble('Connection failed: ' + err.message);
+      });
+  }
+
+  /* ─── SSE Consumption ───────────────────────────────────────── */
+
+  function consumeSSE(response) {
+    var reader  = response.body.getReader();
+    var decoder = new TextDecoder();
+    var buffer  = '';
+
+    function processChunk() {
+      return reader.read().then(function (result) {
+        if (result.done) {
+          onStreamEnd();
+          return;
+        }
+
+        buffer += decoder.decode(result.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop(); // keep incomplete line
+
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (line.indexOf('data: ') !== 0) continue;
+          var jsonStr = line.substring(6);
+          try {
+            var evt = JSON.parse(jsonStr);
+            handleEvent(evt);
+          } catch (e) {
+            // skip malformed lines
+          }
+        }
+
+        return processChunk();
+      });
+    }
+
+    return processChunk().catch(function (err) {
+      setStatus('failed');
+      addErrorBubble('Stream error: ' + err.message);
+      dom.typingInd.classList.add('hidden');
+      disableInput();
+    });
+  }
+
+  function onStreamEnd() {
+    dom.typingInd.classList.add('hidden');
+    disableInput();
+    if (state.status !== 'failed') {
+      setStatus('complete');
+    }
+    showResults();
+  }
+
+  /* ─── Main Event Handler ────────────────────────────────────── */
+
+  function handleEvent(evt) {
+    var author = evt.author || 'unknown';
+    var text   = evt.text   || '';
+    var delta  = evt.state_delta || {};
+
+    // System stream complete
+    if (author === 'system' && text.toLowerCase().indexOf('complete') !== -1) {
+      if (state.status !== 'failed') setStatus('complete');
+      dom.typingInd.classList.add('hidden');
+      disableInput();
+      showResults();
+      return;
+    }
+
+    // Error event
+    if (author === 'error') {
+      addErrorBubble(text);
+      setStatus('failed');
+      dom.typingInd.classList.add('hidden');
+      disableInput();
+      showResults();
+      return;
+    }
+
+    // Update state from delta
+    if (delta.turn_count !== undefined) {
+      state.turnCount = delta.turn_count;
+    }
+
+    if (delta.participant_coverage) {
+      mergeCoverage(delta.participant_coverage);
+    }
+    if (delta.coverage_state) {
+      mergeCoverage(delta.coverage_state);
+    }
+
+    // Handle input_requested state
+    if (delta.input_requested === true) {
+      state.inputRequested = true;
+      enableInput();
+      dom.typingInd.classList.add('hidden');
+    } else if (delta.input_requested === false) {
+      state.inputRequested = false;
+      disableInput();
+      showTypingIndicator();
+    }
+
+    // Route to chat bubbles
+    if (CHAT_AUTHORS[author] !== undefined) {
+      var chatAuthor = CHAT_AUTHORS[author];
+
+      // Skip the "awaiting_input" signal text from HumanInputStep
+      if (author === 'participant' && text === 'awaiting_input') {
+        // Don't render this as a bubble; input_requested delta handles it
+      }
+      // Skip duplicate of the message we just sent locally
+      else if (author === 'participant' && text && state.lastSentMessage && text === state.lastSentMessage) {
+        state.lastSentMessage = null; // consume the dedup token
+      }
+      else if (text) {
+        var role = chatAuthor.side === 'left' ? 'agent' : 'participant';
+        var label = chatAuthor.label;
+        routeToChat(role, label, text);
+
+        if (role === 'agent') {
+          showTypingIndicator();
+        }
+      }
+    }
+
+    // Route to agentic moment cards
+    if (AGENTIC_AUTHORS[author] !== undefined && text) {
+      routeToAgenticMoment(author, text);
+    }
+
+    // Update phase progress
+    markPhaseProgress(author);
+
+    // Update insights and coverage bar after coverage update
+    if (delta.participant_coverage || delta.coverage_state) {
+      renderInsights();
+      renderCoverage();
+    }
+
+    // Turn count update
+    if (delta.turn_count !== undefined) {
+      renderCoverage();
+    }
+  }
+
+  /* ─── Coverage Merge ────────────────────────────────────────── */
+
+  function mergeCoverage(data) {
+    FIELDS.forEach(function (field) {
+      if (data[field]) {
+        state.coverage[field] = data[field];
+      }
+    });
+  }
+
+  /* ─── Route to Chat ─────────────────────────────────────────── */
+
+  function routeToChat(role, label, text) {
+    if (!text) return;
+
+    // Clear typing indicator when new bubble arrives
+    dom.typingInd.classList.add('hidden');
+
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble ' + role;
+
+    var authorEl = document.createElement('div');
+    authorEl.className = 'bubble-author';
+
+    var badgeEl = document.createElement('span');
+    badgeEl.className = 'role-badge';
+    badgeEl.textContent = '[' + label + ']';
+    authorEl.appendChild(badgeEl);
+
+    var textEl = document.createElement('div');
+    textEl.className = 'bubble-text';
+    textEl.textContent = text;
+
+    bubble.appendChild(authorEl);
+    bubble.appendChild(textEl);
+    dom.messages.appendChild(bubble);
+    dom.messages.scrollTop = dom.messages.scrollHeight;
+
+    // Track message in state
+    state.messages.push({ role: role, label: label, text: text });
+  }
+
+  function addSystemMessage(text) {
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble system-msg';
+
+    var authorEl = document.createElement('div');
+    authorEl.className = 'bubble-author';
+
+    var badgeEl = document.createElement('span');
+    badgeEl.className = 'role-badge';
+    badgeEl.textContent = '[System]';
+    authorEl.appendChild(badgeEl);
+
+    var textEl = document.createElement('div');
+    textEl.className = 'bubble-text';
+    textEl.textContent = text;
+
+    bubble.appendChild(authorEl);
+    bubble.appendChild(textEl);
+    dom.messages.appendChild(bubble);
+    dom.messages.scrollTop = dom.messages.scrollHeight;
+  }
+
+  function addErrorBubble(text) {
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble error';
+
+    var authorEl = document.createElement('div');
+    authorEl.className = 'bubble-author';
+
+    var badgeEl = document.createElement('span');
+    badgeEl.className = 'role-badge';
+    badgeEl.textContent = '[Error]';
+    authorEl.appendChild(badgeEl);
+
+    var textEl = document.createElement('div');
+    textEl.className = 'bubble-text';
+    textEl.textContent = text;
+
+    bubble.appendChild(authorEl);
+    bubble.appendChild(textEl);
+    dom.messages.appendChild(bubble);
+    dom.messages.scrollTop = dom.messages.scrollHeight;
+  }
+
+  /* ─── Typing Indicator ──────────────────────────────────────── */
+
+  function showTypingIndicator() {
+    if (!state.inputRequested) {
+      dom.typingInd.classList.remove('hidden');
+    }
+  }
+
+  /* ─── Input Control ─────────────────────────────────────────── */
+
+  function enableInput() {
+    dom.userInput.disabled = false;
+    dom.sendBtn.disabled = false;
+    dom.userInput.placeholder = 'Type your response...';
+    dom.userInput.focus();
+    setStatus('interviewing');
+  }
+
+  function disableInput() {
+    dom.userInput.disabled = true;
+    dom.sendBtn.disabled = true;
+    dom.userInput.placeholder = 'Waiting for interviewer...';
+  }
+
+  /* ─── Send Message ──────────────────────────────────────────── */
+
+  function sendMessage() {
+    var text = dom.userInput.value.trim();
+    if (!text) return;
+    if (!state.sessionId) return;
+
+    // Disable input immediately
+    disableInput();
+    state.inputRequested = false;
+
+    // Render the user's message locally as a right-side bubble
+    routeToChat('participant', 'You', text);
+
+    // Store for dedup when SSE echoes it back
+    state.lastSentMessage = text;
+
+    // Clear input
+    dom.userInput.value = '';
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    // POST to respond endpoint
+    fetch('/api/interactive/' + state.sessionId + '/respond', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          return response.json().then(function (err) {
+            throw new Error(err.error || 'Failed to send message');
+          });
+        }
+        return response.json();
+      })
+      .catch(function (err) {
+        addErrorBubble('Send failed: ' + err.message);
+      });
+  }
+
+  /* ─── Route to Agentic Moment ───────────────────────────────── */
+
+  function routeToAgenticMoment(author, text) {
+    var type = AGENTIC_AUTHORS[author];
+
+    // For methodology, try to extract verdict
+    var displayText = text;
+    if (type === 'methodology') {
+      var verdictMatch = text.match(/Verdict:\s*([A-Z_]+)/);
+      if (verdictMatch) {
+        displayText = 'Verdict: ' + verdictMatch[1];
+        var recMatch = text.match(/Recommend[^.]*\./);
+        if (recMatch) displayText += ' — ' + recMatch[0];
+      }
+    }
+
+    // Truncate long text
+    if (displayText.length > 200) {
+      displayText = displayText.substring(0, 197) + '...';
+    }
+
+    var card = document.createElement('div');
+    card.className = 'agentic-card ' + type;
+
+    var labelEl = document.createElement('div');
+    labelEl.className = 'agentic-label';
+    labelEl.textContent = (type === 'methodology') ? 'Methodology Review' : 'Replanner Decision';
+
+    var textEl = document.createElement('div');
+    textEl.className = 'agentic-text';
+    textEl.textContent = displayText;
+
+    card.appendChild(labelEl);
+    card.appendChild(textEl);
+    dom.agenticMoments.appendChild(card);
+
+    // Show agentic section
+    dom.agenticSection.classList.remove('hidden');
+
+    // Track in state
+    state.agenticMoments.push({ type: type, text: displayText });
+  }
+
+  /* ─── Render Insights ───────────────────────────────────────── */
+
+  function renderInsights() {
+    FIELDS.forEach(function (field) {
+      var cardId = 'insight-' + field;
+      var card = document.getElementById(cardId);
+      var coverage = state.coverage[field] || 'missing';
+
+      if (!card) {
+        card = document.createElement('div');
+        card.id = cardId;
+        card.className = 'insight-card';
+
+        var icon = document.createElement('div');
+        icon.className = 'insight-icon';
+        icon.id = 'insight-icon-' + field;
+
+        var labelEl = document.createElement('div');
+        labelEl.className = 'insight-label';
+        labelEl.textContent = FIELD_LABELS[field] || field;
+
+        var stateEl = document.createElement('div');
+        stateEl.className = 'insight-state';
+        stateEl.id = 'insight-state-' + field;
+
+        card.appendChild(icon);
+        card.appendChild(labelEl);
+        card.appendChild(stateEl);
+        dom.insightList.appendChild(card);
+      }
+
+      if (card.dataset.state !== coverage) {
+        card.dataset.state = coverage;
+        card.className = 'insight-card ' + coverage;
+
+        var iconEl = document.getElementById('insight-icon-' + field);
+        if (iconEl) iconEl.textContent = STATE_ICONS[coverage] || '';
+
+        var stateEl2 = document.getElementById('insight-state-' + field);
+        if (stateEl2) stateEl2.textContent = STATE_ABBR[coverage] || '';
+      }
+    });
+  }
+
+  /* ─── Render Phases ─────────────────────────────────────────── */
+
+  function renderPhases() {
+    PHASES.forEach(function (phase) {
+      var itemId = 'phase-' + phase.id;
+      if (document.getElementById(itemId)) return;
+
+      var item = document.createElement('div');
+      item.className = 'phase-item';
+      item.id = itemId;
+
+      var dot = document.createElement('div');
+      dot.className = 'phase-dot';
+      dot.id = 'phase-dot-' + phase.id;
+
+      var info = document.createElement('div');
+      info.className = 'phase-info';
+
+      var name = document.createElement('div');
+      name.className = 'phase-name';
+      name.textContent = phase.label;
+
+      var detail = document.createElement('div');
+      detail.className = 'phase-detail';
+      detail.id = 'phase-detail-' + phase.id;
+
+      info.appendChild(name);
+      info.appendChild(detail);
+      item.appendChild(dot);
+      item.appendChild(info);
+      dom.phaseList.appendChild(item);
+    });
+  }
+
+  /* ─── Mark Phase Progress ───────────────────────────────────── */
+
+  function markPhaseProgress(author) {
+    var matchedPhase = null;
+    for (var i = 0; i < PHASES.length; i++) {
+      if (PHASES[i].agents.indexOf(author) !== -1) {
+        matchedPhase = PHASES[i];
+        break;
+      }
+    }
+    if (!matchedPhase) return;
+
+    var phaseId = matchedPhase.id;
+    var dot = document.getElementById('phase-dot-' + phaseId);
+    var item = document.getElementById('phase-' + phaseId);
+    var detail = document.getElementById('phase-detail-' + phaseId);
+    if (!dot) return;
+
+    if (state.completedPhases[phaseId]) return;
+
+    if (phaseId === 'interviewing') {
+      if (dot.className.indexOf('active') === -1 && dot.className.indexOf('done') === -1) {
+        dot.className = 'phase-dot active';
+        if (item) item.className = 'phase-item active';
+        dom.phaseLabel.textContent = 'Phase: Interviewing';
+      }
+      if (detail && state.turnCount > 0) {
+        detail.textContent = 'Turn ' + state.turnCount;
+      }
+      if (author === 'replanner') {
+        dot.className = 'phase-dot done';
+        if (item) item.className = 'phase-item done';
+        state.completedPhases[phaseId] = true;
+        dom.phaseLabel.textContent = 'Phase: Review';
+      }
+    } else {
+      dot.className = 'phase-dot done';
+      if (item) item.className = 'phase-item done';
+      state.completedPhases[phaseId] = true;
+
+      if (phaseId === 'study_planning') {
+        dom.phaseLabel.textContent = 'Phase: Planning';
+      } else if (phaseId === 'question_design') {
+        dom.phaseLabel.textContent = 'Phase: Designing';
+      } else if (phaseId === 'quality_review') {
+        dom.phaseLabel.textContent = 'Phase: Reviewing';
+      } else if (phaseId === 'completion') {
+        dom.phaseLabel.textContent = 'Phase: Complete';
+      }
+    }
+  }
+
+  /* ─── Render Coverage ───────────────────────────────────────── */
+
+  function renderCoverage() {
+    var coveredCount = 0;
+    FIELDS.forEach(function (field) {
+      var s = state.coverage[field];
+      if (s && s !== 'missing') coveredCount++;
+    });
+    var total = FIELDS.length;
+    var pct = Math.round((coveredCount / total) * 100);
+
+    dom.coverageBar.style.width = pct + '%';
+    dom.coverageBar.setAttribute('aria-valuenow', String(coveredCount));
+    dom.coverageText.textContent = coveredCount + ' / ' + total + ' fields';
+
+    if (state.turnCount > 0) {
+      dom.turnText.textContent = 'Turn ' + state.turnCount;
+      dom.turnCounter.textContent = 'Turn ' + state.turnCount;
+    } else {
+      dom.turnText.textContent = '';
+      dom.turnCounter.textContent = '';
+    }
+  }
+
+  /* ─── Show Results ──────────────────────────────────────────── */
+
+  function showResults() {
+    // Count coverage stats
+    var highConf = 0, lowConf = 0, ambig = 0, totalCovered = 0, missing = 0;
+    FIELDS.forEach(function (field) {
+      var s = state.coverage[field] || 'missing';
+      if (s === 'covered_high_confidence') { highConf++; totalCovered++; }
+      else if (s === 'covered_low_confidence') { lowConf++; totalCovered++; }
+      else if (s === 'ambiguous') { ambig++; totalCovered++; }
+      else { missing++; }
+    });
+
+    // Build results card using safe DOM
+    while (dom.resultsOverlay.firstChild) {
+      dom.resultsOverlay.removeChild(dom.resultsOverlay.firstChild);
+    }
+
+    var card = document.createElement('div');
+    card.className = 'results-card';
+
+    var title = document.createElement('h2');
+    title.textContent = 'Interview Complete';
+    card.appendChild(title);
+
+    // Stats grid
+    var grid = document.createElement('div');
+    grid.className = 'stats-grid';
+
+    function makeStat(value, label) {
+      var sc = document.createElement('div');
+      sc.className = 'stat-card';
+      var sv = document.createElement('div');
+      sv.className = 'stat-value';
+      sv.textContent = String(value);
+      var sl = document.createElement('div');
+      sl.className = 'stat-label';
+      sl.textContent = label;
+      sc.appendChild(sv);
+      sc.appendChild(sl);
+      return sc;
+    }
+
+    grid.appendChild(makeStat(totalCovered, 'Fields Covered'));
+    grid.appendChild(makeStat(highConf, 'High Confidence'));
+    grid.appendChild(makeStat(ambig + lowConf, 'Needs Clarification'));
+    grid.appendChild(makeStat(state.turnCount, 'Turns Taken'));
+    card.appendChild(grid);
+
+    // Field detail cards
+    var fieldCardsContainer = document.createElement('div');
+    fieldCardsContainer.className = 'field-cards';
+
+    FIELDS.forEach(function (field) {
+      var s = state.coverage[field] || 'missing';
+      var fc = document.createElement('div');
+      fc.className = 'field-card';
+
+      var nameEl = document.createElement('span');
+      nameEl.className = 'field-name';
+      nameEl.textContent = FIELD_LABELS[field] || field;
+
+      var badge = document.createElement('span');
+      badge.className = 'coverage-badge';
+
+      if (s === 'covered_high_confidence') {
+        badge.classList.add('high');
+        badge.textContent = 'HIGH';
+      } else if (s === 'covered_low_confidence') {
+        badge.classList.add('low');
+        badge.textContent = 'LOW';
+      } else if (s === 'ambiguous') {
+        badge.classList.add('ambig');
+        badge.textContent = 'AMBIG';
+      } else {
+        badge.classList.add('miss');
+        badge.textContent = 'MISSING';
+      }
+
+      fc.appendChild(nameEl);
+      fc.appendChild(badge);
+      fieldCardsContainer.appendChild(fc);
+    });
+
+    card.appendChild(fieldCardsContainer);
+
+    // Action buttons
+    var actions = document.createElement('div');
+    actions.className = 'results-actions';
+
+    var downloadBtn = document.createElement('button');
+    downloadBtn.id = 'download-btn';
+    downloadBtn.textContent = 'Download JSON';
+    downloadBtn.addEventListener('click', downloadResults);
+
+    var newBtn = document.createElement('button');
+    newBtn.id = 'new-interview-btn';
+    newBtn.textContent = 'Start New Interview';
+    newBtn.addEventListener('click', resetToConfig);
+
+    actions.appendChild(downloadBtn);
+    actions.appendChild(newBtn);
+    card.appendChild(actions);
+
+    dom.resultsOverlay.appendChild(card);
+    dom.resultsOverlay.classList.remove('hidden');
+  }
+
+  /* ─── Download Results ──────────────────────────────────────── */
+
+  function downloadResults() {
+    if (!state.sessionId) return;
+
+    fetch('/api/interactive/' + state.sessionId + '/results')
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Results not available yet');
+        }
+        return response.json();
+      })
+      .then(function (data) {
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'methodic-results-' + state.sessionId + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      })
+      .catch(function (err) {
+        addErrorBubble('Download failed: ' + err.message);
+      });
+  }
+
+  /* ─── Reset to Config ───────────────────────────────────────── */
+
+  function resetToConfig() {
+    // Reset state
+    state.sessionId = null;
+    state.personaHint = '';
+    state.messages = [];
+    state.insights = [];
+    state.agenticMoments = [];
+    state.phases = [];
+    state.coverage = {};
+    state.participantResponses = {};
+    state.turnCount = 0;
+    state.inputRequested = false;
+    state.status = 'config';
+    state.completedPhases = {};
+    state.lastSentMessage = null;
+    selectedPreset = null;
+
+    // Clear DOM
+    while (dom.messages.firstChild) dom.messages.removeChild(dom.messages.firstChild);
+    while (dom.agenticMoments.firstChild) dom.agenticMoments.removeChild(dom.agenticMoments.firstChild);
+    while (dom.phaseList.firstChild) dom.phaseList.removeChild(dom.phaseList.firstChild);
+    while (dom.insightList.firstChild) dom.insightList.removeChild(dom.insightList.firstChild);
+    while (dom.resultsOverlay.firstChild) dom.resultsOverlay.removeChild(dom.resultsOverlay.firstChild);
+
+    dom.resultsOverlay.classList.add('hidden');
+    dom.typingInd.classList.add('hidden');
+    dom.agenticSection.classList.add('hidden');
+
+    // Reset header
+    dom.phaseLabel.textContent = '';
+    dom.turnCounter.textContent = '';
+    dom.statusBadge.textContent = 'config';
+    dom.statusBadge.className = '';
+
+    // Reset input
+    dom.userInput.value = '';
+    dom.userInput.disabled = true;
+    dom.userInput.placeholder = 'Waiting for interviewer...';
+    dom.sendBtn.disabled = true;
+
+    // Reset config form
+    dom.customTopic.value = '';
+    dom.customPersona.value = '';
+    dom.advancedPanel.classList.add('hidden');
+    dom.advancedToggle.textContent = 'Advanced Configuration ▼';
+    var allCards = document.querySelectorAll('.preset-card');
+    for (var i = 0; i < allCards.length; i++) {
+      allCards[i].classList.remove('selected');
+    }
+
+    // Reset start button
+    dom.startBtn.disabled = false;
+    dom.startBtn.textContent = 'Start Interview →';
+
+    // Re-render empty insights, phases, coverage
+    renderInsights();
+    renderPhases();
+    renderCoverage();
+
+    // Show config, hide app
+    dom.app.classList.add('hidden');
+    dom.configScreen.classList.remove('hidden');
+  }
+
+  /* ─── Boot ──────────────────────────────────────────────────── */
+
+  init();
+
+}());
+</script>
+</body>
+</html>
