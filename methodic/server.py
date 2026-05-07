@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 import uuid
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -40,6 +42,22 @@ AGENT_CARD = {
 }
 
 _demo_sessions: dict[str, dict] = {}
+
+
+@dataclass
+class InteractiveSession:
+    session_id: str
+    adk_session_id: str
+    input_queue: asyncio.Queue = field(default_factory=asyncio.Queue)
+    input_requested: bool = False
+    status: str = "planning"
+    sse_queue: asyncio.Queue = field(default_factory=asyncio.Queue)
+    created_at: float = field(default_factory=time.time)
+    last_activity: float = field(default_factory=time.time)
+    results: dict | None = None
+
+_interactive_sessions: dict[str, InteractiveSession] = {}
+_session_lookup: dict[str, str] = {}
 
 
 def create_app() -> FastAPI:
@@ -164,7 +182,221 @@ def create_app() -> FastAPI:
 
         return StreamingResponse(event_generator(), media_type="text/event-stream")
 
+    @app.post("/api/interactive/start")
+    async def interactive_start(request: Request):
+        body = await request.json()
+        preset_name = body.get("preset")
+        topic = body.get("topic")
+
+        if not preset_name and not topic:
+            return JSONResponse(status_code=400, content={"error": "preset or topic required"})
+
+        from methodic.presets import get_preset
+
+        if preset_name:
+            preset = get_preset(preset_name)
+            if not preset:
+                return JSONResponse(status_code=400, content={"error": f"Unknown preset: {preset_name}"})
+            brief_text = preset["brief"]
+            title = preset["title"]
+            persona_hint = preset["persona_hint"]
+        else:
+            persona = body.get("persona", "A B2B decision-maker.")
+            brief_text = f"{topic} Participant: P-INTERACTIVE."
+            title = topic[:60]
+            persona_hint = persona
+
+        session_id = f"INT-{uuid.uuid4().hex[:8]}"
+
+        from google.adk.sessions import InMemorySessionService
+        session_service = InMemorySessionService()
+        adk_session = await session_service.create_session(
+            app_name="methodic_interactive",
+            user_id="interactive_user",
+        )
+
+        adk_sid = adk_session.id
+        isess = InteractiveSession(
+            session_id=session_id,
+            adk_session_id=adk_sid,
+        )
+        _interactive_sessions[adk_sid] = isess
+        _session_lookup[session_id] = adk_sid
+
+        asyncio.create_task(
+            _start_interactive_pipeline(
+                isess, session_service, brief_text, adk_sid
+            )
+        )
+
+        return {
+            "session_id": session_id,
+            "stream_url": f"/api/interactive/{session_id}/stream",
+            "title": title,
+            "persona_hint": persona_hint,
+        }
+
+    @app.get("/api/interactive/{session_id}/stream")
+    async def interactive_stream(session_id: str):
+        adk_sid = _session_lookup.get(session_id)
+        if not adk_sid:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+        isess = _interactive_sessions.get(adk_sid)
+        if not isess:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+
+        async def event_generator():
+            while True:
+                try:
+                    payload = await asyncio.wait_for(isess.sse_queue.get(), timeout=600)
+                except asyncio.TimeoutError:
+                    break
+                yield f"data: {json.dumps(payload)}\n\n"
+                author = payload.get("author", "")
+                if author == "error":
+                    break
+                if author == "system" and "complete" in payload.get("text", "").lower():
+                    break
+
+        return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+    @app.post("/api/interactive/{session_id}/respond")
+    async def interactive_respond(session_id: str, request: Request):
+        body = await request.json()
+        message = body.get("message", "")
+        if not message:
+            return JSONResponse(status_code=400, content={"error": "message required"})
+
+        adk_sid = _session_lookup.get(session_id)
+        if not adk_sid:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+        isess = _interactive_sessions.get(adk_sid)
+        if not isess:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+
+        if not isess.input_requested:
+            return JSONResponse(status_code=409, content={"error": "Not awaiting input"})
+
+        isess.last_activity = time.time()
+        await isess.input_queue.put(message)
+        return {"status": "ok"}
+
+    @app.get("/api/interactive/{session_id}/status")
+    async def interactive_status(session_id: str):
+        adk_sid = _session_lookup.get(session_id)
+        if not adk_sid:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+        isess = _interactive_sessions.get(adk_sid)
+        if not isess:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+        return {
+            "session_id": session_id,
+            "status": isess.status,
+            "input_requested": isess.input_requested,
+        }
+
+    @app.get("/api/interactive/{session_id}/results")
+    async def interactive_results(session_id: str):
+        adk_sid = _session_lookup.get(session_id)
+        if not adk_sid:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+        isess = _interactive_sessions.get(adk_sid)
+        if not isess:
+            return JSONResponse(status_code=404, content={"error": "Session not found"})
+        if isess.results is None:
+            return JSONResponse(status_code=404, content={"error": "Results not yet available"})
+        return isess.results
+
     return app
+
+
+async def _start_interactive_pipeline(
+    isess: InteractiveSession,
+    session_service,
+    brief_text: str,
+    adk_session_id: str,
+) -> None:
+    try:
+        from methodic.agent import build_agent_graph
+        from google.adk.runners import Runner
+        from google.genai import types
+
+        registry = {adk_session_id: isess}
+
+        agent = build_agent_graph(interactive=True, session_registry=registry)
+        runner = Runner(
+            agent=agent,
+            app_name="methodic_interactive",
+            session_service=session_service,
+        )
+        user_message = types.Content(
+            role="user",
+            parts=[types.Part(text=brief_text)],
+        )
+
+        isess.status = "running"
+
+        async for event in runner.run_async(
+            session_id=adk_session_id,
+            user_id="interactive_user",
+            new_message=user_message,
+        ):
+            author = getattr(event, "author", None)
+            if not author:
+                continue
+
+            text_parts = []
+            content = getattr(event, "content", None)
+            for part in getattr(content, "parts", []) or []:
+                t = getattr(part, "text", None)
+                if t:
+                    text_parts.append(t)
+
+            actions = getattr(event, "actions", None)
+            state_delta = {}
+            if actions:
+                raw_delta = getattr(actions, "state_delta", None) or {}
+                if isinstance(raw_delta, dict):
+                    state_delta = raw_delta
+
+            payload = {
+                "author": author,
+                "text": " ".join(text_parts),
+                "state_delta": state_delta,
+            }
+            await isess.sse_queue.put(payload)
+
+            if author == "participant" and state_delta.get("input_requested"):
+                isess.status = "interviewing"
+
+        # Collect results from session state
+        final_session = await session_service.get_session(
+            app_name="methodic_interactive",
+            user_id="interactive_user",
+            session_id=adk_session_id,
+        )
+        if final_session and hasattr(final_session, "state"):
+            responses = final_session.state.get("participant_response_by_id", {})
+            coverage = final_session.state.get("coverage_state", {})
+            isess.results = {
+                "participant_responses": responses,
+                "coverage_state": coverage,
+            }
+
+        isess.status = "complete"
+        await isess.sse_queue.put({
+            "author": "system",
+            "text": "Stream complete.",
+            "state_delta": {},
+        })
+
+    except Exception as e:
+        isess.status = "failed"
+        await isess.sse_queue.put({
+            "author": "error",
+            "text": str(e),
+            "state_delta": {},
+        })
 
 
 app = create_app()
