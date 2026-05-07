@@ -1,6 +1,6 @@
 """Turn checker step - deterministic agent that exits the interview loop.
 
-Checks turn count and per-participant coverage. Sets ctx.actions.escalate = True
+Checks turn count and per-participant coverage. Yields Event with escalate=True
 when stop conditions are met. This is a custom BaseAgent, not a FunctionTool,
 because ADK workflow sub_agents must be agent instances.
 """
@@ -10,7 +10,7 @@ from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 
 from methodic.schemas import CANONICAL_FIELDS
 
@@ -37,5 +37,6 @@ class TurnCheckerStep(BaseAgent):
         state = ctx.session.state
         state["turn_count"] = state.get("turn_count", 0) + 1
         if self.should_escalate(state):
-            ctx.actions.escalate = True
-        yield Event(author=self.name, content=None)
+            yield Event(author=self.name, content=None, actions=EventActions(escalate=True))
+        else:
+            yield Event(author=self.name, content=None)
