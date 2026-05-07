@@ -18,68 +18,78 @@ Track 1: Build — Net-New Agents
 
 ## What it does
 
-Methodic replaces static B2B surveys with an autonomous research operations workflow. Given a business decision ("Why are mid-market deals slipping?"), it:
+Methodic replaces static B2B surveys with an autonomous multi-agent research workflow. Given a business question ("Why are we losing enterprise deals to Competitor X?"), it:
 
-1. Accepts external agent requests and asks clarifying questions before proceeding
-2. Reviews the proposed study methodology and pushes back on sampling bias
-3. Conducts interactive participant conversations that probe vague answers ("price") into decision-relevant variables ("procurement friction vs. ROI justification")
-4. Uses MCP to securely look up CRM and telemetry context, turning generic responses into evidence-linked data points
-5. Tracks variable coverage in real time and autonomously re-plans when gaps remain
-6. Validates and exports structured, scored data in a BigQuery-ready schema with full evidence traceability
+1. **Plans the study** — an organizer agent structures objectives, hypotheses, and participant pools; a methodology agent pushes back on sampling bias and insufficient sample sizes
+2. **Designs interview questions** — a question design agent maps each question to target research variables with follow-up probes
+3. **Conducts governed interviews** — an interviewer agent adaptively probes vague answers ("price") into specific decision variables ("procurement friction vs. ROI justification"), while guardrails enforce research ethics
+4. **Extracts structured data in real time** — after each turn pair, a Gemini-powered extractor maps responses to 8 canonical research variables with confidence scores
+5. **Tracks coverage and autonomously re-plans** — a coverage agent identifies gaps across variables; a replanner decides whether to add participants or stop
+6. **Reviews quality and exports** — a quality reviewer validates findings, then BigQuery export writes structured, evidence-linked data
 
-The result: a +69% quality improvement over static surveys, measured by the same rubric applied to both.
+The result: coverage of 8 canonical research variables improves from ~30% (static survey) to ~87.5% (agent-conducted), measured by the same rubric applied to both.
 
 ## Inspiration
 
-B2B teams spend months running win-loss research to understand deal outcomes, but the data-capture layer — static surveys — produces shallow answers. "Price" appears in every lost-deal report, but dashboards can't distinguish packaging friction from ROI justification failures. We built Methodic to fix the upstream data problem: capture governed, evidence-linked data that actually supports business decisions.
+B2B teams spend months running win-loss research, but the data-capture layer — static surveys — produces shallow answers. "Price" appears in every lost-deal report, but dashboards can't distinguish packaging friction from ROI justification failures. We built Methodic to fix the upstream data problem: capture governed, evidence-linked data that actually supports business decisions.
 
 ## How we built it
 
-Methodic is a vertical-slice prototype demonstrating the full autonomous workflow:
+Methodic is built on Google's Agent Development Kit (ADK) with a multi-agent architecture:
 
-- **Gemini API** powers methodology review (live pushback on biased sampling) and conversation design
-- **Model Context Protocol (MCP)** provides a real server boundary for `lookup_deal_context` — CRM and telemetry data flows through stdio JSON-RPC 2.0 with server-side field filtering
-- **Python orchestration** chains 7 work packages: external request → methodology → conversations → MCP context → quality scoring → autonomous re-plan → BigQuery export
-- **Docker / Cloud Run** containerization proves all 7 steps execute in a single deployable unit (local container mode, with operator instructions for Cloud Run deployment)
-- **BigQuery schema validation** ensures export-ready structured data with 17 fields per participant row
+- **ADK Agent Graph**: `SequentialAgent` orchestrates three phases (planning → fieldwork → finalization), with `LoopAgent` managing interview iteration (max 6 turns) and participant cycling (max 3 participants). 7 `LlmAgent` nodes handle reasoning; 4 custom `BaseAgent` steps handle deterministic logic (session init, extraction, turn checking, coverage, BigQuery export).
+- **Gemini 2.5 Pro** powers all LLM agents — methodology review, question design, interviewing, participant simulation, quality review, and study completion.
+- **Real-time SSE streaming**: A FastAPI server wraps the ADK runner, streaming every agent event as Server-Sent Events. The demo UI renders conversations, coverage bars, guardrail highlights, and pipeline timeline live as the agent works.
+- **Cloud Run deployment**: The full pipeline runs on Cloud Run (us-central1) with Vertex AI authentication, Cloud Trace integration, and A2A-compatible agent card at `/.well-known/agent-card.json`.
+- **MCP integration**: Model Context Protocol tools provide secure access to deal context and telemetry data with server-side field filtering.
+- **BigQuery export**: Structured participant responses with 8 canonical variables, confidence scores, and evidence quotes are exported to BigQuery.
 
-Multi-agent coordination used Mission-MCP for task management, with Claude and Gemini executing complementary roles: Claude for implementation, Gemini for blind adversarial reviews via the Agent Communication Protocol (ACP).
+The build process itself was multi-agent: Claude implemented the 21-task plan, Gemini performed blind adversarial reviews via ACP, and all coordination ran through Mission-MCP task management.
 
 ## Challenges we ran into
 
-- **Honest labeling vs. over-claiming**: Every trace artifact includes an `honest_label` field that states exactly what it proves. The container runs locally, not on live Cloud Run; WP4 uses deterministic fallback without API keys; BigQuery exports are dry-run validated. We chose transparency over impressive-sounding claims.
-- **MCP field filtering**: The MCP server must enforce `allowed_fields` server-side to prevent data leakage. Getting the filtering correct while merging CRM and telemetry sources required careful contract design.
-- **Autonomous re-plan scope control**: The re-plan trigger must add exactly one targeted session, not spiral into unbounded data collection. We hardcoded the constraint: one reserve participant, one variable gap, one session.
+- **ADK EventActions pattern**: The ADK documentation didn't clearly cover how custom `BaseAgent` steps should signal loop exit. We discovered that `InvocationContext` has no `actions` attribute — escalation must go through `Event(actions=EventActions(escalate=True))`, and state propagation through `EventActions(state_delta={...})`. This was the root cause of our first Cloud Run deployment crash.
+- **Non-deterministic pipeline behavior**: Gemini sometimes generates a follow-up question instead of structured output, causing the pipeline to exit early. The architecture handles this gracefully — the `LoopAgent` and `SequentialAgent` continue regardless — but it means each run produces different results.
+- **Autonomous re-plan scope control**: The replanner must decide when to add a participant vs. stop the study. We bounded this with `max_iterations=3` on the fieldwork loop and a deterministic STOP condition when coverage is sufficient.
 
 ## Accomplishments we're proud of
 
-- **Real MCP boundary**: Not a simulated function call — a real stdio JSON-RPC 2.0 server with tool registration, field filtering, and trace logging
-- **Measurable quality delta**: Same rubric, same participants, static vs. Methodic — 0.069 vs. 0.761 composite score
-- **Multi-agent build process**: Claude implemented, Gemini reviewed adversarially (9 blind review gates passed), Codex signed off on design — all coordinated through Mission-MCP
-- **Every artifact is honest**: No over-claimed deployment status, no fabricated statistics, no hidden disclaimers
+- **Live end-to-end pipeline**: Not a prototype or fixture replay — a real Gemini-powered pipeline running on Cloud Run that streams 30+ events in real time across 12 agent types
+- **52 automated tests**: 43 unit tests covering schemas, validators, and agent logic, plus 9 Playwright E2E tests for the demo UI and 1 live integration test against Cloud Run (passes in ~275s)
+- **Measurable quality delta**: Same rubric, same participants, static vs. Methodic — coverage improvement from ~30% to ~87.5% across 8 canonical research variables
+- **Multi-agent build process**: 21-task implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). Gemini performed blind adversarial reviews at 10 gates.
 
 ## What we learned
 
-The hardest part of building an autonomous agent isn't the AI — it's the governance layer. Knowing when to stop probing, which fields to expose through MCP, when a re-plan is warranted vs. noise — these are measurement design problems, not engineering problems. The Methodology Agent (WP4) turned out to be the most important component: without pushback on bad study design, the downstream data quality improvements don't matter.
+The hardest part of building an autonomous agent isn't the AI — it's the governance layer. Knowing when to stop probing, which turn count triggers escalation, when a re-plan is warranted vs. noise — these are measurement design problems, not engineering problems. The methodology review agent turned out to be the most important component: it consistently pushes back on insufficient sample sizes and sampling bias, which prevents the downstream pipeline from producing meaningless results.
+
+We also learned that ADK's `LoopAgent` and `SequentialAgent` are powerful abstractions for multi-phase workflows, but custom `BaseAgent` steps require careful attention to the Event/EventActions contract. The framework is designed around yielding Events, not mutating context — a pattern that becomes clear only when your first deployment crashes.
 
 ## What's next for Methodic
 
-- Live Gemini-powered conversations (replacing fixture-driven dialogue)
-- ADK orchestration layer (replacing subprocess chaining)
-- Cloud Run deployment with BigQuery live writes
-- Frontend dashboard for organizer review and variable coverage monitoring
-- Multi-study support beyond the B2B win-loss wedge
+- Multi-participant sessions with parallel interview tracks
+- Persistent study state across sessions (currently single-shot)
+- Frontend dashboard for organizer review and methodology override
+- Multi-study support beyond the B2B win-loss vertical
+- A2A integration for inter-agent study delegation
 
 ## Built with
 
-- Gemini API
+- Gemini 2.5 Pro (via Vertex AI)
+- Google Agent Development Kit (ADK)
 - Model Context Protocol (MCP)
-- Cloud Run (containerized, deployment-ready)
-- BigQuery (schema-validated, dry-run export)
+- Cloud Run
+- BigQuery
+- FastAPI
+- Playwright (E2E testing)
 - Python
-- Docker
+
+## GCP Project
+
+methodic-ai-challenge
 
 ## Links
 
 - GitHub: [repository URL]
-- Demo video: [video URL]
+- Demo video: demo_output/demo.webm
+- Live endpoint: https://methodic-2030382823.us-central1.run.app
