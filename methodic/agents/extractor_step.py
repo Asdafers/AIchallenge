@@ -9,7 +9,7 @@ from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 
 from methodic.tools.extractor import extract_structured_fields
 
@@ -54,4 +54,8 @@ class ExtractorStep(BaseAgent):
         state["participant_response_by_id"] = responses
         state["participant_coverage"] = result.coverage_state
 
-        yield Event(author=self.name, content=None)
+        yield Event(
+            author=self.name,
+            content=None,
+            actions=EventActions(state_delta={"participant_coverage": result.coverage_state}),
+        )

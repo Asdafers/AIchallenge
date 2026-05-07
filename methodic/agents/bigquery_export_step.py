@@ -6,7 +6,7 @@ from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 
 from methodic.schemas import ParticipantResponse
 from methodic.tools.bigquery_export import export_to_bigquery
@@ -24,4 +24,8 @@ class BigQueryExportStep(BaseAgent):
         ]
         result = await asyncio.to_thread(export_to_bigquery, responses)
         state["export_result"] = result
-        yield Event(author=self.name, content=None)
+        yield Event(
+            author=self.name,
+            content=None,
+            actions=EventActions(state_delta={"export_status": result}),
+        )

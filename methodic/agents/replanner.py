@@ -11,7 +11,7 @@ from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 from google import genai
 
 from methodic import MODEL
@@ -67,13 +67,13 @@ class ReplannerStep(BaseAgent):
         state["replan_decision"] = decision
 
         if decision.get("decision") == "STOP":
-            ctx.actions.escalate = True
-        elif decision.get("decision") == "ADD_PARTICIPANT":
-            new_pid = decision.get("add_participant_id", "P-005")
-            state["active_participant_id"] = new_pid
-            state["turn_count"] = 0
-
-        yield Event(author=self.name, content=None)
+            yield Event(author=self.name, content=None, actions=EventActions(escalate=True))
+        else:
+            if decision.get("decision") == "ADD_PARTICIPANT":
+                new_pid = decision.get("add_participant_id", "P-005")
+                state["active_participant_id"] = new_pid
+                state["turn_count"] = 0
+            yield Event(author=self.name, content=None)
 
 
 replanner_agent = ReplannerStep(name="replanner")

@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 
 PARTICIPANT_QUEUE = ["P-001", "P-002", "P-003"]
 
@@ -31,4 +31,11 @@ class SessionInitStep(BaseAgent):
             else:
                 state["active_participant_id"] = active or "P-001"
 
-        yield Event(author=self.name, content=None)
+        yield Event(
+            author=self.name,
+            content=None,
+            actions=EventActions(state_delta={
+                "turn_count": 0,
+                "current_participant": state["active_participant_id"],
+            }),
+        )

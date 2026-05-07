@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent
 from google.adk.agents.invocation_context import InvocationContext
-from google.adk.events import Event
+from google.adk.events import Event, EventActions
 
 from methodic.schemas import ParticipantResponse
 from methodic.tools.coverage_checker import check_coverage
@@ -26,4 +26,8 @@ class CoverageStep(BaseAgent):
         responses_by_id = state.get("participant_response_by_id", {})
         result = self.compute(responses_by_id)
         state["coverage_state"] = result
-        yield Event(author=self.name, content=None)
+        yield Event(
+            author=self.name,
+            content=None,
+            actions=EventActions(state_delta={"coverage_state": result}),
+        )
