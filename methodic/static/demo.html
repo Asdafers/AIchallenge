@@ -1192,15 +1192,25 @@ main {
   function routeToAgenticMoment(author, text) {
     var type = AGENTIC_AUTHORS[author]; // 'methodology' or 'replan'
 
-    // For methodology, try to extract verdict
+    // For methodology, try to extract verdict from plain text or JSON
     var displayText = text;
     if (author === 'methodology') {
       var verdictMatch = text.match(/Verdict:\s*([A-Z_]+)/);
       if (verdictMatch) {
         displayText = 'Verdict: ' + verdictMatch[1];
-        // Append recommendations if present
         var recMatch = text.match(/Recommend[^.]*\./);
         if (recMatch) displayText += ' — ' + recMatch[0];
+      } else {
+        try {
+          var parsed = JSON.parse(text.replace(/```json\s*/g, '').replace(/```/g, '').trim());
+          if (parsed.verdict) {
+            displayText = 'Verdict: ' + parsed.verdict;
+            if (parsed.issues && parsed.issues.length) {
+              displayText += ' — ' + parsed.issues.length + ' issue(s): ' +
+                parsed.issues.map(function(i) { return i.summary || i.id; }).join(', ');
+            }
+          }
+        } catch (e) { /* not JSON, keep original */ }
       }
     }
 
