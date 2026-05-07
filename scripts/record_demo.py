@@ -88,7 +88,7 @@ def main():
         else:
             page.wait_for_function(
                 'document.querySelectorAll(".conv-event").length >= 4',
-                timeout=60_000,
+                timeout=300_000,
             )
             page.wait_for_timeout(2000)
 
@@ -98,7 +98,7 @@ def main():
         try:
             page.wait_for_function(
                 'document.querySelector(".conv-event.guardrail") !== null',
-                timeout=30_000 if not args.mock else 5_000,
+                timeout=300_000 if not args.mock else 5_000,
             )
             page.wait_for_timeout(500)
             page.screenshot(path=str(OUTPUT_DIR / "03_guardrail.png"))
