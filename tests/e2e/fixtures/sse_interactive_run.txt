@@ -1,0 +1,20 @@
+data: {"author": "organizer", "text": "Study plan created for Q1 Lost Deal Analysis.", "state_delta": {}}
+
+data: {"author": "methodology_reviewer", "text": "```json\n{\"verdict\": \"APPROVED\", \"issues\": [{\"id\": \"SAMPLING_BIAS\", \"summary\": \"Participant criteria is broad\"}]}\n```", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "Thank you for joining this session. I'd like to understand the factors that influenced your recent purchasing decision. What was the primary reason the deal didn't move forward?", "state_delta": {"turn_count": 1}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "It was primarily about pricing. The ROI wasn't clear enough for our CFO.", "state_delta": {"input_requested": false, "turn_count": 2, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_low_confidence"}}}
+
+data: {"author": "interviewer", "text": "That's very helpful. Could you elaborate on what specific ROI metrics your CFO was looking for?", "state_delta": {"turn_count": 3}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "They wanted a 12-month payback period with clear cost savings projections.", "state_delta": {"input_requested": false, "turn_count": 4, "participant_coverage": {"roi_clarity": "covered_high_confidence", "budget_timing": "ambiguous"}}}
+
+data: {"author": "interviewer", "text": "Thank you for sharing those details. That concludes our interview.", "state_delta": {"turn_count": 5}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}
+
