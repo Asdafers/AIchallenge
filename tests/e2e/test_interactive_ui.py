@@ -256,6 +256,55 @@ def test_sidebar_field_targeting_highlights_card(page: Page, demo_server: str):
     assert result == 'roi_clarity', f"Expected roi_clarity, got: {result}"
 
 
+def test_config_editor_appears_on_preset_selection(page: Page, demo_server: str):
+    """Selecting a preset should show the research design editor panel."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    editor = page.locator("#research-design-editor")
+    expect(editor).to_be_visible(timeout=2_000)
+    field_editors = editor.locator(".field-editor")
+    assert field_editors.count() == 8, f"Expected 8 field editors, got {field_editors.count()}"
+
+
+def test_config_editor_question_is_editable(page: Page, demo_server: str):
+    """Question textareas in the editor should be editable."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    editor = page.locator("#research-design-editor")
+    expect(editor).to_be_visible(timeout=2_000)
+
+    first_q = editor.locator("textarea.field-q").first
+    original = first_q.input_value()
+    first_q.fill("Custom question text here")
+    assert first_q.input_value() == "Custom question text here"
+
+
+def test_config_editor_disable_toggle(page: Page, demo_server: str):
+    """Disabling a field should grey it out and exclude from payload."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    editor = page.locator("#research-design-editor")
+    expect(editor).to_be_visible(timeout=2_000)
+
+    first_toggle = editor.locator("input.field-toggle").first
+    first_toggle.click()  # disable
+    first_editor_card = editor.locator(".field-editor").first
+    assert "disabled" in (first_editor_card.get_attribute("class") or "")
+
+
+def test_config_editor_maxlength_enforced(page: Page, demo_server: str):
+    """Question textareas should have maxlength attributes."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    editor = page.locator("#research-design-editor")
+    expect(editor).to_be_visible(timeout=2_000)
+
+    q_textarea = editor.locator("textarea.field-q").first
+    fu_textarea = editor.locator("textarea.field-fu").first
+    assert q_textarea.get_attribute("maxlength") == "200"
+    assert fu_textarea.get_attribute("maxlength") == "100"
+
+
 def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
     """When issues have numeric IDs but no summary, card should not show '1, 2, 3'."""
     sse_bytes = METHODOLOGY_NUMERIC_SSE.read_bytes()

@@ -164,6 +164,98 @@ body {
   resize: vertical;
 }
 
+/* ─── Research Design Editor ───────────────────────────────── */
+#research-design-editor {
+  margin-bottom: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 12px;
+  background: #1a1a2e;
+}
+
+.research-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.research-editor-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #85c1e9;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.research-editor-count {
+  font-size: 0.68rem;
+  color: #556;
+}
+
+.field-editor {
+  background: #252538;
+  border: 1px solid #2a2a4a;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  transition: opacity 0.2s;
+}
+
+.field-editor.disabled {
+  opacity: 0.4;
+}
+
+.field-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.field-editor-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #c0d0e0;
+}
+
+.field-toggle {
+  cursor: pointer;
+}
+
+.field-editor textarea {
+  width: 100%;
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.72rem;
+  outline: none;
+  resize: vertical;
+  min-height: 36px;
+  margin-bottom: 4px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.field-editor textarea:focus {
+  border-color: #85c1e9;
+}
+
+.field-editor.disabled textarea {
+  pointer-events: none;
+}
+
+.field-editor-sublabel {
+  font-size: 0.62rem;
+  color: #556;
+  margin-bottom: 2px;
+}
+
 /* ─── Start Button ──────────────────────────────────────────── */
 #start-btn {
   background: #1a5276;
@@ -942,6 +1034,7 @@ main {
       <label for="custom-persona">Custom Persona</label>
       <textarea id="custom-persona" placeholder="Describe the participant role you want to play..."></textarea>
     </div>
+    <div id="research-design-editor" class="hidden"></div>
     <button id="start-btn">Start Interview &rarr;</button>
   </div>
 </div>
@@ -1318,6 +1411,109 @@ main {
     // Select this card
     card.classList.add('selected');
     selectedPreset = preset;
+
+    buildResearchEditor();
+    document.getElementById('research-design-editor').classList.remove('hidden');
+  }
+
+  /* ─── Research Design Editor ────────────────────────────────── */
+
+  function buildResearchEditor() {
+    var editor = document.getElementById('research-design-editor');
+    while (editor.firstChild) editor.removeChild(editor.firstChild);
+
+    var header = document.createElement('div');
+    header.className = 'research-editor-header';
+    var titleEl = document.createElement('div');
+    titleEl.className = 'research-editor-title';
+    titleEl.textContent = 'Research Design';
+    var countEl = document.createElement('div');
+    countEl.className = 'research-editor-count';
+    countEl.id = 'editor-field-count';
+    countEl.textContent = FIELDS.length + ' fields';
+    header.appendChild(titleEl);
+    header.appendChild(countEl);
+    editor.appendChild(header);
+
+    state.fieldEnabled = {};
+
+    FIELDS.forEach(function(field) {
+      state.fieldEnabled[field] = true;
+      var qInfo = FIELD_QUESTIONS[field];
+      if (!qInfo) return;
+
+      var card = document.createElement('div');
+      card.className = 'field-editor';
+      card.id = 'editor-' + field;
+
+      var hdr = document.createElement('div');
+      hdr.className = 'field-editor-header';
+
+      var label = document.createElement('div');
+      label.className = 'field-editor-label';
+      label.textContent = FIELD_LABELS[field] || field;
+
+      var toggle = document.createElement('input');
+      toggle.type = 'checkbox';
+      toggle.checked = true;
+      toggle.className = 'field-toggle';
+      toggle.addEventListener('change', function() {
+        state.fieldEnabled[field] = toggle.checked;
+        card.className = toggle.checked ? 'field-editor' : 'field-editor disabled';
+        updateFieldCount();
+      });
+
+      hdr.appendChild(label);
+      hdr.appendChild(toggle);
+      card.appendChild(hdr);
+
+      var qLabel = document.createElement('div');
+      qLabel.className = 'field-editor-sublabel';
+      qLabel.textContent = 'Question';
+      card.appendChild(qLabel);
+
+      var qTextarea = document.createElement('textarea');
+      qTextarea.className = 'field-q';
+      qTextarea.id = 'q-' + field;
+      qTextarea.value = qInfo.question;
+      qTextarea.maxLength = 200;
+      qTextarea.setAttribute('maxlength', '200');
+      card.appendChild(qTextarea);
+
+      var fuLabel = document.createElement('div');
+      fuLabel.className = 'field-editor-sublabel';
+      fuLabel.textContent = 'Follow-up policy';
+      card.appendChild(fuLabel);
+
+      var fuTextarea = document.createElement('textarea');
+      fuTextarea.className = 'field-fu';
+      fuTextarea.id = 'fu-' + field;
+      fuTextarea.value = qInfo.follow_up;
+      fuTextarea.maxLength = 100;
+      fuTextarea.setAttribute('maxlength', '100');
+      card.appendChild(fuTextarea);
+
+      editor.appendChild(card);
+    });
+  }
+
+  function updateFieldCount() {
+    var count = 0;
+    FIELDS.forEach(function(f) { if (state.fieldEnabled[f]) count++; });
+    var el = document.getElementById('editor-field-count');
+    if (el) el.textContent = count + '/' + FIELDS.length + ' fields enabled';
+    var startBtn = document.getElementById('start-btn');
+    if (startBtn) startBtn.disabled = (count === 0);
+  }
+
+  function validateEditor() {
+    var valid = true;
+    FIELDS.forEach(function(field) {
+      if (!state.fieldEnabled[field]) return;
+      var qEl = document.getElementById('q-' + field);
+      if (qEl && qEl.value.trim() === '') valid = false;
+    });
+    return valid;
   }
 
   /* ─── Status ────────────────────────────────────────────────── */
@@ -1362,6 +1558,30 @@ main {
     state.forkPointShown = false;
     state.forkPointSessionId = null;
     setStatus('running');
+
+    if (state.fieldEnabled) {
+      if (!validateEditor()) {
+        dom.startBtn.textContent = 'Start Interview';
+        dom.startBtn.disabled = false;
+        alert('All enabled fields must have question text.');
+        return;
+      }
+      var customQuestions = {};
+      FIELDS.forEach(function(field) {
+        if (state.fieldEnabled[field]) {
+          var qEl = document.getElementById('q-' + field);
+          var fuEl = document.getElementById('fu-' + field);
+          if (qEl && fuEl) {
+            customQuestions[field] = {
+              question: qEl.value.trim().slice(0, 200),
+              follow_up: fuEl.value.trim().slice(0, 100)
+            };
+          }
+        }
+      });
+      body.custom_questions = customQuestions;
+      state.enabledFieldCount = Object.keys(customQuestions).length;
+    }
 
     fetch('/api/interactive/start', {
       method: 'POST',
