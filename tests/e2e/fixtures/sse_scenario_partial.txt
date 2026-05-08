@@ -1,0 +1,19 @@
+data: {"author": "organizer", "text": "Study plan: Competitive displacement analysis.", "state_delta": {}}
+
+data: {"author": "methodology_reviewer", "text": "{\"verdict\": \"APPROVED\", \"issues\": [{\"id\": \"SCOPE_NARROW\", \"summary\": \"Only one participant planned\"}]}", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "What were the main factors in your decision to switch vendors?", "state_delta": {"turn_count": 1}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "Mostly price. The competitor was 40% cheaper and had the features we needed.", "state_delta": {"input_requested": false, "turn_count": 2, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "competitor_pressure": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "Can you tell me more about the ROI analysis your team conducted?", "state_delta": {"turn_count": 3}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "I think there was some analysis but I wasn't directly involved. I believe the numbers were close.", "state_delta": {"input_requested": false, "turn_count": 4, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "secondary_loss_reason": "covered_low_confidence", "roi_clarity": "covered_low_confidence", "competitor_pressure": "covered_high_confidence", "aha_moment_reached": "covered_high_confidence", "security_concern": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "Thank you for your time. That concludes our session.", "state_delta": {"turn_count": 5}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}

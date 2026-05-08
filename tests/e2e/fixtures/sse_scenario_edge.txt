@@ -1,0 +1,15 @@
+data: {"author": "organizer", "text": "Study plan: Single-participant quick assessment.", "state_delta": {}}
+
+data: {"author": "methodology_reviewer", "text": "```json\n{\"verdict\": \"REVISE_REQUIRED\", \"issues\": [{\"id\": \"SAMPLING_BIAS\", \"summary\": \"Single participant insufficient for generalization\"}, {\"id\": \"LEADING_QUESTION\", \"summary\": \"Budget question may prime respondent\"}]}\n```", "state_delta": {}}
+
+data: {"author": "methodology", "text": "{\"verdict\": \"APPROVED\", \"issues\": [{\"id\": \"SAMPLING_BIAS\", \"summary\": \"Acknowledged — study is exploratory, not generalizable\"}]}", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "Tell me about your recent evaluation experience.", "state_delta": {"turn_count": 1}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "It was fine. We just went with someone else.", "state_delta": {"input_requested": false, "turn_count": 2, "participant_coverage": {"primary_loss_reason": "ambiguous", "competitor_pressure": "covered_low_confidence"}}}
+
+data: {"author": "interviewer", "text": "Thank you for your time.", "state_delta": {"turn_count": 3}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}

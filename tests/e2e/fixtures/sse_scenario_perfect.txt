@@ -1,0 +1,31 @@
+data: {"author": "organizer", "text": "Study plan: Q1 2026 Lost Deal Analysis. Target: 1 participant interview, 8 structured variables.", "state_delta": {}}
+
+data: {"author": "methodology_reviewer", "text": "{\"verdict\": \"APPROVED\", \"issues\": []}", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "Thank you for joining. I'd like to understand the factors that influenced your recent purchasing decision. What changed between initial interest and the decision not to move forward?", "state_delta": {"turn_count": 1}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "The primary issue was unclear ROI. Our CFO couldn't justify the investment without clear cost savings data. Beyond that, we were also concerned about a competitor who offered a more integrated solution.", "state_delta": {"input_requested": false, "turn_count": 2, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "secondary_loss_reason": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "That's very helpful. What evidence would your team have needed to feel confident in the ROI? And was budget timing a factor?", "state_delta": {"turn_count": 3}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "We needed a 12-month payback analysis with clear cost savings projections mapped to our business units. Budget timing was also tricky — we were out of cycle and would have needed to pull from next year's allocation.", "state_delta": {"input_requested": false, "turn_count": 4, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "secondary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "budget_timing": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "Walk me through the procurement process. Where, if anywhere, did it slow down? And did security review affect the timeline?", "state_delta": {"turn_count": 5}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "Procurement was actually smooth — low friction there. But security review took 6 weeks because your SOC2 report was from last year. That delay killed our window.", "state_delta": {"input_requested": false, "turn_count": 6, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "secondary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "budget_timing": "covered_high_confidence", "procurement_friction": "covered_high_confidence", "security_concern": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "Were you evaluating alternatives? Was there a moment during evaluation where the core value clicked?", "state_delta": {"turn_count": 7}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "Yes, we were comparing with CompetitorX who offered native integrations. As for the aha moment — the report builder demo was impressive, but we never got to test it ourselves during the trial.", "state_delta": {"input_requested": false, "turn_count": 8, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "secondary_loss_reason": "covered_high_confidence", "roi_clarity": "covered_high_confidence", "budget_timing": "covered_high_confidence", "procurement_friction": "covered_high_confidence", "security_concern": "covered_high_confidence", "competitor_pressure": "covered_high_confidence", "aha_moment_reached": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "Thank you for your thorough and candid responses. That concludes our interview.", "state_delta": {"turn_count": 9}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}

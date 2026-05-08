@@ -1,0 +1,13 @@
+data: {"author": "organizer", "text": "Study plan: Enterprise churn investigation.", "state_delta": {}}
+
+data: {"author": "methodology_reviewer", "text": "{\"verdict\": \"APPROVED\", \"issues\": []}", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "Welcome. I'd like to understand why your team decided to discontinue the service.", "state_delta": {"turn_count": 1}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "We had budget cuts across the board.", "state_delta": {"input_requested": false, "turn_count": 2, "participant_coverage": {"primary_loss_reason": "covered_high_confidence", "budget_timing": "covered_low_confidence"}}}
+
+data: {"author": "error", "text": "Model quota exceeded. Please try again later.", "state_delta": {}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}
