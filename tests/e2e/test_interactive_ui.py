@@ -274,7 +274,6 @@ def test_config_editor_question_is_editable(page: Page, demo_server: str):
     expect(editor).to_be_visible(timeout=2_000)
 
     first_q = editor.locator("textarea.field-q").first
-    original = first_q.input_value()
     first_q.fill("Custom question text here")
     assert first_q.input_value() == "Custom question text here"
 
@@ -322,3 +321,37 @@ def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
     assert "REVISE_REQUIRED" in card_text
     assert "3 issue(s)" in card_text
     assert "1, 2, 3" not in card_text, f"Numeric IDs leaked: {card_text}"
+
+
+def test_full_flow_editor_to_fork_point_to_results(page: Page, demo_server: str):
+    """Integration: preset → editor → start → fork point → sidebar → results."""
+    sse_bytes = INTERACTIVE_SSE.read_bytes()
+    _route_interactive_api(page, sse_bytes)
+    page.goto(f"{demo_server}/interactive.html")
+
+    # 1. Select preset, verify editor
+    page.locator(".preset-card").first.click()
+    editor = page.locator("#research-design-editor")
+    expect(editor).to_be_visible(timeout=2_000)
+    assert editor.locator(".field-editor").count() == 8
+
+    # 2. Edit a question
+    first_q = editor.locator("textarea.field-q").first
+    first_q.fill("Custom question for testing")
+
+    # 3. Start interview
+    page.locator("#start-btn").click()
+    page.locator("#app").wait_for(state="visible", timeout=5_000)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    # 4. Fork point card visible
+    fork_card = page.locator(".bubble.system.fork-point")
+    expect(fork_card).to_be_visible(timeout=5_000)
+
+    # 5. Sidebar questions visible (no hover needed)
+    insight_question = page.locator(".insight-question").first
+    expect(insight_question).to_be_visible(timeout=2_000)
+
+    # 6. Results overlay visible
+    results = page.locator("#results-overlay")
+    expect(results).to_be_visible(timeout=5_000)
