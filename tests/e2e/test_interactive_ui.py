@@ -6,6 +6,7 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 INTERACTIVE_SSE = Path(__file__).resolve().parent / "fixtures" / "sse_interactive_run.txt"
+METHODOLOGY_NUMERIC_SSE = Path(__file__).resolve().parent / "fixtures" / "sse_methodology_numeric_ids.txt"
 
 
 def _route_interactive_api(page: Page, sse_bytes: bytes):
@@ -209,3 +210,22 @@ def test_sidebar_insight_card_is_keyboard_accessible(page: Page, demo_server: st
     insight_card = page.locator(".insight-card").first
     tabindex = insight_card.get_attribute("tabindex")
     assert tabindex == "0", f"Expected tabindex='0', got '{tabindex}'"
+
+
+def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
+    """When issues have numeric IDs but no summary, card should not show '1, 2, 3'."""
+    sse_bytes = METHODOLOGY_NUMERIC_SSE.read_bytes()
+    _route_interactive_api(page, sse_bytes)
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.locator("#start-btn").click()
+    page.locator("#app").wait_for(state="visible", timeout=5_000)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    agentic_cards = page.locator(".agentic-card.methodology")
+    first_card = agentic_cards.first
+    expect(first_card).to_be_visible(timeout=5_000)
+    card_text = first_card.locator(".agentic-text").text_content() or ""
+    assert "REVISE_REQUIRED" in card_text
+    assert "3 issue(s)" in card_text
+    assert "1, 2, 3" not in card_text, f"Numeric IDs leaked: {card_text}"

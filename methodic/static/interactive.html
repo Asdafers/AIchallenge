@@ -533,8 +533,13 @@ main {
   max-height: 60px;
 }
 
+.insight-card:focus-within {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
 .insight-card:focus {
-  outline: 1px solid #2980b9;
+  outline: 2px solid #4285f4;
   outline-offset: 2px;
 }
 
@@ -1620,9 +1625,13 @@ main {
           var parsed = JSON.parse(text.replace(/```json\s*/g, '').replace(/```/g, '').trim());
           if (parsed.verdict) {
             displayText = 'Verdict: ' + parsed.verdict;
-            if (parsed.issues && parsed.issues.length) {
-              displayText += ' — ' + parsed.issues.length + ' issue(s): ' +
-                parsed.issues.map(function(i) { return i.summary || i.id; }).join(', ');
+            if (Array.isArray(parsed.issues) && parsed.issues.length) {
+              var issueTexts = parsed.issues.map(function(i) {
+                if (typeof i === 'string') return i;
+                var label = i.summary || i.description || (typeof i.id === 'string' ? i.id : '') || 'issue';
+                return label.length > 80 ? label.slice(0, 77) + '...' : label;
+              });
+              displayText += ' — ' + parsed.issues.length + ' issue(s): ' + issueTexts.join(', ');
             }
           }
         } catch (e) { /* not JSON, keep original */ }

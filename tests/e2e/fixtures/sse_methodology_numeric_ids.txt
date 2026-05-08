@@ -1,0 +1,15 @@
+data: {"author": "organizer", "text": "Study plan created for Q1 Lost Deal Analysis.", "state_delta": {}}
+
+data: {"author": "methodology_reviewer", "text": "```json\n{\"verdict\": \"REVISE_REQUIRED\", \"issues\": [{\"id\": 1}, {\"id\": 2}, {\"id\": 3}]}\n```", "state_delta": {}}
+
+data: {"author": "methodology", "text": "```json\n{\"verdict\": \"APPROVED\", \"issues\": [{\"id\": 1, \"summary\": \"Sampling criteria is broad\"}]}\n```", "state_delta": {}}
+
+data: {"author": "interviewer", "text": "Thank you for joining. What was the primary reason the deal didn't move forward?", "state_delta": {"turn_count": 1}}
+
+data: {"author": "system", "text": "", "state_delta": {"input_requested": true}}
+
+data: {"author": "participant", "text": "It was about pricing.", "state_delta": {"input_requested": false, "turn_count": 2, "participant_coverage": {"primary_loss_reason": "covered_high_confidence"}}}
+
+data: {"author": "interviewer", "text": "Thank you. That concludes our interview.", "state_delta": {"turn_count": 3}}
+
+data: {"author": "system", "text": "Stream complete.", "state_delta": {}}
