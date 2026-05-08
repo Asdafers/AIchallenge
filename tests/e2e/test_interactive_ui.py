@@ -351,7 +351,7 @@ def test_editor_type_badges_visible(page: Page, demo_server: str):
     expect(badges).to_have_count(8, timeout=2_000)
     first_badge = badges.first
     expect(first_badge).to_be_visible()
-    assert first_badge.text_content().strip() in [
+    assert (first_badge.text_content() or "").strip() in [
         'Open-ended', 'Rating Scale', 'Single Choice', 'Multi-select', 'Yes / No', 'Ranking'
     ]
 
