@@ -364,6 +364,28 @@ def test_sidebar_type_badges_visible(page: Page, demo_server: str):
     expect(badges.first).to_be_visible(timeout=3_000)
 
 
+def test_preview_survey_button_appears_on_preset_selection(page: Page, demo_server: str):
+    """Preview as Survey button should appear when a preset is selected."""
+    page.goto(f"{demo_server}/interactive.html")
+    btn = page.locator("#preview-survey-btn")
+    expect(btn).to_be_hidden(timeout=2_000)
+    page.locator(".preset-card").first.click()
+    expect(btn).to_be_visible(timeout=2_000)
+    expect(btn).to_be_enabled()
+
+
+def test_preview_survey_button_disabled_when_all_fields_off(page: Page, demo_server: str):
+    """Preview button should be disabled when all fields are toggled off."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    toggles = page.locator(".field-toggle")
+    for i in range(toggles.count()):
+        toggles.nth(i).uncheck()
+    btn = page.locator("#preview-survey-btn")
+    expect(btn).to_be_disabled(timeout=2_000)
+
+
 def test_full_flow_editor_to_fork_point_to_results(page: Page, demo_server: str):
     """Integration: preset → editor → start → fork point → sidebar → results."""
     sse_bytes = INTERACTIVE_SSE.read_bytes()

@@ -285,6 +285,29 @@ body {
 #start-btn:hover { background: #2471a3; }
 #start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+#preview-survey-btn {
+  background: transparent;
+  color: #85c1e9;
+  border: 1px solid #2980b9;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+  display: block;
+  width: 100%;
+}
+
+#preview-survey-btn:hover {
+  background: rgba(41, 128, 185, 0.15);
+}
+
+#preview-survey-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* ─── App Shell ─────────────────────────────────────────────── */
 #app {
   display: flex;
@@ -1047,6 +1070,7 @@ main {
       <textarea id="custom-persona" placeholder="Describe the participant role you want to play..."></textarea>
     </div>
     <div id="research-design-editor" class="hidden"></div>
+    <button id="preview-survey-btn" class="hidden">Preview as Static Survey</button>
     <button id="start-btn">Start Interview &rarr;</button>
   </div>
 </div>
@@ -1407,6 +1431,7 @@ main {
     dom.coverageText   = document.getElementById('coverage-text');
     dom.turnText       = document.getElementById('turn-text');
     dom.resultsOverlay = document.getElementById('results-overlay');
+    dom.previewBtn     = document.getElementById('preview-survey-btn');
 
     // Preset card selection
     var presetCards = document.querySelectorAll('.preset-card');
@@ -1425,6 +1450,11 @@ main {
         panel.classList.add('hidden');
         dom.advancedToggle.textContent = 'Advanced Configuration ▼';
       }
+    });
+
+    // Preview button
+    dom.previewBtn.addEventListener('click', function() {
+      showSurveyPreview();
     });
 
     // Start button
@@ -1458,6 +1488,8 @@ main {
     if (selectedPreset === preset) {
       card.classList.remove('selected');
       selectedPreset = null;
+      document.getElementById('research-design-editor').classList.add('hidden');
+      document.getElementById('preview-survey-btn').classList.add('hidden');
       return;
     }
 
@@ -1473,6 +1505,7 @@ main {
 
     buildResearchEditor();
     document.getElementById('research-design-editor').classList.remove('hidden');
+    document.getElementById('preview-survey-btn').classList.remove('hidden');
   }
 
   /* ─── Research Design Editor ────────────────────────────────── */
@@ -1572,6 +1605,8 @@ main {
     if (el) el.textContent = count + '/' + FIELDS.length + ' fields enabled';
     var startBtn = document.getElementById('start-btn');
     if (startBtn) startBtn.disabled = (count === 0);
+    var previewBtn = document.getElementById('preview-survey-btn');
+    if (previewBtn) previewBtn.disabled = (count === 0);
   }
 
   function validateEditor() {
@@ -1582,6 +1617,12 @@ main {
       if (qEl && qEl.value.trim() === '') valid = false;
     });
     return valid;
+  }
+
+  /* ─── Survey Preview (stub) ─────────────────────────────────── */
+
+  function showSurveyPreview() {
+    // Stub — implemented in later task
   }
 
   /* ─── Status ────────────────────────────────────────────────── */
