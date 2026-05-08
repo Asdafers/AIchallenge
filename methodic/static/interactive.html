@@ -537,6 +537,17 @@ main {
   outline-offset: 2px;
 }
 
+.insight-card.targeting {
+  border: 1px solid #85c1e9;
+  animation: targetPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes targetPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(133, 193, 233, 0.4); }
+  70%  { box-shadow: 0 0 0 6px rgba(133, 193, 233, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(133, 193, 233, 0); }
+}
+
 @keyframes insightPulse {
   0%   { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.5); }
   70%  { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
@@ -1082,6 +1093,66 @@ main {
     }
   };
 
+  var FIELD_KEYWORDS = {
+    primary_loss_reason: {
+      uniqueKeywords: ['primary', 'initial', 'changed', 'main'],
+      keywords: ['loss', 'reason', 'decision', 'forward', 'move']
+    },
+    secondary_loss_reason: {
+      uniqueKeywords: ['secondary', 'additional', 'contributing', 'other', 'beyond'],
+      keywords: ['loss', 'reason', 'factor', 'issue']
+    },
+    roi_clarity: {
+      uniqueKeywords: ['roi', 'return', 'investment', 'evidence', 'metrics'],
+      keywords: ['value', 'confident', 'business', 'case', 'justify']
+    },
+    budget_timing: {
+      uniqueKeywords: ['budget', 'fiscal', 'cycle', 'timing', 'quarter'],
+      keywords: ['alignment', 'approved', 'funding', 'year']
+    },
+    procurement_friction: {
+      uniqueKeywords: ['procurement', 'friction', 'process', 'stages'],
+      keywords: ['slow', 'approval', 'review', 'walk']
+    },
+    security_concern: {
+      uniqueKeywords: ['security', 'compliance', 'soc2', 'audit'],
+      keywords: ['review', 'requirements', 'timeline', 'concern']
+    },
+    competitor_pressure: {
+      uniqueKeywords: ['competitor', 'alternative', 'rival', 'switch'],
+      keywords: ['evaluating', 'offer', 'influence', 'compared']
+    },
+    aha_moment_reached: {
+      uniqueKeywords: ['moment', 'clicked', 'value', 'trial'],
+      keywords: ['evaluation', 'experience', 'demo', 'core']
+    }
+  };
+
+  function guessTargetField(interviewerText) {
+    var lower = interviewerText.toLowerCase();
+    var words = lower.split(/\s+/);
+    var bestField = null;
+    var bestScore = 0;
+    FIELDS.forEach(function(field) {
+      var fk = FIELD_KEYWORDS[field];
+      if (!fk) return;
+      var score = 0;
+      fk.uniqueKeywords.forEach(function(kw) {
+        if (words.indexOf(kw) >= 0) score += 3;
+      });
+      fk.keywords.forEach(function(kw) {
+        if (words.indexOf(kw) >= 0) score += 1;
+      });
+      if (score > bestScore) {
+        bestScore = score;
+        bestField = field;
+      }
+    });
+    return bestScore >= 4 ? bestField : null;
+  }
+  // Expose for testability
+  window.guessTargetField = guessTargetField;
+
   var STATE_ICONS = {
     missing:                '',
     ambiguous:              '?',
@@ -1456,6 +1527,22 @@ main {
       dom.messages.appendChild(forkCard);
 
       state.forkPointShown = true;
+    }
+
+    // Field targeting: highlight sidebar card when interviewer asks about a field
+    if (author === 'interviewer' && text) {
+      var targetField = guessTargetField(text);
+      var prev = document.querySelector('.insight-card.targeting');
+      if (prev) prev.classList.remove('targeting');
+      if (targetField) {
+        var targetCard = document.getElementById('insight-' + targetField);
+        if (targetCard) targetCard.classList.add('targeting');
+      }
+    }
+    // Remove targeting when participant responds
+    if (author === 'participant' && text) {
+      var prevTarget = document.querySelector('.insight-card.targeting');
+      if (prevTarget) prevTarget.classList.remove('targeting');
     }
 
     // Route to chat bubbles

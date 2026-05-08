@@ -242,6 +242,20 @@ def test_fork_point_card_appears_only_once(page: Page, demo_server: str):
     assert fork_cards.count() == 1, f"Expected 1 fork card, got {fork_cards.count()}"
 
 
+def test_sidebar_field_targeting_highlights_card(page: Page, demo_server: str):
+    """When interviewer asks about ROI, roi_clarity card should get targeting class."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    # The stream completes instantly in tests so targeting may have been removed.
+    # Verify the function exists and returns correct field for ROI text.
+    result = page.evaluate("""() => {
+        if (typeof guessTargetField !== 'function') return 'no_function';
+        return guessTargetField('Could you elaborate on what specific ROI metrics your CFO was looking for?');
+    }""")
+    assert result == 'roi_clarity', f"Expected roi_clarity, got: {result}"
+
+
 def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
     """When issues have numeric IDs but no summary, card should not show '1, 2, 3'."""
     sse_bytes = METHODOLOGY_NUMERIC_SSE.read_bytes()
