@@ -386,6 +386,36 @@ def test_preview_survey_button_disabled_when_all_fields_off(page: Page, demo_ser
     expect(btn).to_be_disabled(timeout=2_000)
 
 
+def test_survey_preview_modal_opens_and_closes(page: Page, demo_server: str):
+    """Clicking preview button opens modal; clicking close dismisses it."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+
+    overlay = page.locator("#survey-preview-overlay")
+    expect(overlay).to_be_hidden(timeout=1_000)
+
+    page.locator("#preview-survey-btn").click()
+    expect(overlay).to_be_visible(timeout=2_000)
+
+    page.locator("#survey-close-btn").click()
+    expect(overlay).to_be_hidden(timeout=2_000)
+
+
+def test_survey_preview_modal_closes_on_overlay_click(page: Page, demo_server: str):
+    """Clicking the dark overlay background should close the modal."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+
+    page.locator("#preview-survey-btn").click()
+    overlay = page.locator("#survey-preview-overlay")
+    expect(overlay).to_be_visible(timeout=2_000)
+
+    overlay.click(position={"x": 10, "y": 10})
+    expect(overlay).to_be_hidden(timeout=2_000)
+
+
 def test_full_flow_editor_to_fork_point_to_results(page: Page, demo_server: str):
     """Integration: preset → editor → start → fork point → sidebar → results."""
     sse_bytes = INTERACTIVE_SSE.read_bytes()

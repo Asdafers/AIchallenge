@@ -308,6 +308,189 @@ body {
   cursor: not-allowed;
 }
 
+/* ─── Survey Preview Modal ──────────────────────────────────────── */
+#survey-preview-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+#survey-preview-overlay.hidden { display: none; }
+
+.survey-preview-modal {
+  background: #ffffff;
+  border-radius: 4px;
+  max-width: 680px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #333;
+}
+
+.survey-header {
+  background: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+  padding: 24px 32px 16px;
+}
+
+.survey-logo {
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.survey-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 6px;
+}
+
+.survey-subtitle {
+  font-size: 0.82rem;
+  color: #666;
+  margin: 0;
+}
+
+.survey-progress {
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 10px;
+}
+
+.survey-body {
+  padding: 24px 32px;
+}
+
+.survey-field {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.survey-field:last-child {
+  border-bottom: none;
+}
+
+.survey-field-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.survey-field-required {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.survey-field-hint {
+  font-size: 0.72rem;
+  color: #888;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.survey-footer {
+  background: #f9f9f9;
+  border-top: 2px solid #ddd;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.survey-footer-text {
+  font-size: 0.72rem;
+  color: #666;
+  flex: 1;
+}
+
+.survey-close-btn {
+  background: #2980b9;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: -apple-system, system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+.survey-scale {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.survey-scale label {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.78rem;
+  color: #555;
+  cursor: default;
+}
+
+.survey-scale-label {
+  font-size: 0.68rem;
+  color: #999;
+  font-style: italic;
+  padding: 0 6px;
+}
+
+.survey-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.survey-choices label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #444;
+  cursor: default;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  color: #444;
+}
+
+.ranking-handle {
+  color: #ccc;
+  cursor: default;
+  font-size: 0.9rem;
+}
+
+.ranking-num {
+  font-weight: 600;
+  color: #888;
+  min-width: 20px;
+}
+
 /* ─── App Shell ─────────────────────────────────────────────── */
 #app {
   display: flex;
@@ -1075,6 +1258,23 @@ main {
   </div>
 </div>
 
+<!-- ─── Survey Preview Modal ─────────────────────────────────────── -->
+<div id="survey-preview-overlay" class="hidden">
+  <div class="survey-preview-modal">
+    <div class="survey-header">
+      <div class="survey-logo">ACME Corp</div>
+      <h1 class="survey-title">Win-Loss Analysis Survey</h1>
+      <p class="survey-subtitle">Please complete all required fields. Estimated time: 8-12 minutes.</p>
+      <div class="survey-progress">Page 1 of 1</div>
+    </div>
+    <div class="survey-body" id="survey-preview-body"></div>
+    <div class="survey-footer">
+      <div class="survey-footer-text">This is what a traditional survey tool would generate from your research design. Methodic conducts a live conversation instead.</div>
+      <button class="survey-close-btn" id="survey-close-btn">Close Preview</button>
+    </div>
+  </div>
+</div>
+
 <!-- ─── Main App (hidden until interview starts) ───────────────── -->
 <div id="app" class="hidden">
 
@@ -1457,6 +1657,14 @@ main {
       showSurveyPreview();
     });
 
+    // Survey modal close
+    document.getElementById('survey-close-btn').addEventListener('click', closeSurveyPreview);
+    document.getElementById('survey-preview-overlay').addEventListener('click', function(e) {
+      if (e.target === document.getElementById('survey-preview-overlay')) {
+        closeSurveyPreview();
+      }
+    });
+
     // Start button
     dom.startBtn.addEventListener('click', startInterview);
 
@@ -1619,10 +1827,55 @@ main {
     return valid;
   }
 
-  /* ─── Survey Preview (stub) ─────────────────────────────────── */
+  /* ─── Survey Preview ───────────────────────────────────────── */
 
   function showSurveyPreview() {
-    // Stub — implemented in later task
+    var body = document.getElementById('survey-preview-body');
+    while (body.firstChild) body.removeChild(body.firstChild);
+
+    var fieldIndex = 0;
+    FIELDS.forEach(function(field) {
+      if (!state.fieldEnabled || !state.fieldEnabled[field]) return;
+      var qInfo = FIELD_QUESTIONS[field];
+      if (!qInfo) return;
+      fieldIndex++;
+
+      var fieldDiv = document.createElement('div');
+      fieldDiv.className = 'survey-field';
+      fieldDiv.setAttribute('data-field', field);
+
+      var labelEl = document.createElement('div');
+      labelEl.className = 'survey-field-label';
+      labelEl.textContent = 'Q' + fieldIndex + '. ' + qInfo.question + ' ';
+      var reqSpan = document.createElement('span');
+      reqSpan.className = 'survey-field-required';
+      reqSpan.textContent = '*';
+      labelEl.appendChild(reqSpan);
+      fieldDiv.appendChild(labelEl);
+
+      var hintEl = document.createElement('div');
+      hintEl.className = 'survey-field-hint';
+      hintEl.textContent = qInfo.follow_up;
+      fieldDiv.appendChild(hintEl);
+
+      renderSurveyWidget(fieldDiv, field, qInfo.question_type);
+      body.appendChild(fieldDiv);
+    });
+
+    state.surveyPreviewed = true;
+    document.getElementById('survey-preview-overlay').classList.remove('hidden');
+  }
+
+  function closeSurveyPreview() {
+    document.getElementById('survey-preview-overlay').classList.add('hidden');
+  }
+
+  function renderSurveyWidget(container, field, type) {
+    var placeholder = document.createElement('div');
+    placeholder.textContent = '[' + type + ' widget]';
+    placeholder.style.color = '#999';
+    placeholder.style.fontStyle = 'italic';
+    container.appendChild(placeholder);
   }
 
   /* ─── Status ────────────────────────────────────────────────── */
