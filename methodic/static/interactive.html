@@ -589,6 +589,32 @@ main {
   to   { opacity: 1; transform: translateX(0); }
 }
 
+/* fork point card */
+.bubble.system.fork-point {
+  background: #1a1a2e;
+  border: 1px dashed #3a3a5c;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  max-width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.fork-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f39c12;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.fork-text {
+  font-size: 0.78rem;
+  color: #9aa;
+  line-height: 1.6;
+}
+
 /* ─── Phase Progress ────────────────────────────────────────── */
 #phase-list {
   display: flex;
@@ -1261,6 +1287,9 @@ main {
 
     dom.startBtn.disabled = true;
     dom.startBtn.textContent = 'Starting...';
+    state.methodologyApproved = false;
+    state.forkPointShown = false;
+    state.forkPointSessionId = null;
     setStatus('running');
 
     fetch('/api/interactive/start', {
@@ -1406,6 +1435,29 @@ main {
       showTypingIndicator();
     }
 
+    // Insert fork point card before first interviewer message
+    if (author === 'interviewer' && text && state.methodologyApproved &&
+        !state.forkPointShown && state.forkPointSessionId === state.sessionId) {
+      var forkCard = document.createElement('div');
+      forkCard.className = 'bubble system fork-point';
+
+      var forkLabel = document.createElement('div');
+      forkLabel.className = 'fork-label';
+      forkLabel.textContent = 'Where static surveys stop';
+
+      var forkText = document.createElement('div');
+      forkText.className = 'fork-text';
+      forkText.textContent = 'A traditional tool would export these ' + FIELDS.length +
+        ' questions as a static form and wait for responses. Methodic conducts a live ' +
+        'conversation instead — adapting follow-ups based on what you actually say.';
+
+      forkCard.appendChild(forkLabel);
+      forkCard.appendChild(forkText);
+      dom.messages.appendChild(forkCard);
+
+      state.forkPointShown = true;
+    }
+
     // Route to chat bubbles
     if (CHAT_AUTHORS[author] !== undefined) {
       var chatAuthor = CHAT_AUTHORS[author];
@@ -1432,6 +1484,14 @@ main {
     // Route to agentic moment cards
     if (AGENTIC_AUTHORS[author] !== undefined && text) {
       routeToAgenticMoment(author, text);
+    }
+
+    // Track methodology approval for fork point
+    if (AGENTIC_AUTHORS[author] === 'methodology' && text) {
+      if (text.indexOf('APPROVED') !== -1) {
+        state.methodologyApproved = true;
+        state.forkPointSessionId = state.sessionId;
+      }
     }
 
     // Update phase progress

@@ -223,6 +223,25 @@ def test_sidebar_question_visible_without_hover(page: Page, demo_server: str):
     assert len(text) > 10, f"Expected visible question text, got: {text}"
 
 
+def test_fork_point_card_appears_after_methodology(page: Page, demo_server: str):
+    """Fork point card should appear between methodology approval and first interviewer bubble."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    fork_card = page.locator(".bubble.system.fork-point")
+    expect(fork_card).to_be_visible(timeout=5_000)
+    expect(fork_card).to_contain_text("static surveys stop")
+
+
+def test_fork_point_card_appears_only_once(page: Page, demo_server: str):
+    """Fork point card should appear exactly once, not on every interviewer message."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    fork_cards = page.locator(".bubble.system.fork-point")
+    assert fork_cards.count() == 1, f"Expected 1 fork card, got {fork_cards.count()}"
+
+
 def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
     """When issues have numeric IDs but no summary, card should not show '1, 2, 3'."""
     sse_bytes = METHODOLOGY_NUMERIC_SSE.read_bytes()
