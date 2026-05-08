@@ -323,6 +323,25 @@ def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
     assert "1, 2, 3" not in card_text, f"Numeric IDs leaked: {card_text}"
 
 
+def test_field_questions_have_question_type(page: Page, demo_server: str):
+    """Each FIELD_QUESTIONS entry must have a question_type property."""
+    page.goto(f"{demo_server}/interactive.html")
+    result = page.evaluate("""() => {
+        var types = [];
+        var fields = ['primary_loss_reason', 'secondary_loss_reason', 'roi_clarity',
+                       'budget_timing', 'procurement_friction', 'security_concern',
+                       'competitor_pressure', 'aha_moment_reached'];
+        for (var i = 0; i < fields.length; i++) {
+            var fq = window.FIELD_QUESTIONS ? window.FIELD_QUESTIONS[fields[i]] : null;
+            if (fq && fq.question_type) types.push(fq.question_type);
+        }
+        return types;
+    }""")
+    assert len(result) == 8, f"Expected 8 fields with question_type, got {len(result)}"
+    expected_types = {'open_ended', 'multi_select', 'rating_scale', 'single_choice', 'yes_no_elaborate', 'ranking'}
+    assert set(result).issubset(expected_types), f"Unexpected types: {set(result) - expected_types}"
+
+
 def test_full_flow_editor_to_fork_point_to_results(page: Page, demo_server: str):
     """Integration: preset → editor → start → fork point → sidebar → results."""
     sse_bytes = INTERACTIVE_SSE.read_bytes()

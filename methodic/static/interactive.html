@@ -1147,44 +1147,91 @@ main {
     primary_loss_reason: {
       question: 'What changed between initial interest and the decision not to move forward?',
       follow_up: 'Clarify vague reasons — probe for specific factors',
-      question_id: 'Q-loss-reason-open'
+      question_id: 'Q-loss-reason-open',
+      question_type: 'open_ended'
     },
     secondary_loss_reason: {
       question: 'Beyond the primary factor, was there a secondary issue that contributed to the outcome?',
       follow_up: 'Probe if answer is vague or too general',
-      question_id: 'Q-secondary-loss'
+      question_id: 'Q-secondary-loss',
+      question_type: 'multi_select'
     },
     roi_clarity: {
       question: 'What evidence would your team have needed to feel confident in the ROI?',
       follow_up: 'Probe for missing evidence or unclear metrics',
-      question_id: 'Q-roi-clarity'
+      question_id: 'Q-roi-clarity',
+      question_type: 'rating_scale'
     },
     budget_timing: {
       question: 'Was budget timing or fiscal-cycle alignment a factor in the decision?',
       follow_up: 'Confirm or deny — avoid leading if unprompted',
-      question_id: 'Q-budget-timing'
+      question_id: 'Q-budget-timing',
+      question_type: 'single_choice'
     },
     procurement_friction: {
       question: 'Walk me through the procurement process — where, if anywhere, did it slow down or create friction?',
       follow_up: 'Probe specific stages where friction occurred',
-      question_id: 'Q-procurement-friction'
+      question_id: 'Q-procurement-friction',
+      question_type: 'rating_scale'
     },
     security_concern: {
       question: 'Did security review or compliance requirements affect the timeline or outcome?',
       follow_up: 'Confirm or deny',
-      question_id: 'Q-security-concern'
+      question_id: 'Q-security-concern',
+      question_type: 'yes_no_elaborate'
     },
     competitor_pressure: {
       question: 'Were you evaluating alternatives or did a competitor offer influence the decision?',
       follow_up: 'Identify named competitor if mentioned',
-      question_id: 'Q-competitor-pressure'
+      question_id: 'Q-competitor-pressure',
+      question_type: 'ranking'
     },
     aha_moment_reached: {
       question: 'Was there a moment during the evaluation where the core value clicked — or did that never happen?',
       follow_up: 'Probe trial experience',
-      question_id: 'Q-aha-moment'
+      question_id: 'Q-aha-moment',
+      question_type: 'yes_no_elaborate'
     }
   };
+
+  var QUESTION_TYPES = {
+    open_ended:       { label: 'Open-ended',    color: '#3498db' },
+    rating_scale:     { label: 'Rating Scale',  color: '#e67e22' },
+    single_choice:    { label: 'Single Choice', color: '#9b59b6' },
+    multi_select:     { label: 'Multi-select',  color: '#2ecc71' },
+    yes_no_elaborate: { label: 'Yes / No',      color: '#e74c3c' },
+    ranking:          { label: 'Ranking',        color: '#1abc9c' }
+  };
+
+  var SURVEY_OPTIONS = {
+    budget_timing: [
+      'During planning phase',
+      'Budget already approved',
+      'After fiscal cycle closed',
+      'Budget was not a factor'
+    ],
+    secondary_loss_reason: [
+      'Pricing / budget concerns',
+      'Feature gaps',
+      'Implementation complexity',
+      'Vendor trust / relationship',
+      'Internal priorities shifted',
+      'Other (please specify)'
+    ],
+    competitor_pressure: [
+      'Direct competitor',
+      'Open-source alternative',
+      'In-house solution',
+      'Status quo (do nothing)'
+    ]
+  };
+
+  var SCALE_RANGES = {
+    roi_clarity: { min: 1, max: 10, lowLabel: 'Not confident', highLabel: 'Very confident' },
+    procurement_friction: { min: 1, max: 5, lowLabel: 'No friction', highLabel: 'Severe friction' }
+  };
+
+  window.FIELD_QUESTIONS = FIELD_QUESTIONS;
 
   var FIELD_KEYWORDS = {
     primary_loss_reason: {
