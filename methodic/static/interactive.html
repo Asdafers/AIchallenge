@@ -256,6 +256,18 @@ body {
   margin-bottom: 2px;
 }
 
+.type-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: #fff;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
 /* ─── Start Button ──────────────────────────────────────────── */
 #start-btn {
   background: #1a5276;
@@ -1500,6 +1512,15 @@ main {
       label.className = 'field-editor-label';
       label.textContent = FIELD_LABELS[field] || field;
 
+      var typeInfo = QUESTION_TYPES[qInfo.question_type];
+      if (typeInfo) {
+        var badge = document.createElement('span');
+        badge.className = 'type-badge';
+        badge.style.background = typeInfo.color;
+        badge.textContent = typeInfo.label;
+        label.appendChild(badge);
+      }
+
       var toggle = document.createElement('input');
       toggle.type = 'checkbox';
       toggle.checked = true;
@@ -2093,6 +2114,18 @@ main {
         var labelEl = document.createElement('div');
         labelEl.className = 'insight-label';
         labelEl.textContent = FIELD_LABELS[field] || field;
+
+        var qInfo2 = FIELD_QUESTIONS[field];
+        if (qInfo2 && qInfo2.question_type) {
+          var typeInfo2 = QUESTION_TYPES[qInfo2.question_type];
+          if (typeInfo2) {
+            var badge2 = document.createElement('span');
+            badge2.className = 'type-badge';
+            badge2.style.background = typeInfo2.color;
+            badge2.textContent = typeInfo2.label;
+            labelEl.appendChild(badge2);
+          }
+        }
 
         var stateEl = document.createElement('div');
         stateEl.className = 'insight-state';

@@ -342,6 +342,28 @@ def test_field_questions_have_question_type(page: Page, demo_server: str):
     assert set(result).issubset(expected_types), f"Unexpected types: {set(result) - expected_types}"
 
 
+def test_editor_type_badges_visible(page: Page, demo_server: str):
+    """Each field in the research design editor should show a type badge."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    badges = page.locator("#research-design-editor .type-badge")
+    expect(badges).to_have_count(8, timeout=2_000)
+    first_badge = badges.first
+    expect(first_badge).to_be_visible()
+    assert first_badge.text_content().strip() in [
+        'Open-ended', 'Rating Scale', 'Single Choice', 'Multi-select', 'Yes / No', 'Ranking'
+    ]
+
+
+def test_sidebar_type_badges_visible(page: Page, demo_server: str):
+    """Sidebar insight cards should show type badges after interview starts."""
+    _start_and_wait_for_app(page, demo_server)
+    page.wait_for_selector(".insight-card", timeout=5_000)
+    badges = page.locator(".insight-card .type-badge")
+    expect(badges.first).to_be_visible(timeout=3_000)
+
+
 def test_full_flow_editor_to_fork_point_to_results(page: Page, demo_server: str):
     """Integration: preset → editor → start → fork point → sidebar → results."""
     sse_bytes = INTERACTIVE_SSE.read_bytes()
