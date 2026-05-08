@@ -544,3 +544,19 @@ def test_survey_preview_excludes_disabled_fields(page: Page, demo_server: str):
     page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
     field = page.locator('.survey-field[data-field="primary_loss_reason"]')
     assert field.count() == 0
+
+
+def test_fork_point_text_after_survey_preview(page: Page, demo_server: str):
+    """Fork point text should reference the preview if it was opened."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+
+    # Open and close preview
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    page.locator("#survey-close-btn").click()
+
+    # Check the surveyPreviewed state
+    previewed = page.evaluate("() => window.getState ? window.getState().surveyPreviewed : false")
+    assert previewed is True

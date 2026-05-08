@@ -1528,6 +1528,7 @@ main {
   }
   // Expose for testability
   window.guessTargetField = guessTargetField;
+  window.getState = function() { return state; };
 
   var STATE_ICONS = {
     missing:                '',
@@ -2022,6 +2023,7 @@ main {
     state.methodologyApproved = false;
     state.forkPointShown = false;
     state.forkPointSessionId = null;
+    state.surveyPreviewed = state.surveyPreviewed || false;
     setStatus('running');
 
     if (state.fieldEnabled) {
@@ -2203,9 +2205,15 @@ main {
 
       var forkText = document.createElement('div');
       forkText.className = 'fork-text';
-      forkText.textContent = 'A traditional tool would export these ' + FIELDS.length +
-        ' questions as a static form and wait for responses. Methodic conducts a live ' +
-        'conversation instead — adapting follow-ups based on what you actually say.';
+      if (state.surveyPreviewed) {
+        forkText.textContent = 'You just saw the static survey those questions would produce ' +
+          '— radio buttons, sliders, checkboxes. Methodic asks the same questions as a live ' +
+          'conversation, adapting follow-ups based on what you actually say.';
+      } else {
+        forkText.textContent = 'A traditional tool would export those questions as a fixed form ' +
+          'with radio buttons and text boxes. Methodic conducts a live conversation instead ' +
+          '— adapting follow-ups based on what you actually say.';
+      }
 
       forkCard.appendChild(forkLabel);
       forkCard.appendChild(forkText);
