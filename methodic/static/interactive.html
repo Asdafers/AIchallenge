@@ -741,6 +741,9 @@ main {
   background: #1a1a2e;
   border-radius: 6px;
   padding: 8px 10px;
+  cursor: pointer;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .field-name {
@@ -763,6 +766,38 @@ main {
 .coverage-badge.low    { background: #0f2540; color: #3498db; }
 .coverage-badge.ambig  { background: #2d2000; color: #f39c12; }
 .coverage-badge.miss   { background: #1e1e2f; color: #555; }
+
+.field-question {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #1a1a2e;
+  border-radius: 6px;
+  border-left: 3px solid #2980b9;
+}
+
+.field-card.expanded .field-question {
+  display: block;
+}
+
+.question-text {
+  font-size: 0.78rem;
+  color: #c0d0e0;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.question-followup {
+  font-size: 0.7rem;
+  color: #6a8fa8;
+  font-style: italic;
+}
+
+.expand-hint {
+  font-size: 0.65rem;
+  color: #556;
+}
 
 /* ─── Results Buttons ───────────────────────────────────────── */
 .results-actions {
@@ -957,6 +992,49 @@ main {
     security_concern:       'security',
     competitor_pressure:    'competitor',
     aha_moment_reached:     'aha_moment'
+  };
+
+  var FIELD_QUESTIONS = {
+    primary_loss_reason: {
+      question: 'What changed between initial interest and the decision not to move forward?',
+      follow_up: 'Clarify vague reasons — probe for specific factors',
+      question_id: 'Q-loss-reason-open'
+    },
+    secondary_loss_reason: {
+      question: 'Beyond the primary factor, was there a secondary issue that contributed to the outcome?',
+      follow_up: 'Probe if answer is vague or too general',
+      question_id: 'Q-secondary-loss'
+    },
+    roi_clarity: {
+      question: 'What evidence would your team have needed to feel confident in the ROI?',
+      follow_up: 'Probe for missing evidence or unclear metrics',
+      question_id: 'Q-roi-clarity'
+    },
+    budget_timing: {
+      question: 'Was budget timing or fiscal-cycle alignment a factor in the decision?',
+      follow_up: 'Confirm or deny — avoid leading if unprompted',
+      question_id: 'Q-budget-timing'
+    },
+    procurement_friction: {
+      question: 'Walk me through the procurement process — where, if anywhere, did it slow down or create friction?',
+      follow_up: 'Probe specific stages where friction occurred',
+      question_id: 'Q-procurement-friction'
+    },
+    security_concern: {
+      question: 'Did security review or compliance requirements affect the timeline or outcome?',
+      follow_up: 'Confirm or deny',
+      question_id: 'Q-security-concern'
+    },
+    competitor_pressure: {
+      question: 'Were you evaluating alternatives or did a competitor offer influence the decision?',
+      follow_up: 'Identify named competitor if mentioned',
+      question_id: 'Q-competitor-pressure'
+    },
+    aha_moment_reached: {
+      question: 'Was there a moment during the evaluation where the core value clicked — or did that never happen?',
+      follow_up: 'Probe trial experience',
+      question_id: 'Q-aha-moment'
+    }
   };
 
   var STATE_ICONS = {
@@ -1793,6 +1871,35 @@ main {
 
       fc.appendChild(nameEl);
       fc.appendChild(badge);
+
+      var qInfo = FIELD_QUESTIONS[field];
+      if (qInfo) {
+        var hint = document.createElement('span');
+        hint.className = 'expand-hint';
+        hint.textContent = 'click to expand';
+        fc.appendChild(hint);
+
+        var qDetail = document.createElement('div');
+        qDetail.className = 'field-question';
+
+        var qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.textContent = qInfo.question;
+        qDetail.appendChild(qText);
+
+        var qFollowUp = document.createElement('div');
+        qFollowUp.className = 'question-followup';
+        qFollowUp.textContent = 'Follow-up: ' + qInfo.follow_up;
+        qDetail.appendChild(qFollowUp);
+
+        fc.appendChild(qDetail);
+
+        fc.addEventListener('click', function () {
+          fc.classList.toggle('expanded');
+          hint.textContent = fc.classList.contains('expanded') ? 'click to collapse' : 'click to expand';
+        });
+      }
+
       fieldCardsContainer.appendChild(fc);
     });
 
