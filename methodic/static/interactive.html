@@ -518,6 +518,26 @@ main {
 .insight-card.covered_low_confidence  .insight-state { color: #3498db; }
 .insight-card.covered_high_confidence .insight-state { color: #2ecc71; }
 
+.insight-question {
+  font-size: 0.62rem;
+  color: #556;
+  line-height: 1.4;
+  margin-top: 2px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.insight-card:hover .insight-question,
+.insight-card:focus-within .insight-question {
+  max-height: 60px;
+}
+
+.insight-card:focus {
+  outline: 1px solid #2980b9;
+  outline-offset: 2px;
+}
+
 @keyframes insightPulse {
   0%   { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.5); }
   70%  { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
@@ -1664,6 +1684,17 @@ main {
         card.appendChild(icon);
         card.appendChild(labelEl);
         card.appendChild(stateEl);
+
+        card.setAttribute('tabindex', '0');
+
+        var qInfo = FIELD_QUESTIONS[field];
+        if (qInfo) {
+          var qSub = document.createElement('div');
+          qSub.className = 'insight-question';
+          qSub.textContent = qInfo.question;
+          card.appendChild(qSub);
+        }
+
         dom.insightList.appendChild(card);
       }
 
