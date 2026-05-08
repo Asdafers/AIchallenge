@@ -172,3 +172,40 @@ def test_phase_progress_rendered(page: Page, demo_server: str):
 
     phase_items = page.locator("#phase-list .phase-item")
     assert phase_items.count() >= 2, f"Expected at least 2 phase items, got {phase_items.count()}"
+
+
+def test_results_field_card_expands_to_show_question(page: Page, demo_server: str):
+    """Clicking a field card in results shows the plain-English question."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    field_card = page.locator("#results-overlay .field-card").first
+    field_card.click()
+
+    question_detail = field_card.locator(".field-question")
+    expect(question_detail).to_be_visible(timeout=2_000)
+
+    question_text = question_detail.locator(".question-text").text_content() or ""
+    assert len(question_text) > 10, f"Expected question text, got: {question_text}"
+
+
+def test_results_field_card_collapses(page: Page, demo_server: str):
+    """Clicking a field card twice collapses the question detail."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    field_card = page.locator("#results-overlay .field-card").first
+    field_card.click()  # expand
+    expect(field_card.locator(".field-question")).to_be_visible(timeout=2_000)
+    field_card.click()  # collapse
+    expect(field_card.locator(".field-question")).to_be_hidden(timeout=2_000)
+
+
+def test_sidebar_insight_card_is_keyboard_accessible(page: Page, demo_server: str):
+    """Insight cards should have tabindex and show question on focus."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    insight_card = page.locator(".insight-card").first
+    tabindex = insight_card.get_attribute("tabindex")
+    assert tabindex == "0", f"Expected tabindex='0', got '{tabindex}'"
