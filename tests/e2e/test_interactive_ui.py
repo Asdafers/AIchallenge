@@ -212,6 +212,17 @@ def test_sidebar_insight_card_is_keyboard_accessible(page: Page, demo_server: st
     assert tabindex == "0", f"Expected tabindex='0', got '{tabindex}'"
 
 
+def test_sidebar_question_visible_without_hover(page: Page, demo_server: str):
+    """Question text in sidebar should be visible without hovering."""
+    _start_and_wait_for_app(page, demo_server)
+    expect(page.locator("#status-badge")).to_have_text("complete", timeout=15_000)
+
+    insight_question = page.locator(".insight-question").first
+    expect(insight_question).to_be_visible(timeout=2_000)
+    text = insight_question.text_content() or ""
+    assert len(text) > 10, f"Expected visible question text, got: {text}"
+
+
 def test_methodology_card_numeric_ids_show_count(page: Page, demo_server: str):
     """When issues have numeric IDs but no summary, card should not show '1, 2, 3'."""
     sse_bytes = METHODOLOGY_NUMERIC_SSE.read_bytes()
