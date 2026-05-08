@@ -448,3 +448,99 @@ def test_full_flow_editor_to_fork_point_to_results(page: Page, demo_server: str)
     # 6. Results overlay visible
     results = page.locator("#results-overlay")
     expect(results).to_be_visible(timeout=5_000)
+
+
+def test_survey_preview_renders_open_ended_widget(page: Page, demo_server: str):
+    """open_ended fields should render as a disabled textarea."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="primary_loss_reason"]')
+    expect(field).to_be_visible()
+    textarea = field.locator("textarea")
+    expect(textarea).to_be_visible()
+    assert textarea.is_disabled()
+
+
+def test_survey_preview_renders_rating_scale_widget(page: Page, demo_server: str):
+    """rating_scale fields should render radio buttons with scale labels."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="roi_clarity"]')
+    expect(field).to_be_visible()
+    radios = field.locator('input[type="radio"]')
+    assert radios.count() == 10
+    scale_labels = field.locator(".survey-scale-label")
+    assert scale_labels.count() == 2
+
+
+def test_survey_preview_renders_single_choice_widget(page: Page, demo_server: str):
+    """single_choice fields should render radio buttons with options."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="budget_timing"]')
+    expect(field).to_be_visible()
+    radios = field.locator('input[type="radio"]')
+    assert radios.count() == 4
+
+
+def test_survey_preview_renders_multi_select_widget(page: Page, demo_server: str):
+    """multi_select fields should render checkboxes."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="secondary_loss_reason"]')
+    expect(field).to_be_visible()
+    checkboxes = field.locator('input[type="checkbox"]')
+    assert checkboxes.count() == 6
+
+
+def test_survey_preview_renders_yes_no_widget(page: Page, demo_server: str):
+    """yes_no_elaborate fields should render Yes/No radios and a textarea."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="security_concern"]')
+    expect(field).to_be_visible()
+    radios = field.locator('input[type="radio"]')
+    assert radios.count() == 2
+    textarea = field.locator("textarea")
+    expect(textarea).to_be_visible()
+
+
+def test_survey_preview_renders_ranking_widget(page: Page, demo_server: str):
+    """ranking fields should render numbered items with drag handles."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="competitor_pressure"]')
+    expect(field).to_be_visible()
+    items = field.locator(".ranking-item")
+    assert items.count() == 4
+
+
+def test_survey_preview_excludes_disabled_fields(page: Page, demo_server: str):
+    """Disabled fields should not appear in the survey preview."""
+    page.goto(f"{demo_server}/interactive.html")
+    page.locator(".preset-card").first.click()
+    page.wait_for_selector("#research-design-editor:not(.hidden)", timeout=2_000)
+    # Disable primary_loss_reason
+    page.locator("#editor-primary_loss_reason .field-toggle").uncheck()
+    page.locator("#preview-survey-btn").click()
+    page.wait_for_selector("#survey-preview-overlay:not(.hidden)", timeout=2_000)
+    field = page.locator('.survey-field[data-field="primary_loss_reason"]')
+    assert field.count() == 0

@@ -1871,11 +1871,114 @@ main {
   }
 
   function renderSurveyWidget(container, field, type) {
-    var placeholder = document.createElement('div');
-    placeholder.textContent = '[' + type + ' widget]';
-    placeholder.style.color = '#999';
-    placeholder.style.fontStyle = 'italic';
-    container.appendChild(placeholder);
+    if (type === 'open_ended') {
+      var ta = document.createElement('textarea');
+      ta.disabled = true;
+      ta.rows = 4;
+      ta.placeholder = 'Type your response here...';
+      ta.style.cssText = 'width:100%;border:1px solid #ccc;border-radius:3px;padding:8px;font-family:Georgia,serif;font-size:0.82rem;background:#fafafa;color:#999;resize:none;box-sizing:border-box;';
+      container.appendChild(ta);
+    }
+    else if (type === 'rating_scale') {
+      var range = SCALE_RANGES[field] || { min: 1, max: 5, lowLabel: 'Low', highLabel: 'High' };
+      var scaleDiv = document.createElement('div');
+      scaleDiv.className = 'survey-scale';
+      var lowLabel = document.createElement('span');
+      lowLabel.className = 'survey-scale-label';
+      lowLabel.textContent = range.lowLabel;
+      scaleDiv.appendChild(lowLabel);
+      for (var i = range.min; i <= range.max; i++) {
+        var lbl = document.createElement('label');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.disabled = true;
+        radio.name = 'survey-' + field;
+        lbl.appendChild(radio);
+        var numSpan = document.createElement('span');
+        numSpan.textContent = ' ' + i;
+        lbl.appendChild(numSpan);
+        scaleDiv.appendChild(lbl);
+      }
+      var highLabel = document.createElement('span');
+      highLabel.className = 'survey-scale-label';
+      highLabel.textContent = range.highLabel;
+      scaleDiv.appendChild(highLabel);
+      container.appendChild(scaleDiv);
+    }
+    else if (type === 'single_choice') {
+      var options = SURVEY_OPTIONS[field] || ['Option A', 'Option B', 'Option C'];
+      var choicesDiv = document.createElement('div');
+      choicesDiv.className = 'survey-choices';
+      options.forEach(function(opt) {
+        var lbl = document.createElement('label');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.disabled = true;
+        radio.name = 'survey-' + field;
+        lbl.appendChild(radio);
+        var txt = document.createTextNode(' ' + opt);
+        lbl.appendChild(txt);
+        choicesDiv.appendChild(lbl);
+      });
+      container.appendChild(choicesDiv);
+    }
+    else if (type === 'multi_select') {
+      var opts = SURVEY_OPTIONS[field] || ['Option A', 'Option B', 'Option C'];
+      var choicesDiv2 = document.createElement('div');
+      choicesDiv2.className = 'survey-choices';
+      opts.forEach(function(opt) {
+        var lbl = document.createElement('label');
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.disabled = true;
+        lbl.appendChild(cb);
+        var txt = document.createTextNode(' ' + opt);
+        lbl.appendChild(txt);
+        choicesDiv2.appendChild(lbl);
+      });
+      container.appendChild(choicesDiv2);
+    }
+    else if (type === 'yes_no_elaborate') {
+      var ynDiv = document.createElement('div');
+      ynDiv.className = 'survey-choices';
+      ['Yes', 'No'].forEach(function(opt) {
+        var lbl = document.createElement('label');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.disabled = true;
+        radio.name = 'survey-' + field;
+        lbl.appendChild(radio);
+        var txt = document.createTextNode(' ' + opt);
+        lbl.appendChild(txt);
+        ynDiv.appendChild(lbl);
+      });
+      container.appendChild(ynDiv);
+      var ta2 = document.createElement('textarea');
+      ta2.disabled = true;
+      ta2.rows = 2;
+      ta2.placeholder = 'If yes, please elaborate...';
+      ta2.style.cssText = 'width:100%;border:1px solid #ccc;border-radius:3px;padding:8px;font-family:Georgia,serif;font-size:0.78rem;background:#fafafa;color:#999;resize:none;box-sizing:border-box;margin-top:8px;';
+      container.appendChild(ta2);
+    }
+    else if (type === 'ranking') {
+      var items = SURVEY_OPTIONS[field] || ['Item A', 'Item B', 'Item C'];
+      items.forEach(function(item, idx) {
+        var row = document.createElement('div');
+        row.className = 'ranking-item';
+        var handle = document.createElement('span');
+        handle.className = 'ranking-handle';
+        handle.textContent = '☰';
+        var num = document.createElement('span');
+        num.className = 'ranking-num';
+        num.textContent = (idx + 1) + '.';
+        var label = document.createElement('span');
+        label.textContent = item;
+        row.appendChild(handle);
+        row.appendChild(num);
+        row.appendChild(label);
+        container.appendChild(row);
+      });
+    }
   }
 
   /* ─── Status ────────────────────────────────────────────────── */
