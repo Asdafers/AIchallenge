@@ -758,6 +758,19 @@ In the JS init section, after the preset selection event listener setup, add:
       FIELDS.forEach(function(f) { if (state.fieldEnabled[f]) count++; });
       var el = document.getElementById('editor-field-count');
       if (el) el.textContent = count + '/' + FIELDS.length + ' fields enabled';
+      // Disable start button if no fields enabled
+      var startBtn = document.getElementById('start-btn');
+      if (startBtn) startBtn.disabled = (count === 0);
+    }
+
+    function validateEditor() {
+      var valid = true;
+      FIELDS.forEach(function(field) {
+        if (!state.fieldEnabled[field]) return;
+        var qEl = document.getElementById('q-' + field);
+        if (qEl && qEl.value.trim() === '') valid = false;
+      });
+      return valid;
     }
 ```
 
@@ -775,8 +788,14 @@ In the preset card click handler, after setting `selectedPreset`, add:
 In `startInterview()`, after building the `body` object and before the `fetch` call, add:
 
 ```javascript
-    // Collect custom questions from editor
+    // Validate and collect custom questions from editor
     if (state.fieldEnabled) {
+      if (!validateEditor()) {
+        dom.startBtn.textContent = 'Start Interview';
+        dom.startBtn.disabled = false;
+        alert('All enabled fields must have question text.');
+        return;
+      }
       var customQuestions = {};
       FIELDS.forEach(function(field) {
         if (state.fieldEnabled[field]) {
@@ -784,13 +803,14 @@ In `startInterview()`, after building the `body` object and before the `fetch` c
           var fuEl = document.getElementById('fu-' + field);
           if (qEl && fuEl) {
             customQuestions[field] = {
-              question: qEl.value.slice(0, 200),
-              follow_up: fuEl.value.slice(0, 100)
+              question: qEl.value.trim().slice(0, 200),
+              follow_up: fuEl.value.trim().slice(0, 100)
             };
           }
         }
       });
       body.custom_questions = customQuestions;
+      state.enabledFieldCount = Object.keys(customQuestions).length;
     }
 ```
 

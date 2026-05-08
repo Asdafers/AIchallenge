@@ -72,6 +72,11 @@ Each field card has:
 - **Follow-up textarea** (editable) — pre-filled from `FIELD_QUESTIONS[field].follow_up`
 - **Enable/disable toggle** — lets user skip fields. Disabled fields are greyed out and excluded from the custom_questions payload.
 
+**Validation rules:**
+- At least 1 field must remain enabled (start button disabled if all toggled off)
+- Enabled fields must have non-empty question text (whitespace-only rejected)
+- On start, trim whitespace from question/follow-up before sending
+
 The panel is collapsible. Default state: expanded after preset selection, showing all 8 fields.
 
 ### Data flow
@@ -156,7 +161,13 @@ Adapt your follow-ups based on the participant's actual responses. You are not l
 
 The `<research_framework>` tags create a clear boundary between user-provided data and system instructions. The sanitization strips characters that could break the delimiter structure. Character limits are enforced on both frontend (textarea `maxlength`) and backend.
 
-This is appended to the existing interviewer prompt. The organizer and methodology reviewer continue to run their standard flow — the custom questions are a supplementary instruction to the interviewer, not a replacement for the autonomous methodology pipeline.
+This is appended to the existing interviewer prompt via `brief_text` concatenation — the per-session brief string, not the global agent instruction. This ensures custom questions are scoped to the session and never leak across interviews.
+
+The organizer and methodology reviewer continue to run their standard flow — the custom questions are a supplementary framework for the interviewer, subject to Methodic's methodology constraints. If methodology review recommends changes, the interviewer should follow methodology guidance over the custom framework.
+
+### Disabled fields in results
+
+Disabled fields are excluded from the `custom_questions` payload but remain in the 8-field canonical schema. In the results overlay, disabled fields are labeled "Not targeted" (grey, no badge) instead of "MISSING" (red). The sidebar coverage counter reflects only enabled fields (e.g. "5/6 fields" when 2 are disabled). This prevents the UI from showing misleading coverage gaps for fields the user intentionally excluded.
 
 ## Component 3: Fork Point Card
 
