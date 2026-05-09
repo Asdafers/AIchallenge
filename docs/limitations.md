@@ -4,7 +4,7 @@ Methodic is a vertical-slice prototype for the Google AI Agent Challenge. This d
 
 ## What the Prototype Proves
 
-1. **End-to-end ADK agent pipeline** — SequentialAgent + LoopAgent graph with 7 LlmAgents and 6 custom BaseAgent steps, running on Cloud Run with live Gemini 2.5 Pro.
+1. **End-to-end ADK agent pipeline** — SequentialAgent + LoopAgent graph with 7 LlmAgents and 6 custom BaseAgent steps, running on Cloud Run with live Gemini 3.1 Pro.
 2. **Real MCP boundary** — `lookup_deal_context` and `lookup_trial_telemetry` run through a stdio JSON-RPC 2.0 MCP server with server-side field filtering.
 3. **Interactive + demo modes** — SSE-streaming web UI for both automated demo and human-in-the-loop interviews.
 4. **Measurable quality delta** — Fixture benchmark shows +0.692 composite improvement (static 0.069 → Methodic 0.761) across 4-dimension rubric.
