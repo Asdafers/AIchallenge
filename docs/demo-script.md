@@ -1,137 +1,74 @@
-# Methodic Demo Script (3:30)
+# Methodic Demo Script (3:00)
 
-Target runtime: 3 minutes 30 seconds. Each scene has voiceover text and on-screen actions.
-
----
-
-## Scene 1: The Hook (0:00 - 0:30)
-
-**On screen:** Terminal showing a revenue dashboard concept — slipping mid-market deals.
-
-**Voiceover:**
-> "Dashboards tell you what happened. But to know *why* deals slip, B2B teams rely on static surveys that return vague answers like 'price.' Methodic fixes the upstream data-capture layer."
-
-**Action:** Run the external request flow.
-
-```bash
-python3 scripts/wp3_organizer_flow.py --output /tmp/demo_wp3.json
-```
-
-**On screen:** Show the `request_study` payload arriving, then the clarification question: "Is the concern about per-seat packaging or total ROI justification?" Show the 5-event log: request → clarification → response → brief → approval.
-
-**Proof beats:** B1 (external agent request)
+Target runtime: 3 minutes. Each scene has voiceover text and on-screen actions shown in the web UI at `https://methodic-2030382823.us-central1.run.app/static/demo.html`.
 
 ---
 
-## Scene 2: Agentic Planning & Pushback (0:30 - 1:10)
+## Scene 1: The Hook (0:00 - 0:25)
+
+**On screen:** Intro overlay with "Before vs After" comparison grid and "Agentic Moments You'll See" preview.
 
 **Voiceover:**
-> "Methodic isn't a form generator. When a human suggests interviewing only product champions, the Methodology Agent pushes back."
+> "Dashboards tell you what happened. But to know *why* deals slip, B2B teams rely on static surveys that return vague answers like 'price.' Methodic fixes the upstream data-capture layer with an autonomous multi-agent research pipeline."
 
-**Action:** Run the methodology review.
-
-```bash
-python3 scripts/wp4_methodology_review.py --mode fallback --output /tmp/demo_wp4.json
-```
-
-**On screen:** Show the biased sample plan (`fixtures/sample_plan_biased.json` — all champions), then the pushback output: "Champions alone cannot answer pricing questions. Adding economic buyers to avoid sample bias." Show the revised 7-participant sample with economic buyers added.
-
-**Voiceover:**
-> "It corrects a biased sample, adds the right participant segments, and generates measurement-mapped questions — all before a single conversation starts."
-
-**On screen:** Show the question pool (8 questions) with variable mappings.
-
-**Proof beats:** B2 (methodology pushback), B5 (variable-to-question mapping)
+**Action:** Point out the three agentic moments preview (methodology pushback, MCP triangulation, autonomous re-plan). Click "Start Demo."
 
 ---
 
-## Scene 3: Conversations & MCP Triangulation (1:10 - 2:00)
+## Scene 2: Pipeline Start & Methodology Pushback (0:25 - 1:00)
+
+**On screen:** Pipeline progress card appears: plan → methodology review → adaptive interviews → coverage check → re-plan → export. Pipeline timeline shows phases activating.
+
+**Voiceover:**
+> "The pipeline starts with study planning. Watch the methodology agent push back on sampling bias."
+
+**On screen:** Agentic moment card appears in sidebar: "Methodology Agent → Organizer: Revising participant pool." The verdict shows REVISE_REQUIRED — champions alone can't answer pricing questions, economic buyers are added.
+
+**Voiceover:**
+> "Methodic isn't a form generator. When the sample only includes product champions, the methodology agent intervenes, adds economic buyers, and generates measurement-mapped questions — before a single conversation starts."
+
+---
+
+## Scene 3: Adaptive Interview & MCP Triangulation (1:00 - 1:50)
+
+**On screen:** Chat panel shows interviewer agent and participant conversation. Coverage insight cards start updating in the sidebar.
 
 **Voiceover:**
 > "Now watch what happens when a participant says 'price was too high.'"
 
-**Action:** Run the conversation engine.
-
-```bash
-python3 scripts/wp5_conversation_engine.py --output-responses /tmp/demo_wp5r.json --output-coverage /tmp/demo_wp5c.json
-```
-
-**On screen (split):**
-- **Left:** Static survey accepts "Price" and moves on.
-- **Right:** Methodic opens a Developer Trace Overlay.
-
-**Action:** Run the MCP boundary to show the real tool call.
-
-```bash
-python3 scripts/wp6_mcp_boundary.py --output /tmp/demo_wp6.json
-```
-
-**On screen:** The MCP trace overlay shows `lookup_deal_context` called via stdio JSON-RPC 2.0. CRM data reveals the trial account never reached the report builder. Methodic asks: "Was the cost an issue, or could your team not prove the ROI internally?"
+**On screen:** The interviewer probes: "Was the cost an issue, or could your team not prove the ROI internally?" Coverage cards flip from 'missing' to 'covered.' The MCP triangulation moment fires — agent checks trial telemetry mid-interview.
 
 **Voiceover:**
-> "Methodic uses the Model Context Protocol to securely pull CRM telemetry, turning vague answers into precise, evidence-linked data. The MCP server filters fields to only what the study approves — no data leakage."
+> "Methodic uses Model Context Protocol tools to securely pull CRM and telemetry data, turning vague answers into precise, evidence-linked variables. The MCP server filters fields to only what the study approves."
 
-**On screen:** Show `filtering_verified: true` in the trace, the `allowed_fields` list, and the guardrail event log (B9: P-002 vague answer on `procurement_friction` handled by marking ambiguous, measurement intent preserved).
-
-**Proof beats:** B3 (interactive capture), B4 (MCP triangulation), B9 (guardrail recovery)
+**On screen:** Coverage bar fills as more variables reach high-confidence.
 
 ---
 
-## Scene 4: Quality Dashboard & Autonomous Re-Plan (2:00 - 2:50)
+## Scene 4: Coverage Check & Autonomous Re-plan (1:50 - 2:25)
 
-**Action:** Run data quality scoring.
-
-```bash
-python3 scripts/wp7_data_quality.py --output-report /tmp/demo_wp7.json --output-csv /tmp/demo_wp7.csv --output-bigquery /tmp/demo_wp7bq.json
-```
-
-**On screen:** Quality dashboard showing variable coverage states. Most variables are `covered_high_confidence`, but `procurement_friction` is stuck at `ambiguous`.
+**On screen:** First participant session ends. Coverage bar shows gaps — procurement_friction still ambiguous.
 
 **Voiceover:**
-> "Methodic tracks variable coverage in real time. When procurement friction remains ambiguous after all planned sessions, it autonomously triggers a re-plan."
+> "After each session, Methodic tracks variable coverage. When procurement friction remains ambiguous, it autonomously re-plans."
 
-**Action:** Run the re-plan trigger.
-
-```bash
-python3 scripts/wp8_replan_trigger.py --output /tmp/demo_wp8.json
-```
-
-**On screen:** Re-plan decision: `procurement_friction` unresolved → P-005 (Procurement Lead) added → one targeted session → variable resolved. Dashboard updates to show all variables covered.
+**On screen:** Replanner agentic moment card appears: "Coverage gap: procurement_friction → adding targeted follow-up session with P-005 (Procurement Lead)." Second participant session begins.
 
 **Voiceover:**
 > "One targeted economic-buyer session closes the gap. No human intervention required."
 
-**Proof beats:** B5 (coverage loop), B6 (autonomous re-plan), B7 (quality scoring visible)
-
 ---
 
-## Scene 5: Export & Google Stack Close (2:50 - 3:30)
+## Scene 5: Quality Review & Export (2:25 - 3:00)
 
-**Action:** Run BigQuery export validation and show the container demo.
-
-```bash
-python3 scripts/wp9a_bigquery_export.py --dry-run --output /tmp/demo_wp9a.json
-```
-
-**On screen:** Structured JSON export with evidence quotes linked to variables. CSV export. BigQuery schema with 17 fields, 6 validated rows.
+**On screen:** All coverage bars reach high-confidence. Final report panel appears with key findings and themes.
 
 **Voiceover:**
-> "The final dataset is BigQuery-ready with full evidence linking — every data point traces back to the conversation turn that produced it. Schema validation and dry-run export confirm the rows are clean."
+> "The quality reviewer validates findings, then BigQuery export writes structured, evidence-linked rows. Every data point traces back to the conversation turn that produced it."
 
-**On screen:** Show the deployment trace (`fixtures/wp9_deployment_trace.json`): 7/7 steps pass in Docker container. Show the `honest_label` and `operator_steps` for Cloud Run deployment.
+**On screen:** Final report shows coverage achieved, key themes, and BigQuery export status. Status badge shows "complete."
 
 **Voiceover:**
-> "Powered by Gemini, connected through MCP, and containerized for Cloud Run, Methodic exports clean, decision-ready data. Static surveys give you 'price.' Methodic gives you the procurement friction that actually killed the deal."
-
-**On screen:** Side-by-side quality comparison: static composite 0.069 vs Methodic composite 0.761. Delta: +0.692.
-
-**Proof beats:** B7 (measurable quality delta), B8 (Google-aligned deployability)
-
----
-
-## Closing (3:25 - 3:30)
+> "Powered by Gemini 3.1 Pro, connected through MCP, and deployed on Cloud Run — Methodic exports clean, decision-ready data. Static surveys give you 'price.' Methodic gives you the procurement friction that actually killed the deal."
 
 **On screen:** "Methodic — Decision in, governed data out."
-
-**Voiceover:**
-> "Methodic. Decision in, governed data out."

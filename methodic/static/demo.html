@@ -534,6 +534,17 @@ main {
   line-height: 1.5;
 }
 
+.agentic-handoff {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #e74c3c;
+  background: #2a0f0f;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+
 @keyframes agenticIn {
   from { opacity: 0; transform: translateX(12px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -1278,8 +1289,17 @@ main {
       displayText = displayText.substring(0, 197) + '...';
     }
 
+    var isHandoff = (type === 'methodology' && displayText.indexOf('REVISE_REQUIRED') !== -1);
+
     var card = document.createElement('div');
     card.className = 'agentic-card ' + type;
+
+    if (isHandoff) {
+      var handoffEl = document.createElement('div');
+      handoffEl.className = 'agentic-handoff';
+      handoffEl.textContent = 'Methodology Agent → Organizer: Revising participant pool';
+      card.appendChild(handoffEl);
+    }
 
     var labelEl = document.createElement('div');
     labelEl.className = 'agentic-label';
