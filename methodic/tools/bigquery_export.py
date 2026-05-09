@@ -56,7 +56,7 @@ def _ensure_bigquery_table(project: str, dataset: str) -> None:
     except Exception:
         ds = bigquery.Dataset(dataset_ref)
         ds.location = "US"
-        client.create_dataset(ds)
+        client.create_dataset(ds, exists_ok=True)
 
     table_ref = dataset_ref.table("win_loss_responses")
     try:
