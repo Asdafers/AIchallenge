@@ -69,6 +69,6 @@ Target runtime: 3 minutes. Each scene has voiceover text and on-screen actions s
 **On screen:** Final report shows coverage achieved, key themes, and BigQuery export status. Status badge shows "complete."
 
 **Voiceover:**
-> "Powered by Gemini 3.1 Pro, connected through MCP, and deployed on Cloud Run — Methodic exports clean, decision-ready data. Static surveys give you 'price.' Methodic gives you the procurement friction that actually killed the deal."
+> "Powered by Gemini 2.5 Pro, connected through MCP, and deployed on Cloud Run — Methodic exports clean, decision-ready data. Static surveys give you 'price.' Methodic gives you the procurement friction that actually killed the deal."
 
 **On screen:** "Methodic — Decision in, governed data out."
