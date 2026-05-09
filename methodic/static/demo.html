@@ -102,6 +102,58 @@ body {
   margin-bottom: 20px;
 }
 
+.agentic-preview {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.agentic-preview h3 {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #85c1e9;
+  margin-bottom: 10px;
+}
+
+.preview-moment {
+  font-size: 0.76rem;
+  color: #bcc;
+  line-height: 1.55;
+  padding: 5px 0;
+  border-bottom: 1px solid #222240;
+}
+
+.preview-moment:last-child { border-bottom: none; }
+
+.preview-icon { font-size: 0.6rem; margin-right: 4px; }
+
+.pipeline-card {
+  background: #16213e;
+  border: 1px solid #0f3460;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 8px 0 12px;
+  font-size: 0.78rem;
+  color: #85c1e9;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.pipeline-card strong { color: #a9cce3; }
+
+.pipeline-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 2px;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: #6a8fa8;
+}
+
+.pipeline-steps span { white-space: nowrap; }
+
 #start-btn {
   background: #1a5276;
   color: #85c1e9;
@@ -737,6 +789,12 @@ main {
         <div class="methodic-row">Exports evidence-linked data to BigQuery</div>
       </div>
     </div>
+    <div class="agentic-preview">
+      <h3>Agentic Moments You'll See</h3>
+      <div class="preview-moment"><span class="preview-icon" style="color:#e74c3c;">&#9670;</span> <strong>Methodology Pushback</strong> &mdash; "Champions alone cannot support a pricing decision. Include economic buyers."</div>
+      <div class="preview-moment"><span class="preview-icon" style="color:#3498db;">&#9670;</span> <strong>MCP Triangulation</strong> &mdash; Agent checks trial telemetry mid-interview to ask sharper follow-ups</div>
+      <div class="preview-moment"><span class="preview-icon" style="color:#e67e22;">&#9670;</span> <strong>Autonomous Re-plan</strong> &mdash; Coverage gap in procurement_friction triggers a targeted follow-up session</div>
+    </div>
     <p class="intro-tagline">Watch the multi-agent pipeline conduct an adaptive interview and extract structured insights in real time.</p>
     <button id="start-btn">Start Demo &rarr;</button>
   </div>
@@ -996,6 +1054,7 @@ main {
     // Clear dynamic DOM regions
     while (dom.chatMessages.firstChild) dom.chatMessages.removeChild(dom.chatMessages.firstChild);
     while (dom.agenticMoments.firstChild) dom.agenticMoments.removeChild(dom.agenticMoments.firstChild);
+    dom.agenticSection.classList.add('hidden');
     while (dom.phaseList.firstChild) dom.phaseList.removeChild(dom.phaseList.firstChild);
     while (dom.finalReport.firstChild) dom.finalReport.removeChild(dom.finalReport.firstChild);
     dom.finalReport.classList.add('hidden');
@@ -1515,12 +1574,38 @@ main {
     });
   }
 
+  /* ─── Pipeline Card ──────────────────────────────────────────── */
+
+  function showPipelineCard() {
+    var card = document.createElement('div');
+    card.className = 'pipeline-card';
+    var title = document.createElement('strong');
+    title.textContent = 'Pipeline starting';
+    card.appendChild(title);
+    var steps = document.createElement('div');
+    steps.className = 'pipeline-steps';
+    var labels = ['plan', 'methodology review', 'adaptive interviews', 'coverage check', 're-plan', 'export'];
+    labels.forEach(function (label, i) {
+      var s = document.createElement('span');
+      s.textContent = label;
+      steps.appendChild(s);
+      if (i < labels.length - 1) {
+        var arrow = document.createElement('span');
+        arrow.textContent = ' → ';
+        steps.appendChild(arrow);
+      }
+    });
+    card.appendChild(steps);
+    dom.chatMessages.appendChild(card);
+  }
+
   /* ─── Start Run ──────────────────────────────────────────────── */
 
   function startRun() {
     dom.runBtn.disabled = true;
     resetState();
     setStatus('running');
+    showPipelineCard();
 
     fetch('/api/stream', {
       method: 'POST',
