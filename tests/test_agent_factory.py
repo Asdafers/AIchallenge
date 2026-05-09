@@ -40,15 +40,15 @@ def test_build_interactive_mode():
     il = sr.sub_agents[1]
     participant = il.sub_agents[1]
     assert isinstance(participant, HumanInputStep)
-    # Fieldwork max_iterations should be 1 for single participant
-    assert fw.max_iterations == 1
+    # Fieldwork max_iterations should be 2 to allow autonomous re-plan
+    assert fw.max_iterations == 2
 
 
-def test_interactive_mode_skips_quality_and_export():
+def test_interactive_mode_includes_quality_and_export():
     registry = {}
     graph = build_agent_graph(interactive=True, session_registry=registry)
     fin = graph.sub_agents[2]
     agent_names = [a.name for a in fin.sub_agents]
-    assert "quality_reviewer" not in agent_names
-    assert "bigquery_export" not in agent_names
+    assert "quality_reviewer" in agent_names
+    assert "bigquery_export" in agent_names
     assert "completion_responder" in agent_names

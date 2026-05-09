@@ -161,7 +161,7 @@ def build_agent_graph(
 
     fieldwork_loop = LoopAgent(
         name="fieldwork_loop",
-        max_iterations=1,
+        max_iterations=2,
         sub_agents=[
             session_runner,
             CoverageStep(name="coverage_step"),
@@ -179,7 +179,11 @@ def build_agent_graph(
     )
     finalize = SequentialAgent(
         name="finalize",
-        sub_agents=[completion],
+        sub_agents=[
+            quality_agent.model_copy(deep=True),
+            BigQueryExportStep(name="bigquery_export"),
+            completion,
+        ],
     )
 
     return SequentialAgent(
