@@ -51,8 +51,8 @@ AGENT_CARD = {
         "conducts governed participant interviews, returns evidence-linked structured data."
     ),
     "version": "1.0.0",
-    "url": "https://methodic.run.app",
-    "capabilities": {"streaming": False, "pushNotifications": False},
+    "url": "https://methodic-2030382823.us-central1.run.app",
+    "capabilities": {"streaming": True, "pushNotifications": False},
     "authentication": {"schemes": ["none"]},
     "defaultInputModes": ["text/plain"],
     "defaultOutputModes": ["text/plain", "application/json"],

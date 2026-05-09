@@ -24,10 +24,10 @@ Methodic replaces static B2B surveys with an autonomous multi-agent research wor
 2. **Designs interview questions** — a question design agent maps each question to target research variables with follow-up probes
 3. **Conducts governed interviews** — an interviewer agent adaptively probes vague answers ("price") into specific decision variables ("procurement friction vs. ROI justification"), while guardrails enforce research ethics
 4. **Extracts structured data in real time** — after each turn pair, a Gemini-powered extractor maps responses to 8 canonical research variables with confidence scores
-5. **Tracks coverage and autonomously re-plans** — a coverage agent identifies gaps across variables; a replanner decides whether to add participants or stop
-6. **Reviews quality and exports** — a quality reviewer validates findings, then BigQuery export writes structured, evidence-linked data
+5. **Tracks coverage and autonomously re-plans** — a coverage agent identifies gaps across variables; a replanner calls Gemini to decide whether to add a targeted follow-up participant or stop the study
+6. **Reviews quality and exports** — a quality reviewer validates findings, then BigQuery export writes structured, evidence-linked rows (live mode; dry-run by default in demo)
 
-The result: coverage of 8 canonical research variables improves from ~30% (static survey) to ~87.5% (agent-conducted), measured by the same rubric applied to both.
+The result: coverage of 8 canonical research variables improves from ~12.5% (static survey baseline) to ~87.5% (agent-conducted), measured by the same rubric applied to both in a fixture benchmark.
 
 ## Inspiration
 
@@ -37,14 +37,14 @@ B2B teams spend months running win-loss research, but the data-capture layer —
 
 Methodic is built on Google's Agent Development Kit (ADK) with a multi-agent architecture:
 
-- **ADK Agent Graph**: `SequentialAgent` orchestrates three phases (planning → fieldwork → finalization), with `LoopAgent` managing interview iteration (max 6 turns) and participant cycling (max 3 participants). 7 `LlmAgent` nodes handle reasoning; 4 custom `BaseAgent` steps handle deterministic logic (session init, extraction, turn checking, coverage, BigQuery export).
-- **Gemini 2.5 Pro** powers all LLM agents — methodology review, question design, interviewing, participant simulation, quality review, and study completion.
-- **Real-time SSE streaming**: A FastAPI server wraps the ADK runner, streaming every agent event as Server-Sent Events. The demo UI renders conversations, coverage bars, guardrail highlights, and pipeline timeline live as the agent works.
+- **ADK Agent Graph**: `SequentialAgent` orchestrates three phases (planning → fieldwork → finalization), with `LoopAgent` managing interview iteration (max 6 turns) and participant cycling (max 3 participants). 7 `LlmAgent` nodes handle reasoning; 6 custom `BaseAgent` steps handle deterministic logic (session init, extraction, turn checking, coverage assessment, re-plan decision, BigQuery export).
+- **Gemini 2.5 Pro** powers all reasoning agents — methodology review, question design, interviewing, quality review, and study completion. Participant simulation uses Gemini 2.5 Flash for cost efficiency.
+- **Real-time SSE streaming**: A FastAPI server wraps the ADK runner, streaming every agent event as Server-Sent Events. The demo UI renders conversations, coverage bars, agentic moment highlights, and pipeline timeline live as the agent works.
 - **Cloud Run deployment**: The full pipeline runs on Cloud Run (us-central1) with Vertex AI authentication, Cloud Trace integration, and A2A-compatible agent card at `/.well-known/agent-card.json`.
-- **MCP integration**: Model Context Protocol tools provide secure access to deal context and telemetry data with server-side field filtering.
-- **BigQuery export**: Structured participant responses with 8 canonical variables, confidence scores, and evidence quotes are exported to BigQuery.
+- **MCP integration**: Model Context Protocol tools (`lookup_deal_context`, `lookup_trial_telemetry`) provide secure access to deal context and telemetry data through a stdio JSON-RPC 2.0 server with server-side field filtering.
+- **BigQuery export**: Structured participant responses with 8 canonical variables, confidence scores, and evidence quotes are flattened and exported to BigQuery. Live writes are enabled on Cloud Run; demo defaults to dry-run mode.
 
-The build process itself was multi-agent: Claude implemented the 21-task plan, Gemini performed blind adversarial reviews via ACP, and all coordination ran through Mission-MCP task management.
+The build process itself was multi-agent: Claude implemented the task plan, Gemini performed 5 blind adversarial reviews via ACP, and Codex contributed 9 independent code reviews — 14 total blind reviews across both models.
 
 ## Challenges we ran into
 
@@ -54,10 +54,10 @@ The build process itself was multi-agent: Claude implemented the 21-task plan, G
 
 ## Accomplishments we're proud of
 
-- **Live end-to-end pipeline**: Not a prototype or fixture replay — a real Gemini-powered pipeline running on Cloud Run that streams 30+ events in real time across 12 agent types
-- **52 automated tests**: 43 unit tests covering schemas, validators, and agent logic, plus 9 Playwright E2E tests for the demo UI and 1 live integration test against Cloud Run (passes in ~275s)
-- **Measurable quality delta**: Same rubric, same participants, static vs. Methodic — coverage improvement from ~30% to ~87.5% across 8 canonical research variables
-- **Multi-agent build process**: 21-task implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). Gemini performed blind adversarial reviews at 10 gates.
+- **Live end-to-end pipeline**: A real Gemini-powered pipeline running on Cloud Run that streams 30+ events in real time across 7 LlmAgent nodes and 6 custom BaseAgent steps. Demo mode uses a Gemini-powered participant simulator; interactive mode accepts real human input.
+- **133 automated tests**: 69 unit/integration tests covering schemas, validators, agent logic, and MCP tools, plus 64 Playwright E2E tests for the demo UI and interactive mode.
+- **Measurable quality delta**: Fixture benchmark — same rubric, same participants, static vs. Methodic — coverage improvement from ~12.5% to ~87.5% across 8 canonical research variables (+0.692 composite score).
+- **Multi-agent build process**: Implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). 14 blind adversarial reviews across Gemini and Codex.
 
 ## What we learned
 
