@@ -22,7 +22,7 @@ class BigQueryExportStep(BaseAgent):
         responses = [
             ParticipantResponse.model_validate(r) for r in responses_by_id.values()
         ]
-        result = await asyncio.to_thread(export_to_bigquery, responses)
+        result = await asyncio.to_thread(export_to_bigquery, responses, fail_on_error=True)
         state["export_result"] = result
         yield Event(
             author=self.name,
