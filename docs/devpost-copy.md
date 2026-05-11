@@ -44,7 +44,7 @@ Methodic is built on Google's Agent Development Kit (ADK) with a multi-agent arc
 - **MCP integration**: Model Context Protocol tools (`lookup_deal_context`, `lookup_trial_telemetry`) provide secure access to deal context and telemetry data through a stdio JSON-RPC 2.0 server with server-side field filtering.
 - **BigQuery export**: Structured participant responses with 8 canonical variables, confidence scores, and evidence quotes are flattened and exported to BigQuery. Live writes confirmed on Cloud Run (2 rows exported 2026-05-09).
 
-The build process itself was multi-agent: Claude implemented the task plan, Gemini performed 5 blind adversarial reviews via ACP, and Codex contributed 9 independent code reviews — 14 total blind reviews across both models.
+The build process itself was multi-agent: Claude implemented the task plan, Gemini performed 6 blind adversarial reviews via ACP, and Codex contributed 10 independent code reviews — 16 total blind reviews across both models.
 
 ## Challenges we ran into
 
@@ -56,9 +56,9 @@ The build process itself was multi-agent: Claude implemented the task plan, Gemi
 
 - **Live end-to-end pipeline**: A real Gemini-powered pipeline running on Cloud Run that streams 34 events in real time across 7 LlmAgent nodes and 6 custom BaseAgent steps, completing in ~5 minutes. Demo mode uses a Gemini-powered participant simulator; interactive mode accepts real human input.
 - **BigQuery export — live**: Structured participant responses with confidence scores and evidence quotes export directly to BigQuery. 2 rows confirmed written from live pipeline runs on 2026-05-09 (`dry_run: false`).
-- **133 automated tests**: 69 unit/integration tests covering schemas, validators, agent logic, and MCP tools, plus 64 Playwright E2E tests for the demo UI and interactive mode.
+- **133 automated tests**: 73 unit/integration tests covering schemas, validators, agent logic, and MCP tools, plus 60 Playwright E2E tests for the demo UI and interactive mode.
 - **Measurable quality delta**: Fixture benchmark — same rubric, same participants, static vs. Methodic — coverage improvement from ~12.5% to ~87.5% across 8 canonical research variables (+0.692 composite score).
-- **Multi-agent build process**: Implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). 14 blind adversarial reviews across Gemini and Codex.
+- **Multi-agent build process**: Implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). 16 blind adversarial reviews across Gemini and Codex.
 
 ## What we learned
 
