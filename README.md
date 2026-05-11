@@ -55,13 +55,13 @@ SequentialAgent (root)
     └── completion (LlmAgent)
 ```
 
-**Stack:** Google ADK · Gemini 2.5 Pro · MCP (stdio JSON-RPC 2.0) · FastAPI · Cloud Run · BigQuery · Vertex AI
+**Stack:** Google ADK · Gemini 3.1 Pro · MCP (stdio JSON-RPC 2.0) · FastAPI · Cloud Run · BigQuery · Vertex AI
 
 ## Project Structure
 
 ```
 methodic/                  # ADK agent package
-  __init__.py              # Model configuration (Gemini 2.5 Pro / Flash)
+  __init__.py              # Model configuration (Gemini 3.1 Pro / Flash)
   agent.py                 # Agent graph (SequentialAgent + LoopAgent)
   server.py                # FastAPI server (SSE streaming, interactive API)
   schemas.py               # Pydantic models (ParticipantResponse, 8 canonical fields)

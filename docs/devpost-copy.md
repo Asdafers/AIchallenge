@@ -38,7 +38,7 @@ B2B teams spend months running win-loss research, but the data-capture layer —
 Methodic is built on Google's Agent Development Kit (ADK) with a multi-agent architecture:
 
 - **ADK Agent Graph**: `SequentialAgent` orchestrates three phases (planning → fieldwork → finalization), with `LoopAgent` managing interview iteration (max 6 turns) and participant cycling (max 3 participants). 7 `LlmAgent` nodes handle reasoning; 6 custom `BaseAgent` steps handle deterministic logic (session init, extraction, turn checking, coverage assessment, re-plan decision, BigQuery export).
-- **Gemini 2.5 Pro** powers all reasoning agents — methodology review, question design, interviewing, quality review, and study completion. Participant simulation uses Gemini 2.5 Flash for cost efficiency.
+- **Gemini 3.1 Pro** powers all reasoning agents — methodology review, question design, interviewing, quality review, and study completion. Participant simulation uses Gemini 3 Flash for cost efficiency.
 - **Real-time SSE streaming**: A FastAPI server wraps the ADK runner, streaming every agent event as Server-Sent Events. The demo UI renders conversations, coverage bars, agentic moment highlights, and pipeline timeline live as the agent works.
 - **Cloud Run deployment**: The full pipeline runs on Cloud Run (us-central1) with Vertex AI authentication, Cloud Trace integration, and A2A-compatible agent card at `/.well-known/agent-card.json`.
 - **MCP integration**: Model Context Protocol tools (`lookup_deal_context`, `lookup_trial_telemetry`) provide secure access to deal context and telemetry data through a stdio JSON-RPC 2.0 server with server-side field filtering.
@@ -76,7 +76,7 @@ We also learned that ADK's `LoopAgent` and `SequentialAgent` are powerful abstra
 
 ## Built with
 
-- Gemini 2.5 Pro (via Vertex AI)
+- Gemini 3.1 Pro (via Vertex AI)
 - Google Agent Development Kit (ADK)
 - Model Context Protocol (MCP)
 - Cloud Run
