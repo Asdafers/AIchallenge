@@ -20,7 +20,7 @@ Sessions use ADK `InMemorySessionService`. Study state does not persist across s
 The MCP server reads CRM and telemetry data from local JSON fixtures (`fixtures/crm/`, `fixtures/telemetry/`), not a live CRM or analytics system. The MCP boundary and field filtering are real; the data source is not.
 
 ### BigQuery Export Mode
-BigQuery export defaults to dry-run (`BIGQUERY_DRY_RUN=true`) unless explicitly configured with GCP credentials. The schema, flattening logic, and table creation path are production-ready; live writes require IAM setup.
+BigQuery export runs live on Cloud Run (`BIGQUERY_DRY_RUN=false`) and has confirmed writes to `methodic_demo.win_loss_responses` (2 rows, 2026-05-09). Local development defaults to dry-run unless GCP credentials are configured.
 
 ### Simulated Participants (Demo Mode)
 Demo mode uses `participant_sim`, a Gemini-powered LLM agent that role-plays as a B2B stakeholder. Interactive mode accepts real human input. Neither mode uses actual research participants.
