@@ -97,6 +97,8 @@ def create_app() -> FastAPI:
     except Exception:
         app = FastAPI(title="Methodic ADK Agent")
 
+    app.routes[:] = [r for r in app.routes if not (hasattr(r, 'path') and r.path == '/')]
+
     if STATIC_DIR.exists():
         app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
