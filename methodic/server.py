@@ -100,6 +100,11 @@ def create_app() -> FastAPI:
     if STATIC_DIR.exists():
         app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
+    @app.get("/", include_in_schema=False)
+    async def root_redirect():
+        from starlette.responses import RedirectResponse
+        return RedirectResponse(url="/static/demo.html")
+
     @app.get("/.well-known/agent-card.json")
     async def agent_card():
         return JSONResponse(content=AGENT_CARD)
