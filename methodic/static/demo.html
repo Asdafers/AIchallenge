@@ -1090,6 +1090,9 @@ main {
   /* ─── Main Event Handler ─────────────────────────────────────── */
 
   function handleEvent(evt) {
+    // First event clears the cold-start latency warning timer
+    clearLatencyTimer();
+
     var author = evt.author || 'unknown';
     var text   = evt.text   || '';
     var delta  = evt.state_delta || {};
@@ -1560,6 +1563,8 @@ main {
     function processChunk() {
       return reader.read().then(function (result) {
         if (result.done) {
+          clearLatencyTimer();
+          clearOverallTimer();
           setStatus('complete');
           dom.typingInd.classList.add('hidden');
           dom.runBtn.disabled = false;
@@ -1588,6 +1593,8 @@ main {
     }
 
     return processChunk().catch(function (err) {
+      clearLatencyTimer();
+      clearOverallTimer();
       setStatus('failed');
       routeToChat('error', '[Error]', 'Stream error: ' + err.message);
       dom.typingInd.classList.add('hidden');
@@ -1620,6 +1627,25 @@ main {
     dom.chatMessages.appendChild(card);
   }
 
+  /* ─── Latency Timers ─────────────────────────────────────────── */
+
+  var latencyTimer = null;
+  var overallTimer = null;
+
+  function clearLatencyTimer() {
+    if (latencyTimer) {
+      clearTimeout(latencyTimer);
+      latencyTimer = null;
+    }
+  }
+
+  function clearOverallTimer() {
+    if (overallTimer) {
+      clearTimeout(overallTimer);
+      overallTimer = null;
+    }
+  }
+
   /* ─── Start Run ──────────────────────────────────────────────── */
 
   function startRun() {
@@ -1627,6 +1653,20 @@ main {
     resetState();
     setStatus('running');
     showPipelineCard();
+
+    // 15-second cold-start warning: if no events arrive, inform the user
+    clearLatencyTimer();
+    latencyTimer = setTimeout(function () {
+      latencyTimer = null;
+      routeToChat('error', '[System]', 'Gemini is warming up — first response may take 15–30 seconds on Cloud Run cold start…');
+    }, 15000);
+
+    // 5-minute overall timeout: set expectations for slow runs
+    clearOverallTimer();
+    overallTimer = setTimeout(function () {
+      overallTimer = null;
+      routeToChat('error', '[System]', 'Pipeline is taking longer than expected. Gemini responses are non-deterministic — some runs complete faster than others.');
+    }, 300000);
 
     fetch('/api/stream', {
       method: 'POST',
@@ -1640,6 +1680,8 @@ main {
         return consumeSSE(response);
       })
       .catch(function (err) {
+        clearLatencyTimer();
+        clearOverallTimer();
         setStatus('failed');
         routeToChat('error', '[Error]', 'Connection failed: ' + err.message);
         dom.runBtn.disabled = false;
