@@ -55,7 +55,7 @@ SequentialAgent (root)
     └── completion (LlmAgent)
 ```
 
-**Stack:** Google ADK · Gemini 3.1 Pro · MCP (stdio JSON-RPC 2.0) · FastAPI · Cloud Run · BigQuery · Vertex AI
+**Stack:** Google ADK · Gemini 3.1 Pro Preview · MCP (stdio JSON-RPC 2.0) · FastAPI · Cloud Run · BigQuery · Vertex AI
 
 ## Project Structure
 
@@ -93,7 +93,7 @@ python3 -m pytest tests/e2e/ -v
 |----------|--------|--------|
 | Cloud Run health | PASS | `curl /health` |
 | 133 tests passing | PASS | `pytest --collect-only` |
-| Live SSE stream (25 events) | PASS | [live-run-2026-05-14.md](docs/evidence/live-run-2026-05-14.md) |
+| Live SSE stream (25–34 events) | PASS | [live-run-2026-05-14.md](docs/evidence/live-run-2026-05-14.md) |
 | BigQuery live export (3 rows) | PASS | `bq query` on `methodic_demo.win_loss_responses` |
 | Agent card | PASS | `/.well-known/agent-card.json` |
 | Quality delta (+0.692) | PASS | [Fixture benchmark](fixtures/wp7_quality_report.json) |

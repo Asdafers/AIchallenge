@@ -38,11 +38,11 @@ B2B teams spend months running win-loss research, but the data-capture layer —
 Methodic is built on Google's Agent Development Kit (ADK) with a multi-agent architecture:
 
 - **ADK Agent Graph**: `SequentialAgent` orchestrates three phases (planning → fieldwork → finalization), with `LoopAgent` managing interview iteration (max 6 turns) and participant cycling (max 3 participants). 7 `LlmAgent` nodes handle reasoning; 6 custom `BaseAgent` steps handle deterministic logic (session init, extraction, turn checking, coverage assessment, re-plan decision, BigQuery export).
-- **Gemini 3.1 Pro** powers all reasoning agents — methodology review, question design, interviewing, quality review, and study completion. Participant simulation uses Gemini 3 Flash for cost efficiency.
+- **Gemini 3.1 Pro Preview** powers all reasoning agents — methodology review, question design, interviewing, quality review, and study completion. Participant simulation uses Gemini 3 Flash Preview for cost efficiency.
 - **Real-time SSE streaming**: A FastAPI server wraps the ADK runner, streaming every agent event as Server-Sent Events. The demo UI renders conversations, coverage bars, agentic moment highlights, and pipeline timeline live as the agent works.
 - **Cloud Run deployment**: The full pipeline runs on Cloud Run (us-central1) with Vertex AI authentication, Cloud Trace integration, and A2A-compatible agent card at `/.well-known/agent-card.json`.
 - **MCP integration**: Model Context Protocol tools (`lookup_deal_context`, `lookup_trial_telemetry`) provide secure access to deal context and telemetry data through a stdio JSON-RPC 2.0 server with server-side field filtering.
-- **BigQuery export**: Structured participant responses with 8 canonical variables, confidence scores, and evidence quotes are flattened and exported to BigQuery. Live writes confirmed on Cloud Run (2 rows exported 2026-05-09).
+- **BigQuery export**: Structured participant responses with 8 canonical variables, confidence scores, and evidence quotes are flattened and exported to BigQuery. Live writes confirmed on Cloud Run (3 rows exported across multiple runs).
 
 The build process itself was multi-agent: Claude implemented the task plan, Gemini performed 6 blind adversarial reviews via ACP, and Codex contributed 10 independent code reviews — 16 total blind reviews across both models.
 
@@ -54,8 +54,8 @@ The build process itself was multi-agent: Claude implemented the task plan, Gemi
 
 ## Accomplishments we're proud of
 
-- **Live end-to-end pipeline**: A real Gemini-powered pipeline running on Cloud Run that streams 34 events in real time across 7 LlmAgent nodes and 6 custom BaseAgent steps, completing in ~5 minutes. Demo mode uses a Gemini-powered participant simulator; interactive mode accepts real human input.
-- **BigQuery export — live**: Structured participant responses with confidence scores and evidence quotes export directly to BigQuery. 2 rows confirmed written from live pipeline runs on 2026-05-09 (`dry_run: false`).
+- **Live end-to-end pipeline**: A real Gemini-powered pipeline running on Cloud Run that streams 25–34 SSE events in real time across 7 LlmAgent nodes and 6 custom BaseAgent steps, completing in ~5 minutes. Demo mode uses a Gemini-powered participant simulator; interactive mode accepts real human input.
+- **BigQuery export — live**: Structured participant responses with confidence scores and evidence quotes export directly to BigQuery. 3 rows confirmed written from live pipeline runs (`dry_run: false`).
 - **133 automated tests**: 73 unit/integration tests covering schemas, validators, agent logic, and MCP tools, plus 60 Playwright E2E tests for the demo UI and interactive mode.
 - **Measurable quality delta**: Fixture benchmark — same rubric, same participants, static vs. Methodic — coverage improvement from ~16.7% to 100% across 8 canonical research variables (+0.692 composite score).
 - **Multi-agent build process**: Implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). 16 blind adversarial reviews across Gemini and Codex.
@@ -76,7 +76,7 @@ We also learned that ADK's `LoopAgent` and `SequentialAgent` are powerful abstra
 
 ## Built with
 
-- Gemini 3.1 Pro (via Vertex AI)
+- Gemini 3.1 Pro Preview (via Vertex AI)
 - Google Agent Development Kit (ADK)
 - Model Context Protocol (MCP)
 - Cloud Run
