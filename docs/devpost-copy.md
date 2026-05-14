@@ -92,5 +92,5 @@ methodic-ai-challenge
 ## Links
 
 - GitHub: https://github.com/Asdafers/AIchallenge
-- Demo video: demo_output/demo.webm
+- Demo video: https://github.com/Asdafers/AIchallenge/releases/download/v1.0/demo.webm
 - Live endpoint: https://methodic-2030382823.us-central1.run.app
