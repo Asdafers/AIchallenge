@@ -14,7 +14,7 @@ Static B2B surveys produce shallow answers like "price." Methodic replaces them 
 4. **Tracks coverage and autonomously re-plans** — identifies gaps across 8 canonical research variables
 5. **Exports structured data** — evidence-linked rows with confidence scores directly to BigQuery
 
-Result: **+69% quality improvement** over static surveys (same rubric, same participants).
+Result: **+0.692 composite quality improvement** over static surveys (same rubric, same participants; coverage from 16.7% to 100% across 8 research variables).
 
 ## Live Demo
 

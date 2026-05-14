@@ -25,9 +25,9 @@ Methodic replaces static B2B surveys with an autonomous multi-agent research wor
 3. **Conducts governed interviews** — an interviewer agent adaptively probes vague answers ("price") into specific decision variables ("procurement friction vs. ROI justification"), while guardrails enforce research ethics
 4. **Extracts structured data in real time** — after each turn pair, a Gemini-powered extractor maps responses to 8 canonical research variables with confidence scores
 5. **Tracks coverage and autonomously re-plans** — a coverage agent identifies gaps across variables; a replanner calls Gemini to decide whether to add a targeted follow-up participant or stop the study
-6. **Reviews quality and exports** — a quality reviewer validates findings, then BigQuery export writes structured, evidence-linked rows (live mode; dry-run by default in demo)
+6. **Reviews quality and exports** — a quality reviewer validates findings, then BigQuery export writes structured, evidence-linked rows (live on Cloud Run; dry-run for local development)
 
-The result: coverage of 8 canonical research variables improves from ~12.5% (static survey baseline) to ~87.5% (agent-conducted), measured by the same rubric applied to both in a fixture benchmark.
+The result: coverage of 8 canonical research variables improves from ~16.7% (static survey baseline) to 100% (agent-conducted), measured by the same rubric applied to both in a fixture benchmark.
 
 ## Inspiration
 
@@ -57,7 +57,7 @@ The build process itself was multi-agent: Claude implemented the task plan, Gemi
 - **Live end-to-end pipeline**: A real Gemini-powered pipeline running on Cloud Run that streams 34 events in real time across 7 LlmAgent nodes and 6 custom BaseAgent steps, completing in ~5 minutes. Demo mode uses a Gemini-powered participant simulator; interactive mode accepts real human input.
 - **BigQuery export — live**: Structured participant responses with confidence scores and evidence quotes export directly to BigQuery. 2 rows confirmed written from live pipeline runs on 2026-05-09 (`dry_run: false`).
 - **133 automated tests**: 73 unit/integration tests covering schemas, validators, agent logic, and MCP tools, plus 60 Playwright E2E tests for the demo UI and interactive mode.
-- **Measurable quality delta**: Fixture benchmark — same rubric, same participants, static vs. Methodic — coverage improvement from ~12.5% to ~87.5% across 8 canonical research variables (+0.692 composite score).
+- **Measurable quality delta**: Fixture benchmark — same rubric, same participants, static vs. Methodic — coverage improvement from ~16.7% to 100% across 8 canonical research variables (+0.692 composite score).
 - **Multi-agent build process**: Implementation plan executed via subagent-driven development with two-stage review (spec compliance + code quality). 16 blind adversarial reviews across Gemini and Codex.
 
 ## What we learned
@@ -91,6 +91,6 @@ methodic-ai-challenge
 
 ## Links
 
-- GitHub: [repository URL]
+- GitHub: https://github.com/Asdafers/AIchallenge
 - Demo video: demo_output/demo.webm
 - Live endpoint: https://methodic-2030382823.us-central1.run.app
