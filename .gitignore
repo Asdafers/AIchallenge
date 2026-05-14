@@ -12,3 +12,8 @@ __pycache__/
 *.pyc
 tests/e2e/videos/
 demo_output/
+error.log
+sse_output.txt
+.mcp.json
+.superpowers/
+.gemini/
