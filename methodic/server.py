@@ -20,6 +20,8 @@ from fastapi.responses import JSONResponse
 from starlette.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
+from methodic.a2a import A2ATaskStore
+
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 _MAX_QUESTION_LEN = 200
@@ -46,23 +48,55 @@ def sanitize_custom_questions(custom_questions: dict) -> dict:
 
 AGENT_CARD = {
     "name": "methodic",
-    "description": (
-        "Autonomous B2B win-loss research agent. Accepts study requests, "
-        "conducts governed participant interviews, returns evidence-linked structured data."
-    ),
-    "version": "1.0.0",
+    "description": "Autonomous B2B win-loss research agent. Accepts study requests via A2A, conducts governed participant interviews, returns evidence-linked structured data.",
+    "version": "2.0.0",
     "url": "https://methodic-2030382823.us-central1.run.app",
-    "capabilities": {"streaming": True, "pushNotifications": False},
+    "capabilities": {
+        "streaming": True,
+        "pushNotifications": False,
+        "a2a": True,
+    },
+    "a2aEndpoints": {
+        "tasksSend": "/a2a/tasks/send",
+        "tasksGet": "/a2a/tasks/{id}",
+        "tasksSendSubscribe": "/a2a/tasks/sendSubscribe",
+        "tasksCancel": "/a2a/tasks/{id}/cancel",
+    },
     "authentication": {"schemes": ["none"]},
-    "defaultInputModes": ["text/plain"],
+    "defaultInputModes": ["text/plain", "application/json"],
     "defaultOutputModes": ["text/plain", "application/json"],
-    "skills": [{
-        "id": "win_loss_study",
-        "name": "Win-Loss Study",
-        "description": "Conduct a B2B win-loss research study with methodology review, adaptive interviews, and BigQuery export",
-        "tags": ["research", "b2b", "win-loss"],
-    }],
+    "skills": [
+        {
+            "id": "win_loss_study",
+            "name": "Win-Loss Study",
+            "description": "Conduct a B2B win-loss research study with methodology review, adaptive interviews, and BigQuery export.",
+            "tags": ["research", "b2b", "win-loss"],
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "question": {"type": "string", "description": "The business question to investigate"},
+                },
+                "required": ["question"],
+            },
+        },
+        {
+            "id": "domain_discovery",
+            "name": "Domain Discovery",
+            "description": "Given a problem domain, generate a structured study brief with research questions, hypotheses, and target variables.",
+            "tags": ["discovery", "planning", "research-design"],
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "domain": {"type": "string", "description": "Problem domain to investigate"},
+                    "context": {"type": "string", "description": "Additional business context"},
+                },
+                "required": ["domain"],
+            },
+        },
+    ],
 }
+
+_a2a_store = A2ATaskStore()
 
 _demo_sessions: dict[str, dict] = {}
 
@@ -345,6 +379,75 @@ def create_app() -> FastAPI:
             return JSONResponse(status_code=404, content={"error": "Results not yet available"})
         return isess.results
 
+    # ── A2A endpoints ──────────────────────────────────────────────
+
+    @app.post("/a2a/tasks/send")
+    async def a2a_send(request: Request):
+        body = await request.json()
+        skill = body.get("skill", "win_loss_study")
+        input_data = body.get("input", {})
+        if skill not in ("win_loss_study", "domain_discovery"):
+            return JSONResponse(status_code=400, content={"error": f"Unknown skill: {skill}"})
+        task = _a2a_store.create(skill=skill, input_data=input_data)
+        if skill == "domain_discovery":
+            asyncio.create_task(_run_discovery_task(task["id"], input_data))
+        else:
+            asyncio.create_task(_run_study_task(task["id"], input_data))
+        return JSONResponse(content={
+            "id": task["id"],
+            "status": str(task["status"].value),
+            "skill": task["skill"],
+        })
+
+    @app.get("/a2a/tasks/{task_id}")
+    async def a2a_get(task_id: str):
+        task = _a2a_store.get(task_id)
+        if not task:
+            return JSONResponse(status_code=404, content={"error": "Task not found"})
+        status_val = task["status"].value if hasattr(task["status"], "value") else str(task["status"])
+        return JSONResponse(content={
+            "id": task["id"],
+            "status": status_val,
+            "skill": task["skill"],
+            "result": task["result"],
+            "artifacts": task.get("artifacts", []),
+            "created_at": task["created_at"],
+            "updated_at": task["updated_at"],
+        })
+
+    @app.post("/a2a/tasks/{task_id}/cancel")
+    async def a2a_cancel(task_id: str):
+        try:
+            task = _a2a_store.cancel(task_id)
+            status_val = task["status"].value if hasattr(task["status"], "value") else str(task["status"])
+            return JSONResponse(content={"id": task["id"], "status": status_val})
+        except KeyError:
+            return JSONResponse(status_code=404, content={"error": "Task not found"})
+        except ValueError as e:
+            return JSONResponse(status_code=409, content={"error": str(e)})
+
+    @app.post("/a2a/tasks/sendSubscribe")
+    async def a2a_send_subscribe(request: Request):
+        body = await request.json()
+        skill = body.get("skill", "win_loss_study")
+        input_data = body.get("input", {})
+        if skill not in ("win_loss_study", "domain_discovery"):
+            return JSONResponse(status_code=400, content={"error": f"Unknown skill: {skill}"})
+        task = _a2a_store.create(skill=skill, input_data=input_data)
+
+        async def event_generator():
+            if skill == "domain_discovery":
+                async for event in _run_discovery_task_stream(task["id"], input_data):
+                    yield f"data: {json.dumps(event)}\n\n"
+            else:
+                async for event in _run_study_task_stream(task["id"], input_data):
+                    yield f"data: {json.dumps(event)}\n\n"
+            final = _a2a_store.get(task["id"])
+            status_val = final["status"].value if hasattr(final["status"], "value") else str(final["status"])
+            yield f"data: {json.dumps({'type': 'task_complete', 'task': {'id': final['id'], 'status': status_val, 'result': final['result']}})}\n\n"
+
+        return StreamingResponse(event_generator(), media_type="text/event-stream")
+
     return app
 
 
@@ -458,6 +561,250 @@ async def _start_interactive_pipeline(
             "text": str(e),
             "state_delta": {},
         })
+
+
+# ── A2A helpers ──────────────────────────────────────────────────
+
+
+def _strip_markdown_json(text: str) -> str:
+    """Strip markdown code block wrappers from JSON output."""
+    text = text.strip()
+    if text.startswith("```json"):
+        text = text[7:]
+    elif text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    return text.strip()
+
+
+def _extract_session_state(session) -> dict:
+    """Safely extract state from ADK session (handles both dict and Pydantic)."""
+    state = getattr(session, "state", None)
+    if state is None:
+        return {}
+    if isinstance(state, dict):
+        return state
+    # Pydantic model or other object — try common patterns
+    try:
+        return dict(state)
+    except (TypeError, ValueError):
+        result = {}
+        for key in (
+            "coverage_state",
+            "participant_response_by_id",
+            "replan_decision",
+            "study_brief",
+            "discovery_brief",
+        ):
+            val = getattr(state, key, None)
+            if val is not None:
+                result[key] = val
+        return result
+
+
+# ── A2A task runners ─────────────────────────────────────────────
+
+
+async def _run_study_task(task_id: str, input_data: dict):
+    _a2a_store.update(task_id, status="running")
+    try:
+        from methodic.agent import root_agent
+        from google.adk.runners import Runner
+        from google.adk.sessions import InMemorySessionService
+        from google.genai import types
+
+        session_service = InMemorySessionService()
+        runner = Runner(agent=root_agent, app_name="methodic_a2a", session_service=session_service)
+        adk_session = await session_service.create_session(app_name="methodic_a2a", user_id=f"a2a_{task_id}")
+        question = input_data.get("question", input_data.get("study_brief", ""))
+        user_message = types.Content(role="user", parts=[types.Part(text=question)])
+
+        async for event in runner.run_async(
+            session_id=adk_session.id, user_id=f"a2a_{task_id}", new_message=user_message,
+        ):
+            author = getattr(event, "author", None)
+            if author:
+                text_parts = []
+                content = getattr(event, "content", None)
+                for part in getattr(content, "parts", []) or []:
+                    t = getattr(part, "text", None)
+                    if t:
+                        text_parts.append(t)
+                state_delta = {}
+                actions = getattr(event, "actions", None)
+                if actions:
+                    raw = getattr(actions, "state_delta", None) or {}
+                    if isinstance(raw, dict):
+                        state_delta = raw
+                _a2a_store.add_event(task_id, {
+                    "author": author,
+                    "text": " ".join(text_parts),
+                    "state_delta": state_delta,
+                })
+
+        final_session = await session_service.get_session(
+            app_name="methodic_a2a", user_id=f"a2a_{task_id}", session_id=adk_session.id,
+        )
+        state = _extract_session_state(final_session)
+        result = {
+            "coverage": state.get("coverage_state", {}),
+            "participant_responses": state.get("participant_response_by_id", {}),
+            "replan_decision": state.get("replan_decision", {}),
+            "study_brief": state.get("study_brief", ""),
+        }
+        _a2a_store.complete(task_id, result=result)
+    except Exception as e:
+        _a2a_store.fail(task_id, error=str(e))
+
+
+async def _run_study_task_stream(task_id: str, input_data: dict):
+    _a2a_store.update(task_id, status="running")
+    try:
+        from methodic.agent import root_agent
+        from google.adk.runners import Runner
+        from google.adk.sessions import InMemorySessionService
+        from google.genai import types
+
+        session_service = InMemorySessionService()
+        runner = Runner(agent=root_agent, app_name="methodic_a2a", session_service=session_service)
+        adk_session = await session_service.create_session(app_name="methodic_a2a", user_id=f"a2a_{task_id}")
+        question = input_data.get("question", input_data.get("study_brief", ""))
+        user_message = types.Content(role="user", parts=[types.Part(text=question)])
+
+        async for event in runner.run_async(
+            session_id=adk_session.id, user_id=f"a2a_{task_id}", new_message=user_message,
+        ):
+            author = getattr(event, "author", None)
+            if author:
+                text_parts = []
+                content = getattr(event, "content", None)
+                for part in getattr(content, "parts", []) or []:
+                    t = getattr(part, "text", None)
+                    if t:
+                        text_parts.append(t)
+                state_delta = {}
+                actions = getattr(event, "actions", None)
+                if actions:
+                    raw = getattr(actions, "state_delta", None) or {}
+                    if isinstance(raw, dict):
+                        state_delta = raw
+                evt = {
+                    "type": "agent_event",
+                    "author": author,
+                    "text": " ".join(text_parts),
+                    "state_delta": state_delta,
+                }
+                _a2a_store.add_event(task_id, evt)
+                yield evt
+
+        final_session = await session_service.get_session(
+            app_name="methodic_a2a", user_id=f"a2a_{task_id}", session_id=adk_session.id,
+        )
+        state = _extract_session_state(final_session)
+        result = {
+            "coverage": state.get("coverage_state", {}),
+            "participant_responses": state.get("participant_response_by_id", {}),
+            "replan_decision": state.get("replan_decision", {}),
+            "study_brief": state.get("study_brief", ""),
+        }
+        _a2a_store.complete(task_id, result=result)
+    except Exception as e:
+        _a2a_store.fail(task_id, error=str(e))
+
+
+async def _run_discovery_task(task_id: str, input_data: dict):
+    _a2a_store.update(task_id, status="running")
+    try:
+        from methodic.agents.discovery import discovery_agent
+        from google.adk.runners import Runner
+        from google.adk.sessions import InMemorySessionService
+        from google.genai import types
+
+        session_service = InMemorySessionService()
+        agent = discovery_agent.model_copy(deep=True)
+        runner = Runner(agent=agent, app_name="methodic_discovery", session_service=session_service)
+        adk_session = await session_service.create_session(
+            app_name="methodic_discovery", user_id=f"a2a_{task_id}",
+        )
+
+        domain = input_data.get("domain", "")
+        context = input_data.get("context", "")
+        prompt = f"Domain: {domain}"
+        if context:
+            prompt += f"\nContext: {context}"
+
+        user_message = types.Content(role="user", parts=[types.Part(text=prompt)])
+        result_text = ""
+
+        async for event in runner.run_async(
+            session_id=adk_session.id, user_id=f"a2a_{task_id}", new_message=user_message,
+        ):
+            author = getattr(event, "author", None)
+            if author == "discovery":
+                content = getattr(event, "content", None)
+                for part in getattr(content, "parts", []) or []:
+                    t = getattr(part, "text", None)
+                    if t:
+                        result_text += t
+
+        try:
+            brief = json.loads(_strip_markdown_json(result_text))
+        except json.JSONDecodeError:
+            brief = {"raw_output": result_text}
+
+        _a2a_store.complete(task_id, result={"discovery_brief": brief})
+    except Exception as e:
+        _a2a_store.fail(task_id, error=str(e))
+
+
+async def _run_discovery_task_stream(task_id: str, input_data: dict):
+    _a2a_store.update(task_id, status="running")
+    try:
+        from methodic.agents.discovery import discovery_agent
+        from google.adk.runners import Runner
+        from google.adk.sessions import InMemorySessionService
+        from google.genai import types
+
+        session_service = InMemorySessionService()
+        agent = discovery_agent.model_copy(deep=True)
+        runner = Runner(agent=agent, app_name="methodic_discovery", session_service=session_service)
+        adk_session = await session_service.create_session(
+            app_name="methodic_discovery", user_id=f"a2a_{task_id}",
+        )
+
+        domain = input_data.get("domain", "")
+        context = input_data.get("context", "")
+        prompt = f"Domain: {domain}"
+        if context:
+            prompt += f"\nContext: {context}"
+
+        user_message = types.Content(role="user", parts=[types.Part(text=prompt)])
+        result_text = ""
+
+        async for event in runner.run_async(
+            session_id=adk_session.id, user_id=f"a2a_{task_id}", new_message=user_message,
+        ):
+            author = getattr(event, "author", None)
+            if author == "discovery":
+                content = getattr(event, "content", None)
+                text_parts = []
+                for part in getattr(content, "parts", []) or []:
+                    t = getattr(part, "text", None)
+                    if t:
+                        text_parts.append(t)
+                        result_text += t
+                if text_parts:
+                    yield {"type": "agent_event", "author": "discovery", "text": " ".join(text_parts)}
+
+        try:
+            brief = json.loads(_strip_markdown_json(result_text))
+        except json.JSONDecodeError:
+            brief = {"raw_output": result_text}
+
+        _a2a_store.complete(task_id, result={"discovery_brief": brief})
+    except Exception as e:
+        _a2a_store.fail(task_id, error=str(e))
 
 
 app = create_app()
